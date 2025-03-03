@@ -2,6 +2,10 @@
 #include "./ui_mainform.h"
 #include "algorithms.h"
 
+#include <QTextStream>
+#include <QFileDialog>
+#include <QMessageBox>
+
 MainForm::MainForm(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainForm)
@@ -50,5 +54,15 @@ void MainForm::on_actionWinding_Number_triggered()
         setWindowTitle("Inside");
     else
         setWindowTitle("Outside");
+}
+
+
+void MainForm::on_actionOpen_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, "Open Polygon File", "", "Text Files (*.txt);;All Files (*)");
+    if (!fileName.isEmpty())
+    {
+        ui->Canvas->loadPolygonFromFile(fileName);
+    }
 }
 

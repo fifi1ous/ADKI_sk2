@@ -1,7 +1,8 @@
 #ifndef ALGORITHMS_H
 #define ALGORITHMS_H
 
-#include <QtGui>
+#include <QPointF>
+#include <QPolygonF>
 
 class Algorithms
 {

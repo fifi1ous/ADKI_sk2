@@ -24,6 +24,8 @@ private slots:
 
     void on_actionWinding_Number_triggered();
 
+    void on_actionOpen_triggered();
+
 private:
     Ui::MainForm *ui;
 };

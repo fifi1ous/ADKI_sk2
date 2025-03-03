@@ -1,4 +1,5 @@
 #include "algorithms.h"
+#include <cmath>
 
 short Algorithms::analyzeRayCrossing(const QPointF &q, const QPolygonF &pol)
 {
@@ -31,7 +32,6 @@ short Algorithms::analyzeWindingNumber(const QPointF &q, const QPolygonF &pol)
     double omega = 0.0; // Initialize winding number
     double epsilon = 1.0e-6; // Tolerance for floating numbers comparison
     int n = pol.size(); // Number of vertices in the polygon
-    int edgeCount = 0; // Counter for vertices on the edge
 
     for (int i = 0; i < n; i++)
     {
@@ -44,7 +44,8 @@ short Algorithms::analyzeWindingNumber(const QPointF &q, const QPolygonF &pol)
         // Calculate the cosine of the angle using the cosine rule
         double cosineValue = calculateCosineValue(distance_q_pi, distance_q_pii, distance_pi_pii);
 
-        double angle = std::acos(cosineValue); // Calculate the angle in radians
+        // Calculate the angle in radians
+        double angle = std::acos(cosineValue);
 
         // Calculate the determinant to determine the orientation
         double determinant = calculateDeterminant(pol[i], pol[(i+1)%n], q);
@@ -58,17 +59,6 @@ short Algorithms::analyzeWindingNumber(const QPointF &q, const QPolygonF &pol)
         {
             omega -= angle; // Point is in the right half-plane
         }
-    }
-
-    // Determine the position of the point relative to the polygon
-    if (edgeCount > 1)
-    {
-        return 1; // Point is on an edge
-    }
-
-    if (edgeCount == 1)
-    {
-        return 1; // Point is on an edge
     }
 
     if (std::fabs(std::fabs(omega) - 2 * M_PI) < epsilon) // fabs: absolute value

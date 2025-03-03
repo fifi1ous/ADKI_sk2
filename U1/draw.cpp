@@ -1,5 +1,11 @@
 #include "draw.h"
-#include <QtGui>
+#include <QWidget>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QFile>
+#include <QTextStream>
+#include <QFileDialog>
+#include <QMessageBox>
 
 Draw::Draw(QWidget *parent)
     : QWidget{parent}
@@ -73,4 +79,36 @@ void Draw::switch_source()
 {
     //input q or polygon vertex
     add_point = !add_point;
+}
+
+void Draw::loadPolygonFromFile(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, "Error", "Cannot open file for reading");
+        return;
+    }
+
+    QTextStream in(&file);
+    pol.clear(); // Clear the existing polygon
+
+    while (!in.atEnd())
+    {
+        QString line = in.readLine();
+        QStringList coordinates = line.split(",");
+        if (coordinates.size() == 2)
+        {
+            bool ok1, ok2;
+            double x = coordinates[0].toDouble(&ok1);
+            double y = coordinates[1].toDouble(&ok2);
+            if (ok1 && ok2)
+            {
+                pol.append(QPointF(x, y));
+            }
+        }
+    }
+
+    file.close();
+    repaint(); // Repaint the widget to show the new polygon
 }

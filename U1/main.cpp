@@ -1,5 +1,5 @@
 #include "mainform.h"
-
+#include "./ui_mainform.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
