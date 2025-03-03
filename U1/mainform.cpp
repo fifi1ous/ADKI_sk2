@@ -27,7 +27,23 @@ void MainForm::on_actionRay_Crossing_triggered()
     QPointF q = ui->Canvas->getQ();
     QPolygonF pol = ui->Canvas->getPol();
 
-    short res = Algorithms::analyzePointAndPolygonPosition(q, pol);
+    short res = Algorithms::analyzeRayCrossing(q, pol);
+
+    //show results
+    if(res == 1)
+        setWindowTitle("Inside");
+    else
+        setWindowTitle("Outside");
+}
+
+
+void MainForm::on_actionWinding_Number_triggered()
+{
+    // Run winding number algorithm
+    QPointF q = ui->Canvas->getQ();
+    QPolygonF pol = ui->Canvas->getPol();
+
+    short res = Algorithms::analyzeWindingNumber(q, pol);
 
     //show results
     if(res == 1)

@@ -22,6 +22,8 @@ private slots:
 
     void on_actionRay_Crossing_triggered();
 
+    void on_actionWinding_Number_triggered();
+
 private:
     Ui::MainForm *ui;
 };
