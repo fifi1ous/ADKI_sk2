@@ -118,7 +118,7 @@ short Algorithms::checkSingularities(const QPointF &q, const QPolygonF &pol, int
     double xiir = pol[ii].x() - q.x();
     double yiir = pol[ii].y() - q.y();
 
-    if((xir <= epsilon && yir <= epsilon) || (xiir <= epsilon && yiir <= epsilon))
+    if((std::fabs(xir) <= epsilon && std::fabs(yir) <= epsilon) || (std::fabs(xiir) <= epsilon && std::fabs(yiir) <= epsilon))
     {
         return 3; // Point is on the vertex
     }

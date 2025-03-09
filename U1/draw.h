@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QPolygonF>
 #include <QPointF>
+#include <vector>
 
 class Draw : public QWidget
 {
@@ -11,7 +12,8 @@ class Draw : public QWidget
 
 private:
     QPointF q;
-    QPolygonF pol;
+    QPolygonF currentPolygon;
+    std::vector<QPolygonF> polygons;
     bool add_point;
 
 public:
@@ -20,8 +22,8 @@ public:
     void paintEvent(QPaintEvent *event);
     void switch_source();
     void loadPolygonFromFile(const QString &fileName);
-    QPointF getQ() const {return q;}
-    QPolygonF getPol() const {return pol;}
+    QPointF getQ() const { return q; }
+    const std::vector<QPolygonF>& getPolygons() const { return polygons; }
 
 signals:
 };

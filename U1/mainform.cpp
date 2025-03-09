@@ -24,50 +24,61 @@ void MainForm::on_actionPoint_Polygon_triggered()
     ui->Canvas->switch_source();
 }
 
-
 void MainForm::on_actionRay_Crossing_triggered()
 {
     // Run raycrossing algorithm
     QPointF q = ui->Canvas->getQ();
-    QPolygonF pol = ui->Canvas->getPol();
+    const std::vector<QPolygonF>& polygons = ui->Canvas->getPolygons();
+
+    if (polygons.empty())
+    {
+        setWindowTitle("No polygons to analyze");
+        return;
+    }
+
+    QPolygonF pol = polygons.back();
 
     short res = Algorithms::analyzeRayCrossing(q, pol);
 
-    //show results
-    if(res == 0)
+    if (res == 0)
         setWindowTitle("Outside");
-    else if(res == 1)
+    else if (res == 1)
         setWindowTitle("Inside");
-    else if(res == 2)
+    else if (res == 2)
         setWindowTitle("Point is on the edge");
-    else if(res == 3)
+    else if (res == 3)
         setWindowTitle("Point is on the vertex");
     else
         setWindowTitle("Something went wrong");
 }
-
 
 void MainForm::on_actionWinding_Number_triggered()
 {
     // Run winding number algorithm
     QPointF q = ui->Canvas->getQ();
-    QPolygonF pol = ui->Canvas->getPol();
+    const std::vector<QPolygonF>& polygons = ui->Canvas->getPolygons();
+
+    if (polygons.empty())
+    {
+        setWindowTitle("No polygons to analyze");
+        return;
+    }
+
+    QPolygonF pol = polygons.back();
 
     short res = Algorithms::analyzeWindingNumber(q, pol);
 
-    //show results
-    if(res == 0)
+    if (res == 0)
         setWindowTitle("Outside");
-    else if(res == 1)
+    else if (res == 1)
         setWindowTitle("Inside");
-    else if(res == 2)
+    else if (res == 2)
         setWindowTitle("Point is on the edge");
-    else if(res == 3)
+    else if (res == 3)
         setWindowTitle("Point is on the vertex");
     else
         setWindowTitle("Something went wrong");
 }
-
 
 void MainForm::on_actionOpen_triggered()
 {

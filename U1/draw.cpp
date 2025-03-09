@@ -1,5 +1,4 @@
 #include "draw.h"
-#include <QWidget>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QFile>
@@ -8,17 +7,25 @@
 #include <QMessageBox>
 
 Draw::Draw(QWidget *parent)
-    : QWidget{parent}
+    : QWidget{parent}, add_point{false}
 {
     q.setX(0);
     q.setY(0);
-    add_point = false;
-
 }
-
 
 void Draw::mousePressEvent(QMouseEvent *e)
 {
+    if (e->type() == QEvent::MouseButtonDblClick)
+    {
+        if (!currentPolygon.isEmpty())
+        {
+            polygons.push_back(currentPolygon); // Přidejte aktuální polygon do vektoru
+            currentPolygon.clear(); // Vymažte aktuální polygon
+        }
+        repaint(); // Překreslete obrazovku
+        return;
+    }
+
     //Add point to polygon
 
     //Get x, y coordinates
@@ -36,17 +43,13 @@ void Draw::mousePressEvent(QMouseEvent *e)
     //add point to polygon
     else
     {
-        //Create point
         QPointF p(x, y);
-
-        //Add point to polygon
-        pol.push_back(p);
+        currentPolygon.push_back(p);
     }
 
     //Repaint screen
     repaint();
 }
-
 
 void Draw::paintEvent(QPaintEvent *event)
 {
@@ -60,13 +63,19 @@ void Draw::paintEvent(QPaintEvent *event)
     painter.setPen(Qt::GlobalColor::red);
     painter.setBrush(Qt::GlobalColor::yellow);
 
-    //Begin draw
-    painter.drawPolygon(pol);
+    // Draw all stored polygons
+    for (const auto& polygon : polygons)
+    {
+        painter.drawPolygon(polygon);
+    }
+
+    // Draw actual polygon
+    painter.drawPolygon(currentPolygon);
 
     //Set graphic attributes, point
     painter.setPen(Qt::GlobalColor::black);
     painter.setBrush(Qt::GlobalColor::blue);
-    int r = 5; // size of point in pixels
+    int r = 5; // velikost bodu v pixelech
 
     //Begin draw
     painter.drawEllipse(q.x()-r, q.y()-r, 2*r, 2*r);
@@ -91,7 +100,7 @@ void Draw::loadPolygonFromFile(const QString &fileName)
     }
 
     QTextStream in(&file);
-    pol.clear(); // Clear the existing polygon
+    currentPolygon.clear(); // Clear the actual polygon
 
     while (!in.atEnd())
     {
@@ -104,7 +113,7 @@ void Draw::loadPolygonFromFile(const QString &fileName)
             double y = coordinates[1].toDouble(&ok2);
             if (ok1 && ok2)
             {
-                pol.append(QPointF(x, y));
+                currentPolygon.append(QPointF(x, y));
             }
         }
     }
