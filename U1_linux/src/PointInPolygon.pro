@@ -29,9 +29,12 @@ HEADERS += \
 FORMS += \
     mainform.ui
 
-INCLUDEPATH += /usr/include/gdal
+INCLUDEPATH += C:/Users/kovar/Desktop/gdal3102/gdal-3.10.2/include
+INCLUDEPATH += C:/Users/kovar/Desktop/gdal3102/gdal-3.10.2/ogr
+INCLUDEPATH += C:/Users/kovar/Desktop/gdal3102/gdal-3.10.2/ogr/ogrsf_frmts
+INCLUDEPATH += C:/Users/kovar/Desktop/gdal3102/gdal-3.10.2/port
 
-LIBS += -lgdal
+LIBS += -LC:/Users/kovar/Desktop/gdal3102/gdal-3.10.2/lib -lgdal_i
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

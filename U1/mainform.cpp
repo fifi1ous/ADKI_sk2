@@ -34,10 +34,16 @@ void MainForm::on_actionRay_Crossing_triggered()
     short res = Algorithms::analyzeRayCrossing(q, pol);
 
     //show results
-    if(res == 1)
-        setWindowTitle("Inside");
-    else
+    if(res == 0)
         setWindowTitle("Outside");
+    else if(res == 1)
+        setWindowTitle("Inside");
+    else if(res == 2)
+        setWindowTitle("Point is on the edge");
+    else if(res == 3)
+        setWindowTitle("Point is on the vertex");
+    else
+        setWindowTitle("Something went wrong");
 }
 
 
@@ -50,10 +56,16 @@ void MainForm::on_actionWinding_Number_triggered()
     short res = Algorithms::analyzeWindingNumber(q, pol);
 
     //show results
-    if(res == 1)
-        setWindowTitle("Inside");
-    else
+    if(res == 0)
         setWindowTitle("Outside");
+    else if(res == 1)
+        setWindowTitle("Inside");
+    else if(res == 2)
+        setWindowTitle("Point is on the edge");
+    else if(res == 3)
+        setWindowTitle("Point is on the vertex");
+    else
+        setWindowTitle("Something went wrong");
 }
 
 
