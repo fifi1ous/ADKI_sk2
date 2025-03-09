@@ -32,7 +32,7 @@ short Algorithms::analyzeRayCrossing(const QPointF &q, const QPolygonF &pol)
             return singularityCheck;
         }
     }
-return k % 2;
+    return k % 2;
 }
 
 short Algorithms::analyzeWindingNumber(const QPointF &q, const QPolygonF &pol)

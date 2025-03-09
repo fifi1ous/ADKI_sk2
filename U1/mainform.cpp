@@ -77,4 +77,3 @@ void MainForm::on_actionOpen_triggered()
         ui->Canvas->loadPolygonFromFile(fileName);
     }
 }
-
