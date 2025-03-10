@@ -93,4 +93,3 @@ void MainForm::on_actionClear_data_triggered()
 {
     ui->Canvas->clearPolygons();
 }
-

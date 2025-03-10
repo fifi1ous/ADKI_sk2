@@ -19,10 +19,10 @@ void Draw::mousePressEvent(QMouseEvent *e)
     {
         if (!currentPolygon.isEmpty())
         {
-            polygons.push_back(currentPolygon); // Přidejte aktuální polygon do vektoru
-            currentPolygon.clear(); // Vymažte aktuální polygon
+            polygons.push_back(currentPolygon); // Add actual polygon to the vector
+            currentPolygon.clear(); // Clear actual polygon
         }
-        repaint(); // Překreslete obrazovku
+        repaint(); // Repaint screan
         return;
     }
 
@@ -86,6 +86,13 @@ void Draw::paintEvent(QPaintEvent *event)
 
 void Draw::switch_source()
 {
+    // Save the current polygon to the vector before switching
+    if (!currentPolygon.isEmpty())
+    {
+        polygons.push_back(currentPolygon);
+        currentPolygon.clear();
+    }
+
     //input q or polygon vertex
     add_point = !add_point;
 }
