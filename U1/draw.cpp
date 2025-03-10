@@ -100,24 +100,51 @@ void Draw::loadPolygonFromFile(const QString &fileName)
     }
 
     QTextStream in(&file);
+    // Clearing the canvas before new polygons are loaded
+    polygons.clear(); // Clear the existing polygons
     currentPolygon.clear(); // Clear the actual polygon
 
     while (!in.atEnd())
     {
         QString line = in.readLine();
-        QStringList coordinates = line.split(",");
-        if (coordinates.size() == 2)
+        if (line.isEmpty())
         {
-            bool ok1, ok2;
-            double x = coordinates[0].toDouble(&ok1);
-            double y = coordinates[1].toDouble(&ok2);
-            if (ok1 && ok2)
+            // If the line is empty, it indicates the end of a polygon
+            if (!currentPolygon.isEmpty())
             {
-                currentPolygon.append(QPointF(x, y));
+                polygons.push_back(currentPolygon);
+                currentPolygon.clear();
+            }
+        }
+        else
+        {
+            QStringList coordinates = line.split(",");
+            if (coordinates.size() == 2)
+            {
+                bool ok1, ok2;
+                double x = coordinates[0].toDouble(&ok1);
+                double y = coordinates[1].toDouble(&ok2);
+                if (ok1 && ok2)
+                {
+                    currentPolygon.append(QPointF(x, y));
+                }
             }
         }
     }
 
+    // Add the last polygon if not empty
+    if (!currentPolygon.isEmpty())
+    {
+        polygons.push_back(currentPolygon);
+    }
+
     file.close();
-    repaint(); // Repaint the widget to show the new polygon
+    repaint(); // Repaint the widget to show the new polygons
+}
+
+void Draw::clearPolygons()
+{
+    polygons.clear();
+    currentPolygon.clear();
+    repaint();
 }

@@ -88,3 +88,9 @@ void MainForm::on_actionOpen_triggered()
         ui->Canvas->loadPolygonFromFile(fileName);
     }
 }
+
+void MainForm::on_actionClear_data_triggered()
+{
+    ui->Canvas->clearPolygons();
+}
+

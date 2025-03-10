@@ -24,6 +24,7 @@ public:
     void loadPolygonFromFile(const QString &fileName);
     QPointF getQ() const { return q; }
     const std::vector<QPolygonF>& getPolygons() const { return polygons; }
+    void clearPolygons();
 
 signals:
 };

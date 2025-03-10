@@ -26,6 +26,8 @@ private slots:
 
     void on_actionOpen_triggered();
 
+    void on_actionClear_data_triggered();
+
 private:
     Ui::MainForm *ui;
 };
