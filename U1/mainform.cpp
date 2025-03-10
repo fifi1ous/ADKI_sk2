@@ -36,20 +36,28 @@ void MainForm::on_actionRay_Crossing_triggered()
         return;
     }
 
-    QPolygonF pol = polygons.back();
 
-    short res = Algorithms::analyzeRayCrossing(q, pol);
+    for (size_t i = 0; i < polygons.size(); ++i)
+    {
+        short res = Algorithms::analyzeWindingNumber(q, polygons[i]);
 
-    if (res == 0)
-        setWindowTitle("Outside");
-    else if (res == 1)
-        setWindowTitle("Inside");
-    else if (res == 2)
-        setWindowTitle("Point is on the edge");
-    else if (res == 3)
-        setWindowTitle("Point is on the vertex");
-    else
-        setWindowTitle("Something went wrong");
+        if (res == 0)
+            setWindowTitle("Outside");
+        else if (res == 1)
+            setWindowTitle("Inside");
+        else if (res == 2)
+            setWindowTitle("Point is on the edge");
+        else if (res == 3)
+            setWindowTitle("Point is on the vertex");
+        else
+            setWindowTitle("Something went wrong");
+
+        if (res > 0)
+        {
+            // Swap colors
+        }
+    }
+    // Repaint the canvas to reflect the changes
 }
 
 void MainForm::on_actionWinding_Number_triggered()
@@ -64,20 +72,28 @@ void MainForm::on_actionWinding_Number_triggered()
         return;
     }
 
-    QPolygonF pol = polygons.back();
 
-    short res = Algorithms::analyzeWindingNumber(q, pol);
+    for (size_t i = 0; i < polygons.size(); ++i)
+    {
+        short res = Algorithms::analyzeWindingNumber(q, polygons[i]);
 
-    if (res == 0)
-        setWindowTitle("Outside");
-    else if (res == 1)
-        setWindowTitle("Inside");
-    else if (res == 2)
-        setWindowTitle("Point is on the edge");
-    else if (res == 3)
-        setWindowTitle("Point is on the vertex");
-    else
-        setWindowTitle("Something went wrong");
+        if (res == 0)
+            setWindowTitle("Outside");
+        else if (res == 1)
+            setWindowTitle("Inside");
+        else if (res == 2)
+            setWindowTitle("Point is on the edge");
+        else if (res == 3)
+            setWindowTitle("Point is on the vertex");
+        else
+            setWindowTitle("Something went wrong");
+
+        if (res > 0)
+        {
+            // Swap colors
+        }
+    }
+    // Repaint the canvas to reflect the changes
 }
 
 void MainForm::on_actionOpen_triggered()
