@@ -1,4 +1,6 @@
 #include "algorithms.h"
+#include "sortpointsbyx.h"
+#include "sortpointsbyy.h"
 #include <cmath>
 
 short Algorithms::analyzeRayCrossing(const QPointF &q, const QPolygonF &pol)
@@ -134,4 +136,31 @@ short Algorithms::checkSingularities(const QPointF &q, const QPolygonF &pol, int
     }
 
     return -1; // No singularity
+}
+
+bool Algorithms::minMaxBox(const QPointF &q, const QPolygonF &pol)
+{
+    // Aproximation if the point is in the min-max box
+    QPolygonF mmbox;
+
+    // Get extreme points
+    QPointF pymin = *std::min_element(pol.begin(), pol.end(), sortPointsByY());
+    QPointF pymax = *std::max_element(pol.begin(), pol.end(), sortPointsByY());
+
+    QPointF pxmin = *std::min_element(pol.begin(), pol.end(), sortPointsByX());
+    QPointF pxmax = *std::max_element(pol.begin(), pol.end(), sortPointsByX());
+
+    // Get extreme coordinates
+    double xmin = pxmin.x();
+    double ymin = pymin.y();
+
+    double xmax = pxmax.x();
+    double ymax = pymax.y();
+
+    // Get coordinates of the point
+    double px = q.x();
+    double py = q.y();
+
+    // Check if the point is inside the minimum bounding box
+    return (px >= xmin && px <= xmax && py >= ymin && py <= ymax);
 }
