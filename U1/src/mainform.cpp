@@ -36,28 +36,48 @@ void MainForm::on_actionRay_Crossing_triggered()
         return;
     }
 
+    bool inside = false;
+    bool edge = false;
+    bool vertex = false;
 
     for (size_t i = 0; i < polygons.size(); ++i)
     {
-        short res = Algorithms::analyzeWindingNumber(q, polygons[i]);
+        short res = Algorithms::analyzeRayCrossing(q, polygons[i]);
 
-        if (res == 0)
-            setWindowTitle("Outside");
-        else if (res == 1)
-            setWindowTitle("Inside");
-        else if (res == 2)
-            setWindowTitle("Point is on the edge");
-        else if (res == 3)
-            setWindowTitle("Point is on the vertex");
-        else
+        // Cases of poin position
+        switch (res)
+        {
+        case 1:
+            inside = true;
+            break;
+        case 2:
+            edge = true;
+            break;
+        case 3:
+            vertex = true;
+            break;
+        case 0:
+            break;
+        default:
             setWindowTitle("Something went wrong");
+            return;
+        }
 
         if (res > 0)
         {
             // Swap colors
         }
     }
-    // Repaint the canvas to reflect the changes
+
+    // Print of results for all polygon
+    if (inside)
+        setWindowTitle("Inside");
+    else if (edge)
+        setWindowTitle("Point is on the edge");
+    else if (vertex)
+        setWindowTitle("Point is on the vertex");
+    else
+        setWindowTitle("Outside");
 }
 
 void MainForm::on_actionWinding_Number_triggered()
@@ -72,28 +92,48 @@ void MainForm::on_actionWinding_Number_triggered()
         return;
     }
 
+    bool inside = false;
+    bool edge = false;
+    bool vertex = false;
 
     for (size_t i = 0; i < polygons.size(); ++i)
     {
         short res = Algorithms::analyzeWindingNumber(q, polygons[i]);
 
-        if (res == 0)
-            setWindowTitle("Outside");
-        else if (res == 1)
-            setWindowTitle("Inside");
-        else if (res == 2)
-            setWindowTitle("Point is on the edge");
-        else if (res == 3)
-            setWindowTitle("Point is on the vertex");
-        else
+        // Cases of poin position
+        switch (res)
+        {
+        case 1:
+            inside = true;
+            break;
+        case 2:
+            edge = true;
+            break;
+        case 3:
+            vertex = true;
+            break;
+        case 0:
+            break;
+        default:
             setWindowTitle("Something went wrong");
+            return;
+        }
 
         if (res > 0)
         {
             // Swap colors
         }
     }
-    // Repaint the canvas to reflect the changes
+
+    // Print of results for all polygon
+    if (inside)
+        setWindowTitle("Inside");
+    else if (edge)
+        setWindowTitle("Point is on the edge");
+    else if (vertex)
+        setWindowTitle("Point is on the vertex");
+    else
+        setWindowTitle("Outside");
 }
 
 void MainForm::on_actionOpen_triggered()

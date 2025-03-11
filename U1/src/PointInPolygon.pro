@@ -16,6 +16,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ../lib/dbfopen.cpp \
+    ../lib/shpopen.cpp \
+    ../lib/shptree.cpp \
     algorithms.cpp \
     draw.cpp \
     main.cpp \
@@ -24,6 +27,7 @@ SOURCES += \
     sortpointsbyy.cpp
 
 HEADERS += \
+    ../lib/shapefil.h \
     algorithms.h \
     draw.h \
     mainform.h \

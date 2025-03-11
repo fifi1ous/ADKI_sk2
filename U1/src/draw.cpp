@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QFileDialog>
 #include <QMessageBox>
+#include "../lib/shapefil.h"
 
 Draw::Draw(QWidget *parent)
     : QWidget{parent}, add_point{false}
