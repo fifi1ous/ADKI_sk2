@@ -147,5 +147,18 @@ void MainForm::on_actionOpen_triggered()
 
 void MainForm::on_actionClear_data_triggered()
 {
-    ui->Canvas->clearPolygons();
+    setWindowTitle("Analyze point and polygon position");
 }
+
+void MainForm::on_actionClear_all_triggered()
+{
+    ui->Canvas->clearPolygons();
+    setWindowTitle("Analyze point and polygon position");
+}
+
+
+void MainForm::on_actionExit_triggered()
+{
+    QApplication::quit();
+}
+
