@@ -54,23 +54,27 @@ void Draw::mousePressEvent(QMouseEvent *e)
 
 void Draw::paintEvent(QPaintEvent *event)
 {
-    //Draw
     QPainter painter(this);
-
-    //Create object for drawing
-    painter.begin(this);
-
-    //Set graphic attributes, polygon
-    painter.setPen(Qt::GlobalColor::red);
-    painter.setBrush(Qt::GlobalColor::yellow);
 
     // Draw all stored polygons
     for (const auto& polygon : polygons)
     {
+        painter.setPen(Qt::GlobalColor::red);
+        painter.setBrush(Qt::GlobalColor::yellow);
+        painter.drawPolygon(polygon);
+    }
+
+    // Draw selected polygons with swapped colors
+    for (const auto& polygon : selectedPolygons)
+    {
+        painter.setPen(Qt::GlobalColor::yellow);
+        painter.setBrush(Qt::GlobalColor::red);
         painter.drawPolygon(polygon);
     }
 
     // Draw actual polygon
+    painter.setPen(Qt::GlobalColor::red);
+    painter.setBrush(Qt::GlobalColor::yellow);
     painter.drawPolygon(currentPolygon);
 
     //Set graphic attributes, point
@@ -155,4 +159,16 @@ void Draw::clearPolygons()
     polygons.clear();
     currentPolygon.clear();
     repaint();
+}
+
+void Draw::addSelectedPolygon(const QPolygonF& polygon)
+{
+    selectedPolygons.push_back(polygon);
+    repaint(); // Repaint the widget to show the selected polygons
+}
+
+void Draw::clearSelectedPolygons()
+{
+    selectedPolygons.clear();
+    repaint(); // Repaint the widget to clear the selected polygons
 }

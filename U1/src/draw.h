@@ -14,6 +14,7 @@ private:
     QPointF q;
     QPolygonF currentPolygon;
     std::vector<QPolygonF> polygons;
+    std::vector<QPolygonF> selectedPolygons;
     bool add_point;
 
 public:
@@ -25,6 +26,8 @@ public:
     QPointF getQ() const { return q; }
     const std::vector<QPolygonF>& getPolygons() const { return polygons; }
     void clearPolygons();
+    void addSelectedPolygon(const QPolygonF& polygon);
+    void clearSelectedPolygons();
 
 signals:
 };

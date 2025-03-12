@@ -40,6 +40,9 @@ void MainForm::on_actionRay_Crossing_triggered()
     bool edge = false;
     bool vertex = false;
 
+    // Clear previous selections
+    ui->Canvas->clearSelectedPolygons();
+
     for (size_t i = 0; i < polygons.size(); ++i)
     {
         short res = Algorithms::analyzeRayCrossing(q, polygons[i]);
@@ -65,7 +68,7 @@ void MainForm::on_actionRay_Crossing_triggered()
 
         if (res > 0)
         {
-            // Swap colors
+            ui->Canvas->addSelectedPolygon(polygons[i]);
         }
     }
 
@@ -96,6 +99,9 @@ void MainForm::on_actionWinding_Number_triggered()
     bool edge = false;
     bool vertex = false;
 
+    // Clear previous selections
+    ui->Canvas->clearSelectedPolygons();
+
     for (size_t i = 0; i < polygons.size(); ++i)
     {
         short res = Algorithms::analyzeWindingNumber(q, polygons[i]);
@@ -121,7 +127,7 @@ void MainForm::on_actionWinding_Number_triggered()
 
         if (res > 0)
         {
-            // Swap colors
+            ui->Canvas->addSelectedPolygon(polygons[i]);
         }
     }
 
@@ -148,12 +154,16 @@ void MainForm::on_actionOpen_triggered()
 void MainForm::on_actionClear_data_triggered()
 {
     setWindowTitle("Analyze point and polygon position");
+    ui->Canvas->clearSelectedPolygons();
+    ui->Canvas->repaint();
 }
 
 void MainForm::on_actionClear_all_triggered()
 {
-    ui->Canvas->clearPolygons();
     setWindowTitle("Analyze point and polygon position");
+    ui->Canvas->clearSelectedPolygons();
+    ui->Canvas->clearPolygons();
+    ui->Canvas->repaint();
 }
 
 
@@ -161,4 +171,3 @@ void MainForm::on_actionExit_triggered()
 {
     QApplication::quit();
 }
-
