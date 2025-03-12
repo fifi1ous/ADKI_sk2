@@ -171,3 +171,12 @@ void MainForm::on_actionExit_triggered()
 {
     QApplication::quit();
 }
+
+void MainForm::on_actionShapefile_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, "Otevřít Shapefile", "", "Shapefile (*.shp);;All Files (*)");
+    if (!fileName.isEmpty())
+    {
+        ui->Canvas->loadPolygonFromShapefile(fileName);
+    }
+}

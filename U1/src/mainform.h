@@ -32,6 +32,8 @@ private slots:
 
     void on_actionExit_triggered();
 
+    void on_actionShapefile_triggered();
+
 private:
     Ui::MainForm *ui;
 };

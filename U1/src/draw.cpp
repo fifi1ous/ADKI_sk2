@@ -172,3 +172,41 @@ void Draw::clearSelectedPolygons()
     selectedPolygons.clear();
     repaint(); // Repaint the widget to clear the selected polygons
 }
+
+void Draw::loadPolygonFromShapefile(const QString &fileName)
+{
+    SHPHandle hSHP = SHPOpen(fileName.toStdString().c_str(), "rb");
+    if (hSHP == nullptr)
+    {
+        QMessageBox::warning(this, "Error", "Cannot open shapefile.");
+        return;
+    }
+
+    int nEntities, nShapeType;
+    SHPGetInfo(hSHP, &nEntities, &nShapeType, nullptr, nullptr);
+
+    polygons.clear();
+
+    for (int i = 0; i < nEntities; ++i)
+    {
+        SHPObject *psShape = SHPReadObject(hSHP, i);
+        if (psShape == nullptr)
+        {
+            continue;
+        }
+
+        QPolygonF polygon;
+        for (int j = 0; j < psShape->nVertices; ++j)
+        {
+            polygon.append(QPointF(psShape->padfX[j], psShape->padfY[j]));
+        }
+
+        polygons.push_back(polygon);
+        SHPDestroyObject(psShape);
+    }
+
+    SHPClose(hSHP);
+
+    isShapefileLoaded = true;
+    repaint();
+}
