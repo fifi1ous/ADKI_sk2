@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Analyze point and polyhon position</string>
+   <string>Analyze point and polygon position</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -43,6 +43,7 @@
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
+    <addaction name="actionShapefile"/>
    </widget>
    <widget class="QMenu" name="menuInput">
     <property name="title">
@@ -86,6 +87,7 @@
    <addaction name="actionClear_all"/>
    <addaction name="separator"/>
    <addaction name="actionExit"/>
+   <addaction name="actionShapefile"/>
   </widget>
   <action name="actionOpen">
    <property name="icon">
@@ -169,6 +171,11 @@
    </property>
    <property name="toolTip">
     <string>Clear all data and results</string>
+   </property>
+  </action>
+  <action name="actionShapefile">
+   <property name="text">
+    <string>Shapefile</string>
    </property>
   </action>
  </widget>

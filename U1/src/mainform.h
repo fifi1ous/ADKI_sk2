@@ -28,6 +28,12 @@ private slots:
 
     void on_actionClear_data_triggered();
 
+    void on_actionClear_all_triggered();
+
+    void on_actionExit_triggered();
+
+    void on_actionShapefile_triggered();
+
 private:
     Ui::MainForm *ui;
 };
