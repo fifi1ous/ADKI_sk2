@@ -175,38 +175,96 @@ void Draw::clearSelectedPolygons()
 
 void Draw::loadPolygonFromShapefile(const QString &fileName)
 {
+    qDebug() << "Starting shapefile loading: " << fileName;
+
+    // Open the shapefile
     SHPHandle hSHP = SHPOpen(fileName.toStdString().c_str(), "rb");
     if (hSHP == nullptr)
     {
         QMessageBox::warning(this, "Error", "Cannot open shapefile.");
+        qDebug() << "ERROR: Failed to open shapefile " << fileName;
         return;
     }
 
     int nEntities, nShapeType;
-    SHPGetInfo(hSHP, &nEntities, &nShapeType, nullptr, nullptr);
+    double adfMinBound[4], adfMaxBound[4]; // Bounding box
+    SHPGetInfo(hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound);
+    qDebug() << "Number of entities: " << nEntities << ", Shape type: " << nShapeType;
 
+    if (nEntities == 0)
+    {
+        QMessageBox::warning(this, "Warning", "Shapefile contains no data.");
+        SHPClose(hSHP);
+        return;
+    }
+
+    // Clear previous polygons
     polygons.clear();
+    currentPolygon.clear();
+
+    // Bounding box (minimum and maximum coordinates)
+    double minX = adfMinBound[0];
+    double maxX = adfMaxBound[0];
+    double minY = adfMinBound[1];
+    double maxY = adfMaxBound[1];
+
+    qDebug() << "Bounding box: (" << minX << ", " << minY << ") -> (" << maxX << ", " << maxY << ")";
+
+    // Get widget dimensions
+    double widgetWidth = width();
+    double widgetHeight = height();
+
+    // Calculate uniform scaling factor to maintain aspect ratio
+    double scale = std::min(widgetWidth / (maxX - minX), widgetHeight / (maxY - minY));
+
+    // Calculate translation offsets to center the polygons
+    double offsetX = (widgetWidth - (maxX - minX) * scale) / 2 - minX * scale;
+    double offsetY = (widgetHeight - (maxY - minY) * scale) / 2 + maxY * scale; // Invert Y-axis
 
     for (int i = 0; i < nEntities; ++i)
     {
         SHPObject *psShape = SHPReadObject(hSHP, i);
         if (psShape == nullptr)
         {
+            qDebug() << "Unable to load shapefile object with index " << i;
             continue;
         }
 
-        QPolygonF polygon;
-        for (int j = 0; j < psShape->nVertices; ++j)
+        currentPolygon.clear();
+        qDebug() << "Object " << i << ": Number of vertices = " << psShape->nVertices;
+
+        if (psShape->nVertices == 0)
         {
-            polygon.append(QPointF(psShape->padfX[j], psShape->padfY[j]));
+            qDebug() << "Object " << i << " contains no vertices!";
+            SHPDestroyObject(psShape);
+            continue;
         }
 
-        polygons.push_back(polygon);
+        for (int j = 0; j < psShape->nVertices; ++j)
+        {
+            double x = psShape->padfX[j];
+            double y = psShape->padfY[j];
+
+            // Apply uniform scaling and translation
+            double transformedX = x * scale + offsetX;
+            double transformedY = -y * scale + offsetY; // Invert Y-axis
+
+            currentPolygon.append(QPointF(transformedX, transformedY));
+            qDebug() << "Point " << j << ": (" << x << ", " << y << ") → Transformed to (" << transformedX << ", " << transformedY << ")";
+        }
+
+        // Store the polygon and clear the temporary one
+        polygons.push_back(currentPolygon);
+        currentPolygon.clear();
+
         SHPDestroyObject(psShape);
     }
 
     SHPClose(hSHP);
+    qDebug() << "Shapefile loading complete!";
 
     isShapefileLoaded = true;
-    repaint();
+
+    qDebug() << "Redrawing widget...";
+    update();  // update() is preferred over repaint()
 }
