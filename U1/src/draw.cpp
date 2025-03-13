@@ -175,21 +175,18 @@ void Draw::clearSelectedPolygons()
 
 void Draw::loadPolygonFromShapefile(const QString &fileName)
 {
-    qDebug() << "Starting shapefile loading: " << fileName;
 
     // Open the shapefile
     SHPHandle hSHP = SHPOpen(fileName.toStdString().c_str(), "rb");
     if (hSHP == nullptr)
     {
         QMessageBox::warning(this, "Error", "Cannot open shapefile.");
-        qDebug() << "ERROR: Failed to open shapefile " << fileName;
         return;
     }
 
     int nEntities, nShapeType;
     double adfMinBound[4], adfMaxBound[4]; // Bounding box
     SHPGetInfo(hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound);
-    qDebug() << "Number of entities: " << nEntities << ", Shape type: " << nShapeType;
 
     if (nEntities == 0)
     {
@@ -208,8 +205,6 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
     double minY = adfMinBound[1];
     double maxY = adfMaxBound[1];
 
-    qDebug() << "Bounding box: (" << minX << ", " << minY << ") -> (" << maxX << ", " << maxY << ")";
-
     // Get widget dimensions
     double widgetWidth = width();
     double widgetHeight = height();
@@ -226,16 +221,13 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
         SHPObject *psShape = SHPReadObject(hSHP, i);
         if (psShape == nullptr)
         {
-            qDebug() << "Unable to load shapefile object with index " << i;
             continue;
         }
 
         currentPolygon.clear();
-        qDebug() << "Object " << i << ": Number of vertices = " << psShape->nVertices;
 
         if (psShape->nVertices == 0)
         {
-            qDebug() << "Object " << i << " contains no vertices!";
             SHPDestroyObject(psShape);
             continue;
         }
@@ -250,7 +242,6 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
             double transformedY = -y * scale + offsetY; // Invert Y-axis
 
             currentPolygon.append(QPointF(transformedX, transformedY));
-            qDebug() << "Point " << j << ": (" << x << ", " << y << ") → Transformed to (" << transformedX << ", " << transformedY << ")";
         }
 
         // Store the polygon and clear the temporary one
@@ -261,10 +252,8 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
     }
 
     SHPClose(hSHP);
-    qDebug() << "Shapefile loading complete!";
 
     isShapefileLoaded = true;
 
-    qDebug() << "Redrawing widget...";
-    update();  // update() is preferred over repaint()
+    repaint();
 }
