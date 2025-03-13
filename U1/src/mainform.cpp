@@ -36,6 +36,7 @@ void MainForm::on_actionRay_Crossing_triggered()
         return;
     }
 
+
     bool inside = false;
     bool edge = false;
     bool vertex = false;
@@ -45,30 +46,33 @@ void MainForm::on_actionRay_Crossing_triggered()
 
     for (size_t i = 0; i < polygons.size(); ++i)
     {
-        short res = Algorithms::analyzeRayCrossing(q, polygons[i]);
-
-        // Cases of poin position
-        switch (res)
+        if (Algorithms::minMaxBox(q, polygons[i]))
         {
-        case 1:
-            inside = true;
-            break;
-        case 2:
-            edge = true;
-            break;
-        case 3:
-            vertex = true;
-            break;
-        case 0:
-            break;
-        default:
-            setWindowTitle("Something went wrong");
-            return;
-        }
+            short res = Algorithms::analyzeRayCrossing(q, polygons[i]);
 
-        if (res > 0)
-        {
-            ui->Canvas->addSelectedPolygon(polygons[i]);
+            // Cases of poin position
+            switch (res)
+            {
+            case 1:
+                inside = true;
+                break;
+            case 2:
+                edge = true;
+                break;
+            case 3:
+                vertex = true;
+                break;
+            case 0:
+                break;
+            default:
+                setWindowTitle("Something went wrong");
+                return;
+            }
+
+            if (res > 0)
+            {
+                ui->Canvas->addSelectedPolygon(polygons[i]);
+            }
         }
     }
 
@@ -104,30 +108,33 @@ void MainForm::on_actionWinding_Number_triggered()
 
     for (size_t i = 0; i < polygons.size(); ++i)
     {
-        short res = Algorithms::analyzeWindingNumber(q, polygons[i]);
-
-        // Cases of poin position
-        switch (res)
+        if (Algorithms::minMaxBox(q, polygons[i]))
         {
-        case 1:
-            inside = true;
-            break;
-        case 2:
-            edge = true;
-            break;
-        case 3:
-            vertex = true;
-            break;
-        case 0:
-            break;
-        default:
-            setWindowTitle("Something went wrong");
-            return;
-        }
+            short res = Algorithms::analyzeWindingNumber(q, polygons[i]);
 
-        if (res > 0)
-        {
-            ui->Canvas->addSelectedPolygon(polygons[i]);
+            // Cases of poin position
+            switch (res)
+            {
+            case 1:
+                inside = true;
+                break;
+            case 2:
+                edge = true;
+                break;
+            case 3:
+                vertex = true;
+                break;
+            case 0:
+                break;
+            default:
+                setWindowTitle("Something went wrong");
+                return;
+            }
+
+            if (res > 0)
+            {
+                ui->Canvas->addSelectedPolygon(polygons[i]);
+            }
         }
     }
 
