@@ -151,10 +151,21 @@ void MainForm::on_actionWinding_Number_triggered()
 
 void MainForm::on_actionOpen_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, "Open Polygon File", "", "Text Files (*.txt);;All Files (*)");
+    QString fileName = QFileDialog::getOpenFileName(this, "Open Polygon File", "", "Text Files (*.txt);;Shapefile (*.shp);;All Files (*)");
     if (!fileName.isEmpty())
     {
-        ui->Canvas->loadPolygonFromFile(fileName);
+        if (fileName.endsWith(".txt"))
+        {
+            ui->Canvas->loadPolygonFromFile(fileName);
+        }
+        else if (fileName.endsWith(".shp"))
+        {
+            ui->Canvas->loadPolygonFromShapefile(fileName);
+        }
+        else
+        {
+            QMessageBox::warning(this, "Error", "Unsupported file format.");
+        }
     }
 }
 
@@ -173,17 +184,8 @@ void MainForm::on_actionClear_all_triggered()
     ui->Canvas->repaint();
 }
 
-
 void MainForm::on_actionExit_triggered()
 {
     QApplication::quit();
 }
 
-void MainForm::on_actionShapefile_triggered()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, "Otevřít Shapefile", "", "Shapefile (*.shp);;All Files (*)");
-    if (!fileName.isEmpty())
-    {
-        ui->Canvas->loadPolygonFromShapefile(fileName);
-    }
-}
