@@ -28,6 +28,7 @@ SOURCES += \
 
 HEADERS += \
     ../lib/shapefil.h \
+    Polygon.h \
     algorithms.h \
     draw.h \
     mainform.h \
