@@ -144,11 +144,14 @@ void Draw::paintEvent(QPaintEvent *event)
     }
 
     // Draw selected polygons with swapped colors
-    for (const auto& polygon : selectedPolygons)
+    for (int i = 0;i < selected.size();i++)
     {
-        painter.setPen(Qt::GlobalColor::yellow);
-        painter.setBrush(Qt::GlobalColor::red);
-        painter.drawPolygon(polygon);
+        if (selected[i])
+        {
+            painter.setPen(Qt::GlobalColor::yellow);
+            painter.setBrush(Qt::GlobalColor::red);
+            painter.drawPath(polygonsWH[i]);
+        }
     }
 
     // Draw actual polygon and its holes
@@ -312,15 +315,15 @@ void Draw::clearPolygons()
     repaint();
 }
 
-void Draw::addSelectedPolygon(const QPolygonF& polygon)
+void Draw::addSelectedPolygon(const bool& selection)
 {
-    selectedPolygons.push_back(polygon);
+    selected.push_back(selection);
     repaint(); // Repaint the widget to show the selected polygons
 }
 
 void Draw::clearSelectedPolygons()
 {
-    selectedPolygons.clear();
+    selected.clear();
     repaint(); // Repaint the widget to clear the selected polygons
 }
 

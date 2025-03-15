@@ -22,6 +22,7 @@ private:
     std::vector<QPolygonF> polygons;
     std::vector<QPolygonF> selectedPolygons;
     std::vector<QPainterPath> polygonsWH;
+    std::vector<bool> selected;
     std::vector<QPainterPath> selectedPolygonsWH;
     std::vector<Polygon_> polygonComplex;
     bool add_point;
@@ -37,9 +38,9 @@ public:
     void loadPolygonFromFile(const QString &fileName);
     void loadPolygonFromShapefile(const QString &fileName);
     QPointF getQ() const { return q; }
-    const std::vector<QPolygonF>& getPolygons() const { return polygons; }
+    const std::vector<Polygon_>& getPolygons() const { return polygonComplex; }
     void clearPolygons();
-    void addSelectedPolygon(const QPolygonF& polygon);
+    void addSelectedPolygon(const bool& selection);
     void clearSelectedPolygons();
 private:
     void mousePressEventLeft(QMouseEvent *e);
