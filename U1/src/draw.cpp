@@ -17,29 +17,42 @@ Draw::Draw(QWidget *parent)
 
 void Draw::mousePressEvent(QMouseEvent *e)
 {
+    // Checks which button was pressed
     if (e->button() == Qt::LeftButton)
     {
+        // Check if the current polygon for drawing is empty
         if (!curentPolygonWH.isEmpty())
         {
+            // If yes and we want to add another add i to the vector of polygons
             polygonComplex.push_back(curentCPolygon);
+            // Clear outer section and hole section of current polygon
             curentCPolygon.outer.clear();
             curentCPolygon.holes.clear();
         }
 
+        // Adds the current polygon for drawing to the vector of drawable polygons
         polygonsWH.push_back(curentPolygonWH);
+        // Clear current drawable polygon
         curentPolygonWH.clear();
+        // Clear current hole - if user makes up his mind
         currentHole.clear();
+        // Changes the status of polygon
+        isPolygonReady = false;
+        // Polygon
         mousePressEventLeft(e);
 
     }else if (e->button() == Qt::RightButton)
     {
+        // Checks if there is polygon where can be added a hole
         if(!isPolygonReady || !currentPolygon.isEmpty())
         {
+            // Information message
             QMessageBox::warning(this, "Information", "Please finish polygon before adding holes");
 
         }
         else
         {
+            // Hole
             mousePressEventRight(e);
         }
     }
@@ -55,12 +68,17 @@ void Draw::mousePressEventLeft(QMouseEvent *e)
     {
         if (!currentPolygon.isEmpty())
         {
-            polygons.push_back(currentPolygon); // Add actual polygon to the vector
+            // Add actual polygon to the vector
+            polygons.push_back(currentPolygon);
+            // Add polygon to the outer of the structure curentCPolygon
             curentCPolygon.outer = currentPolygon;
 
+            // Add the beginning point ot the end
             currentPolygon.push_back(currentPolygon.first());
+            // Add the polygon to the drawable variable
             curentPolygonWH.addPolygon(currentPolygon);
-            index++;
+
+            //
             isPolygonReady = true;
             currentPolygon.clear(); // Clear actual polygon
         }
@@ -81,7 +99,7 @@ void Draw::mousePressEventLeft(QMouseEvent *e)
     }
 
 
-    //add point to polygon
+    // Add point to polygon
     else
     {
         QPointF p(x, y);
@@ -94,10 +112,13 @@ void Draw::mousePressEventRight(QMouseEvent *e)
     {
         if (!currentHole.isEmpty())
         {
-            //holes.push_back(currentHole); // Add actual polygon to the vector
+            // To the hole of structure currentCPolygon add current Hole
             curentCPolygon.holes.push_back(currentHole);
+            // Add first point as the last for drawing
             currentHole.push_back(currentHole.first());
+            // Add hole to the drawable variable
             curentPolygonWH.addPolygon(currentHole);
+            // Clear Hole
             currentHole.clear();          // Clear actual polygon
         }
         repaint(); // Repaint screan
@@ -213,8 +234,7 @@ void Draw::loadPolygonFromFile(const QString &fileName)
 
     QTextStream in(&file);
     // Clearing the canvas before new polygons are loaded
-    polygons.clear(); // Clear the existing polygons
-    currentPolygon.clear(); // Clear the actual polygon
+    clearPolygons();
 
     while (!in.atEnd())
     {
@@ -224,7 +244,25 @@ void Draw::loadPolygonFromFile(const QString &fileName)
             // If the line is empty, it indicates the end of a polygon
             if (!currentPolygon.isEmpty())
             {
-                polygons.push_back(currentPolygon);
+                // Add current polygon to the structure curentCPolygon.outer
+                curentCPolygon.outer = currentPolygon;
+                // Add the polygon to vector of complex polygons
+                polygonComplex.push_back(curentCPolygon);
+
+                // Add the fist point to the end
+                currentPolygon.push_back(currentPolygon.first());
+                // Add currenct polygon to variable for drawing
+                curentPolygonWH.addPolygon(currentPolygon);
+                //  Add the polygon to vector of polygons which are drawn
+                polygonsWH.push_back(curentPolygonWH);
+                // Clear current polygon for drawing
+                curentPolygonWH.clear();
+
+                // Clear current hole, and outer section of curentCPolygon
+                curentCPolygon.outer.clear();
+                curentCPolygon.holes.clear();
+
+                // Clear current polygon
                 currentPolygon.clear();
             }
         }
@@ -247,7 +285,26 @@ void Draw::loadPolygonFromFile(const QString &fileName)
     // Add the last polygon if not empty
     if (!currentPolygon.isEmpty())
     {
-        polygons.push_back(currentPolygon);
+        // Add current polygon to the structure curentCPolygon.outer
+        curentCPolygon.outer = currentPolygon;
+        // Add the polygon to vector of complex polygons
+        polygonComplex.push_back(curentCPolygon);
+
+        // Add the fist point to the end
+        currentPolygon.push_back(currentPolygon.first());
+        // Add currenct polygon to variable for drawing
+        curentPolygonWH.addPolygon(currentPolygon);
+        //  Add the polygon to vector of polygons which are drawn
+        polygonsWH.push_back(curentPolygonWH);
+        // Clear current polygon for drawing
+        curentPolygonWH.clear();
+
+        // Clear current hole, and outer section of curentCPolygon
+        curentCPolygon.outer.clear();
+        curentCPolygon.holes.clear();
+
+        // Clear current polygon
+        currentPolygon.clear();
     }
 
     file.close();
@@ -264,7 +321,8 @@ void Draw::clearPolygons()
     polygonComplex.clear();
     curentCPolygon.outer.clear();
     curentCPolygon.holes.clear();
-    index = 0;
+    // Changes the status of polygon
+    isPolygonReady = false;
     repaint();
 }
 

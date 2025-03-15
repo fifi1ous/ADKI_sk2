@@ -28,7 +28,6 @@ private:
     bool isShapefileLoaded;
     bool isPolygonReady = false;
     QRectF boundingBox;
-    int index = 0;
 
 public:
     explicit Draw(QWidget *parent = nullptr);
