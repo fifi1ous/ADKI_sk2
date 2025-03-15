@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QDebug>
 
 MainForm::MainForm(QWidget *parent)
     : QMainWindow(parent)
@@ -31,13 +32,15 @@ void MainForm::on_actionRay_Crossing_triggered()
     QPointF q = ui->Canvas->getQ();
     // Get the polygons
     const std::vector<Polygon_>& polygons = ui->Canvas->getPolygons();
-    const std::vector<QPainterPath>& PolygonsWH = ui->Canvas->getPolygonsWH();
+    const std::vector<QPainterPath>& PolygonsP = ui->Canvas->getPolygonsWH();
+
+
+
     if (polygons.empty())
     {
         setWindowTitle("No polygons to analyze");
         return;
     }
-
 
     bool inside = false;
     bool edge = false;
@@ -70,7 +73,7 @@ void MainForm::on_actionRay_Crossing_triggered()
             // If not check the polygon
             if (resH != 1)
             {
-                short res = Algorithms::analyzeRayCrossing(q, polygon);
+                res = Algorithms::analyzeRayCrossing(q, polygon);
 
                 // Cases of poin position
                 switch (res)
@@ -91,10 +94,12 @@ void MainForm::on_actionRay_Crossing_triggered()
                     return;
                 }
             }
-
-            // Return the result
-            ui->Canvas->addSelectedPolygon(PolygonsWH[i]);
-
+            // Checks if the point is inside
+            if (res > 0)
+            {
+                // returns seleceted polygon
+                ui->Canvas->addSelectedPolygon(PolygonsP[i]);
+            }
         }
     }
 
@@ -116,7 +121,7 @@ void MainForm::on_actionWinding_Number_triggered()
     QPointF q = ui->Canvas->getQ();
     // Get the polygons
     const std::vector<Polygon_>& polygons = ui->Canvas->getPolygons();
-    const std::vector<QPainterPath>& PolygonsWH = ui->Canvas->getPolygonsWH();
+    const std::vector<QPainterPath>& PolygonsP = ui->Canvas->getPolygonsWH();
 
     if (polygons.empty())
     {
@@ -155,7 +160,7 @@ void MainForm::on_actionWinding_Number_triggered()
             // If not check the polygon
             if (resH != 1)
             {
-                short res = Algorithms::analyzeWindingNumber(q, polygon);
+                res = Algorithms::analyzeWindingNumber(q, polygon);
 
                 // Cases of poin position
                 switch (res)
@@ -177,8 +182,12 @@ void MainForm::on_actionWinding_Number_triggered()
                 }
             }
 
-            // Return the result as a Bool
-            ui->Canvas->addSelectedPolygon(PolygonsWH[i]);
+            // Checks if the point is inside
+            if (res > 0)
+            {
+                // returns seleceted polygon
+                ui->Canvas->addSelectedPolygon(PolygonsP[i]);
+            }
         }
     }
 

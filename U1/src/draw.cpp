@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QDebug>
 
 #include "../lib/shapefil.h"
 
@@ -136,7 +137,7 @@ void Draw::paintEvent(QPaintEvent *event)
     QPainter painter(this);
 
     // Draw all stored polygons
-    for (const auto& polygon : polygonsWH)
+    for (const QPainterPath& polygon : polygonsWH)
     {
         painter.setPen(Qt::GlobalColor::red);
         painter.setBrush(Qt::GlobalColor::yellow);
@@ -144,11 +145,13 @@ void Draw::paintEvent(QPaintEvent *event)
     }
 
     // Draw selected polygons with swapped colors
-    for (const auto& polygon : selectedPolygonsWH)
+    qDebug() << "Drawing selected polygons. Count:" << selectedPolygonsWH.size();
+    for (const QPainterPath& selectedPolygon : selectedPolygonsWH)
     {
-            painter.setPen(Qt::GlobalColor::yellow);
-            painter.setBrush(Qt::GlobalColor::red);
-            painter.drawPath(polygon);
+        qDebug() << "Selected polygon element count:" << selectedPolygon.elementCount();
+        painter.setPen(Qt::GlobalColor::yellow);
+        painter.setBrush(Qt::GlobalColor::red);
+        painter.drawPath(selectedPolygon);
     }
 
     // Draw actual polygon and its holes
@@ -310,13 +313,25 @@ void Draw::clearPolygons()
     curentCPolygon.holes.clear();
     // Changes the status of polygon
     isPolygonReady = false;
+
+    //Clear point
+    q.setX(-5);
+    q.setY(-5);
+
     repaint();
 }
 
 void Draw::addSelectedPolygon(const QPainterPath& selection)
 {
+    qDebug() << "Adding selected polygon";
+    qDebug() << "Selection path element count:" << selection.elementCount();
+    if (selection.isEmpty()) {
+        qDebug() << "Warning: Empty selection path";
+        return;
+    }
     selectedPolygonsWH.push_back(selection);
-    repaint(); // Repaint the widget to show the selected polygons
+    qDebug() << "Total selected polygons:" << selectedPolygonsWH.size();
+    repaint();
 }
 
 void Draw::clearSelectedPolygons()
