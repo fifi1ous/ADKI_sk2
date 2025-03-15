@@ -10,6 +10,7 @@
 Draw::Draw(QWidget *parent)
     : QWidget{parent}, add_point{false}
 {
+    // Defaul coordinates of the screen
     q.setX(-5);
     q.setY(-5);
 }
@@ -345,8 +346,8 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
     }
 
     // Clear previous polygons
-    polygons.clear();
-    currentPolygon.clear();
+    clearPolygons();
+
 
     // Bounding box (minimum and maximum coordinates)
     double minX = adfMinBound[0];
@@ -362,7 +363,7 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
     double scale = std::min(widgetWidth / (maxX - minX), widgetHeight / (maxY - minY));
 
     // Calculate translation offsets to center the polygons
-    double offsetX = (widgetWidth - (maxX - minX) * scale) / 2 - minX * scale;
+    double offsetX = (widgetWidth  - (maxX - minX) * scale) / 2 - minX * scale;
     double offsetY = (widgetHeight - (maxY - minY) * scale) / 2 + maxY * scale; // Invert Y-axis
 
     for (int i = 0; i < nEntities; ++i)
@@ -373,7 +374,7 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
             continue;
         }
 
-        currentPolygon.clear();
+        //currentPolygon.clear();
 
         if (psShape->nVertices == 0)
         {
@@ -394,7 +395,18 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
         }
 
         // Store the polygon and clear the temporary one
-        polygons.push_back(currentPolygon);
+        curentCPolygon.outer = currentPolygon;
+        polygonComplex.push_back(curentCPolygon);
+
+        // Close the polygon and add to drawable polygons
+        currentPolygon.push_back(currentPolygon.first());
+        curentPolygonWH.addPolygon(currentPolygon);
+        polygonsWH.push_back(curentPolygonWH);
+
+        // Clear all temporary structures
+        curentPolygonWH.clear();
+        curentCPolygon.outer.clear();
+        curentCPolygon.holes.clear();
         currentPolygon.clear();
 
         SHPDestroyObject(psShape);
