@@ -10,23 +10,63 @@
 Draw::Draw(QWidget *parent)
     : QWidget{parent}, add_point{false}
 {
-    q.setX(0);
-    q.setY(0);
+    q.setX(-5);
+    q.setY(-5);
 }
+
 
 void Draw::mousePressEvent(QMouseEvent *e)
 {
+    if (e->button() == Qt::LeftButton)
+    {
+        if (!curentPolygonWH.isEmpty())
+        {
+            polygonComplex.push_back(curentCPolygon);
+            curentCPolygon.outer.clear();
+            curentCPolygon.holes.clear();
+        }
+
+        polygonsWH.push_back(curentPolygonWH);
+        curentPolygonWH.clear();
+        currentHole.clear();
+        mousePressEventLeft(e);
+
+    }else if (e->button() == Qt::RightButton)
+    {
+        if(!isPolygonReady || !currentPolygon.isEmpty())
+        {
+            QMessageBox::warning(this, "Information", "Please finish polygon before adding holes");
+
+        }
+        else
+        {
+            mousePressEventRight(e);
+        }
+    }
+
+    //Repaint screen
+    repaint();
+}
+void Draw::mousePressEventLeft(QMouseEvent *e)
+{
+
+    // Cretes new polygon wh
     if (e->type() == QEvent::MouseButtonDblClick)
     {
         if (!currentPolygon.isEmpty())
         {
             polygons.push_back(currentPolygon); // Add actual polygon to the vector
+            curentCPolygon.outer = currentPolygon;
+
+            currentPolygon.push_back(currentPolygon.first());
+            curentPolygonWH.addPolygon(currentPolygon);
+            index++;
+            isPolygonReady = true;
             currentPolygon.clear(); // Clear actual polygon
         }
         repaint(); // Repaint screan
         return;
     }
-
     //Add point to polygon
 
     //Get x, y coordinates
@@ -47,21 +87,43 @@ void Draw::mousePressEvent(QMouseEvent *e)
         QPointF p(x, y);
         currentPolygon.push_back(p);
     }
-
-    //Repaint screen
-    repaint();
 }
+void Draw::mousePressEventRight(QMouseEvent *e)
+{
+    if (e->type() == QEvent::MouseButtonDblClick)
+    {
+        if (!currentHole.isEmpty())
+        {
+            //holes.push_back(currentHole); // Add actual polygon to the vector
+            curentCPolygon.holes.push_back(currentHole);
+            currentHole.push_back(currentHole.first());
+            curentPolygonWH.addPolygon(currentHole);
+            currentHole.clear();          // Clear actual polygon
+        }
+        repaint(); // Repaint screan
+        return;
+    }
+
+    double x = e->pos().x();
+    double y = e->pos().y();
+
+    QPointF p(x, y);
+    currentHole.push_back(p);
+}
+
+
 
 void Draw::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
 
     // Draw all stored polygons
-    for (const auto& polygon : polygons)
+
+    for (const auto& polygon : polygonsWH)
     {
         painter.setPen(Qt::GlobalColor::red);
         painter.setBrush(Qt::GlobalColor::yellow);
-        painter.drawPolygon(polygon);
+        painter.drawPath(polygon);
     }
 
     // Draw selected polygons with swapped colors
@@ -72,20 +134,58 @@ void Draw::paintEvent(QPaintEvent *event)
         painter.drawPolygon(polygon);
     }
 
-    // Draw actual polygon
+    // Draw actual polygon and its holes
     painter.setPen(Qt::GlobalColor::red);
     painter.setBrush(Qt::GlobalColor::yellow);
-    painter.drawPolygon(currentPolygon);
+    painter.drawPath(curentPolygonWH);
 
-    //Set graphic attributes, point
-    painter.setPen(Qt::GlobalColor::black);
-    painter.setBrush(Qt::GlobalColor::blue);
-    int r = 5; // velikost bodu v pixelech
+    // Draw the current polygon being created
+    if (!currentPolygon.isEmpty())
+    {
+        // Draw lines between points
+        painter.setPen(QPen(Qt::blue, 2));  // Blue lines, 2 pixels wide
+        for (int i = 0; i < currentPolygon.size() - 1; ++i)
+        {
+            painter.drawLine(currentPolygon[i], currentPolygon[i + 1]);
+        }
 
-    //Begin draw
+        // Draw points
+        painter.setPen(Qt::blue);
+        painter.setBrush(Qt::blue);
+        int r = 2;  // Point radius
+        for (const QPointF& point : currentPolygon)
+        {
+            painter.drawEllipse(point.x() - r, point.y() - r, 2*r, 2*r);
+        }
+    }
+
+    // Draw the current hole being created
+    if (!currentHole.isEmpty())
+    {
+        // Draw lines between points for the hole
+        painter.setPen(QPen(Qt::green, 2));  // Green lines, 2 pixels wide
+        for (int i = 0; i < currentHole.size() - 1; ++i)
+        {
+            painter.drawLine(currentHole[i], currentHole[i + 1]);
+        }
+
+        // Draw points for the hole
+        painter.setPen(Qt::green);
+        painter.setBrush(QColor(Qt::green));
+        int r = 2;  // Point radius
+        for (const QPointF& point : currentHole)
+        {
+            painter.drawEllipse(point.x() - r, point.y() - r, 2*r, 2*r);
+        }
+    }
+
+
+    // Draw the q point
+    painter.setPen(Qt::black);
+    painter.setBrush(Qt::blue);
+    int r = 5;
     painter.drawEllipse(q.x()-r, q.y()-r, 2*r, 2*r);
 
-    //End draw
     painter.end();
 }
 
@@ -158,6 +258,13 @@ void Draw::clearPolygons()
 {
     polygons.clear();
     currentPolygon.clear();
+    curentPolygonWH.clear();
+    polygonsWH.clear();
+    currentHole.clear();
+    polygonComplex.clear();
+    curentCPolygon.outer.clear();
+    curentCPolygon.holes.clear();
+    index = 0;
     repaint();
 }
 

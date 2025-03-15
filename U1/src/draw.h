@@ -5,6 +5,9 @@
 #include <QPolygonF>
 #include <QPointF>
 #include <vector>
+#include <QPainterPath>
+#include <QMouseEvent>
+#include "Polygon.h"
 
 class Draw : public QWidget
 {
@@ -13,11 +16,19 @@ class Draw : public QWidget
 private:
     QPointF q;
     QPolygonF currentPolygon;
+    QPolygonF currentHole;
+    Polygon_ curentCPolygon;
+    QPainterPath curentPolygonWH;
     std::vector<QPolygonF> polygons;
     std::vector<QPolygonF> selectedPolygons;
+    std::vector<QPainterPath> polygonsWH;
+    std::vector<QPainterPath> selectedPolygonsWH;
+    std::vector<Polygon_> polygonComplex;
     bool add_point;
     bool isShapefileLoaded;
+    bool isPolygonReady = false;
     QRectF boundingBox;
+    int index = 0;
 
 public:
     explicit Draw(QWidget *parent = nullptr);
@@ -31,7 +42,11 @@ public:
     void clearPolygons();
     void addSelectedPolygon(const QPolygonF& polygon);
     void clearSelectedPolygons();
-
+private:
+    void mousePressEventLeft(QMouseEvent *e);
+    void mousePressEventRight(QMouseEvent *e);
+    void addPointToPath(QPointF p);
+    void finalizePolygon();
 signals:
 };
 
