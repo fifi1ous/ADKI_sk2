@@ -298,6 +298,7 @@ void Draw::loadPolygonFromFile(const QString &fileName)
 
 void Draw::clearPolygons()
 {
+    // Clear all structures
     polygons.clear();
     currentPolygon.clear();
     curentPolygonWH.clear();
