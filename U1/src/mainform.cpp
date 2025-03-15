@@ -31,7 +31,7 @@ void MainForm::on_actionRay_Crossing_triggered()
     QPointF q = ui->Canvas->getQ();
     // Get the polygons
     const std::vector<Polygon_>& polygons = ui->Canvas->getPolygons();
-
+    const std::vector<QPainterPath>& PolygonsWH = ui->Canvas->getPolygonsWH();
     if (polygons.empty())
     {
         setWindowTitle("No polygons to analyze");
@@ -92,8 +92,8 @@ void MainForm::on_actionRay_Crossing_triggered()
                 }
             }
 
-            // Return the result as a Bool
-            ui->Canvas->addSelectedPolygon(res > 0);
+            // Return the result
+            ui->Canvas->addSelectedPolygon(PolygonsWH[i]);
 
         }
     }
@@ -116,6 +116,7 @@ void MainForm::on_actionWinding_Number_triggered()
     QPointF q = ui->Canvas->getQ();
     // Get the polygons
     const std::vector<Polygon_>& polygons = ui->Canvas->getPolygons();
+    const std::vector<QPainterPath>& PolygonsWH = ui->Canvas->getPolygonsWH();
 
     if (polygons.empty())
     {
@@ -177,7 +178,7 @@ void MainForm::on_actionWinding_Number_triggered()
             }
 
             // Return the result as a Bool
-            ui->Canvas->addSelectedPolygon(res > 0);
+            ui->Canvas->addSelectedPolygon(PolygonsWH[i]);
         }
     }
 

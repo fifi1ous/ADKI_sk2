@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QFileDialog>
 #include <QMessageBox>
+
 #include "../lib/shapefil.h"
 
 Draw::Draw(QWidget *parent)
@@ -135,7 +136,6 @@ void Draw::paintEvent(QPaintEvent *event)
     QPainter painter(this);
 
     // Draw all stored polygons
-
     for (const auto& polygon : polygonsWH)
     {
         painter.setPen(Qt::GlobalColor::red);
@@ -144,20 +144,18 @@ void Draw::paintEvent(QPaintEvent *event)
     }
 
     // Draw selected polygons with swapped colors
-    for (int i = 0;i < selected.size();i++)
+    for (const auto& polygon : selectedPolygonsWH)
     {
-        if (selected[i])
-        {
             painter.setPen(Qt::GlobalColor::yellow);
             painter.setBrush(Qt::GlobalColor::red);
-            painter.drawPath(polygonsWH[i]);
-        }
+            painter.drawPath(polygon);
     }
 
     // Draw actual polygon and its holes
     painter.setPen(Qt::GlobalColor::red);
     painter.setBrush(Qt::GlobalColor::yellow);
     painter.drawPath(curentPolygonWH);
+
 
     // Draw the current polygon being created
     if (!currentPolygon.isEmpty())
@@ -315,15 +313,15 @@ void Draw::clearPolygons()
     repaint();
 }
 
-void Draw::addSelectedPolygon(const bool& selection)
+void Draw::addSelectedPolygon(const QPainterPath& selection)
 {
-    selected.push_back(selection);
+    selectedPolygonsWH.push_back(selection);
     repaint(); // Repaint the widget to show the selected polygons
 }
 
 void Draw::clearSelectedPolygons()
 {
-    selected.clear();
+    selectedPolygonsWH.clear();
     repaint(); // Repaint the widget to clear the selected polygons
 }
 

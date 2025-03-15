@@ -39,8 +39,9 @@ public:
     void loadPolygonFromShapefile(const QString &fileName);
     QPointF getQ() const { return q; }
     const std::vector<Polygon_>& getPolygons() const { return polygonComplex; }
+    const std::vector<QPainterPath>& getPolygonsWH() const { return polygonsWH; }
     void clearPolygons();
-    void addSelectedPolygon(const bool& selection);
+    void addSelectedPolygon(const QPainterPath& selection);
     void clearSelectedPolygons();
 private:
     void mousePressEventLeft(QMouseEvent *e);
