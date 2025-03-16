@@ -44,7 +44,8 @@ void Draw::mousePressEvent(QMouseEvent *e)
         // Handle left button press event
         mousePressEventLeft(e);
 
-    }else if (e->button() == Qt::RightButton)
+    }
+    if (e->button() == Qt::RightButton)
     {
         // Verify if a polygon is ready for hole creation
         if(!isPolygonReady || !currentPolygon.isEmpty())
