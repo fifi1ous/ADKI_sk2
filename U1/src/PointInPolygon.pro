@@ -45,3 +45,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     icons.qrc
+
+win32 {
+    DESTDIR = $$PWD/../bin/windows
+    QMAKE_POST_LINK = windeployqt $$shell_path($$DESTDIR/$${TARGET}.exe)
+}
+unix {
+    DESTDIR = $$PWD/../bin/linux
+}
