@@ -5,6 +5,9 @@
 #include <QPolygonF>
 #include <QPointF>
 #include <vector>
+#include <QPainterPath>
+#include <QMouseEvent>
+#include "Polygon.h"
 
 class Draw : public QWidget
 {
@@ -13,10 +16,15 @@ class Draw : public QWidget
 private:
     QPointF q;
     QPolygonF currentPolygon;
-    std::vector<QPolygonF> polygons;
-    std::vector<QPolygonF> selectedPolygons;
+    QPolygonF currentHole;
+    Polygon_ curentCPolygon;
+    QPainterPath curentPolygonWH;
+    std::vector<QPainterPath> polygonsWH;
+    std::vector<QPainterPath> selectedPolygonsWH;
+    std::vector<Polygon_> polygonComplex;
     bool add_point;
     bool isShapefileLoaded;
+    bool isPolygonReady = false;
     QRectF boundingBox;
 
 public:
@@ -27,11 +35,16 @@ public:
     void loadPolygonFromFile(const QString &fileName);
     void loadPolygonFromShapefile(const QString &fileName);
     QPointF getQ() const { return q; }
-    const std::vector<QPolygonF>& getPolygons() const { return polygons; }
+    const std::vector<Polygon_>& getPolygons() const { return polygonComplex; }
+    const std::vector<QPainterPath>& getPolygonsWH() const { return polygonsWH; }
     void clearPolygons();
-    void addSelectedPolygon(const QPolygonF& polygon);
+    void addSelectedPolygon(const QPainterPath& selection);
     void clearSelectedPolygons();
-
+private:
+    void mousePressEventLeft(QMouseEvent *e);
+    void mousePressEventRight(QMouseEvent *e);
+    void addPointToPath(QPointF p);
+    void finalizePolygon();
 signals:
 };
 

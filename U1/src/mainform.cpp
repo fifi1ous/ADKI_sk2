@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QDebug>
 
 MainForm::MainForm(QWidget *parent)
     : QMainWindow(parent)
@@ -27,15 +28,17 @@ void MainForm::on_actionPoint_Polygon_triggered()
 void MainForm::on_actionRay_Crossing_triggered()
 {
     // Run raycrossing algorithm
+    // Get the point
     QPointF q = ui->Canvas->getQ();
-    const std::vector<QPolygonF>& polygons = ui->Canvas->getPolygons();
+    // Get the polygons
+    const std::vector<Polygon_>& polygons = ui->Canvas->getPolygons();
+    const std::vector<QPainterPath>& PolygonsP = ui->Canvas->getPolygonsWH();
 
     if (polygons.empty())
     {
         setWindowTitle("No polygons to analyze");
         return;
     }
-
 
     bool inside = false;
     bool edge = false;
@@ -46,32 +49,54 @@ void MainForm::on_actionRay_Crossing_triggered()
 
     for (size_t i = 0; i < polygons.size(); ++i)
     {
-        if (Algorithms::minMaxBox(q, polygons[i]))
-        {
-            short res = Algorithms::analyzeRayCrossing(q, polygons[i]);
+        // Extract the holes and polygons into separete variables
+        QPolygonF polygon = polygons[i].outer;
+        std::vector<QPolygonF> holes = polygons[i].holes;
+        // Set helping variables
+        short resH = 0;
+        short res = 0;
 
-            // Cases of poin position
-            switch (res)
+        if (Algorithms::minMaxBox(q, polygon))
+        {
+            // Check if the polygon has holes
+            if (!holes.empty() )
             {
-            case 1:
-                inside = true;
-                break;
-            case 2:
-                edge = true;
-                break;
-            case 3:
-                vertex = true;
-                break;
-            case 0:
-                break;
-            default:
-                setWindowTitle("Something went wrong");
-                return;
+                // Check if the point is in the hole
+                for (const auto& hole : holes)
+                {
+                    resH = Algorithms::analyzeRayCrossing(q, hole);
+                }
             }
 
+            // If not check the polygon
+            if (resH != 1)
+            {
+                res = Algorithms::analyzeRayCrossing(q, polygon);
+
+                // Cases of poin position
+                switch (res)
+                {
+                case 1:
+                    inside = true;
+                    break;
+                case 2:
+                    edge = true;
+                    break;
+                case 3:
+                    vertex = true;
+                    break;
+                case 0:
+                    break;
+                default:
+                    setWindowTitle("Something went wrong");
+                    return;
+                }
+            }
+            // Checks if the point is inside
             if (res > 0)
             {
-                ui->Canvas->addSelectedPolygon(polygons[i]);
+                // returns seleceted polygon
+                ui->Canvas->addSelectedPolygon(PolygonsP[i]);
             }
         }
     }
@@ -90,8 +115,11 @@ void MainForm::on_actionRay_Crossing_triggered()
 void MainForm::on_actionWinding_Number_triggered()
 {
     // Run winding number algorithm
+    // Get the point
     QPointF q = ui->Canvas->getQ();
-    const std::vector<QPolygonF>& polygons = ui->Canvas->getPolygons();
+    // Get the polygons
+    const std::vector<Polygon_>& polygons = ui->Canvas->getPolygons();
+    const std::vector<QPainterPath>& PolygonsP = ui->Canvas->getPolygonsWH();
 
     if (polygons.empty())
     {
@@ -108,32 +136,55 @@ void MainForm::on_actionWinding_Number_triggered()
 
     for (size_t i = 0; i < polygons.size(); ++i)
     {
-        if (Algorithms::minMaxBox(q, polygons[i]))
-        {
-            short res = Algorithms::analyzeWindingNumber(q, polygons[i]);
+        // Extract the holes and polygons into separete variables
+        QPolygonF polygon = polygons[i].outer;
+        std::vector<QPolygonF> holes = polygons[i].holes;
+        // Set helping variables
+        short resH = 0;
+        short res = 0;
 
-            // Cases of poin position
-            switch (res)
+        if (Algorithms::minMaxBox(q, polygon))
+        {
+            // Check if the polygon has holes
+            if (!holes.empty() )
             {
-            case 1:
-                inside = true;
-                break;
-            case 2:
-                edge = true;
-                break;
-            case 3:
-                vertex = true;
-                break;
-            case 0:
-                break;
-            default:
-                setWindowTitle("Something went wrong");
-                return;
+                // Check if the point is in the hole
+                for (const auto& hole : holes)
+                {
+                    resH = Algorithms::analyzeWindingNumber(q, hole);
+                }
             }
 
+            // If not check the polygon
+            if (resH != 1)
+            {
+                res = Algorithms::analyzeWindingNumber(q, polygon);
+
+                // Cases of poin position
+                switch (res)
+                {
+                case 1:
+                    inside = true;
+                    break;
+                case 2:
+                    edge = true;
+                    break;
+                case 3:
+                    vertex = true;
+                    break;
+                case 0:
+                    break;
+                default:
+                    setWindowTitle("Something went wrong");
+                    return;
+                }
+            }
+
+            // Checks if the point is inside
             if (res > 0)
             {
-                ui->Canvas->addSelectedPolygon(polygons[i]);
+                // returns seleceted polygon
+                ui->Canvas->addSelectedPolygon(PolygonsP[i]);
             }
         }
     }
