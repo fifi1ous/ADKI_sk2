@@ -24,18 +24,17 @@ void Draw::mousePressEvent(QMouseEvent *e)
     if (e->button() == Qt::LeftButton)
     {
         // Check if there's an existing polygon to be stored
-        if (!curentPolygonWH.isEmpty())
+        if (currentPolygon.isEmpty() && isPolygonReady)
         {
             // Store the current complex polygon and clear its components
             polygonComplex.push_back(curentCPolygon);
             curentCPolygon.outer.clear();
             curentCPolygon.holes.clear();
+            // Store and clear the current drawable polygon
+            polygonsWH.push_back(curentPolygonWH);
+            curentPolygonWH.clear();
         }
 
-        // Store and clear the current drawable polygon
-        polygonsWH.push_back(curentPolygonWH);
-        curentPolygonWH.clear();
-        
         // Clear any pending hole creation
         currentHole.clear();
         
@@ -70,7 +69,6 @@ void Draw::mousePressEventLeft(QMouseEvent *e)
         if (!currentPolygon.isEmpty())
         {
             // Store the completed polygon
-            polygons.push_back(currentPolygon);
             curentCPolygon.outer = currentPolygon;
 
             // Close the polygon by adding the first point at the end
@@ -145,10 +143,9 @@ void Draw::paintEvent(QPaintEvent *event)
     }
 
     // Draw selected polygons with swapped colors
-    qDebug() << "Drawing selected polygons. Count:" << selectedPolygonsWH.size();
+    //qDebug() << "Drawing selected polygons. Count:" << selectedPolygonsWH.size();
     for (const QPainterPath& selectedPolygon : selectedPolygonsWH)
     {
-        qDebug() << "Selected polygon element count:" << selectedPolygon.elementCount();
         painter.setPen(Qt::GlobalColor::yellow);
         painter.setBrush(Qt::GlobalColor::red);
         painter.drawPath(selectedPolygon);
@@ -215,8 +212,21 @@ void Draw::switch_source()
     // Store any existing polygon before switching input mode
     if (!currentPolygon.isEmpty())
     {
-        polygons.push_back(currentPolygon);
+        // Store the polygon in complex polygon structure
+        curentCPolygon.outer = currentPolygon;
+        polygonComplex.push_back(curentCPolygon);
+
+        // Close the polygon and add to drawable polygons
+        currentPolygon.push_back(currentPolygon.first());
+        curentPolygonWH.addPolygon(currentPolygon);
+        polygonsWH.push_back(curentPolygonWH);
+
+        // Clear all temporary structures
+        curentPolygonWH.clear();
+        curentCPolygon.outer.clear();
+        curentCPolygon.holes.clear();
         currentPolygon.clear();
+        repaint();
     }
 
     // Toggle between point input and polygon vertex input modes
@@ -303,7 +313,6 @@ void Draw::loadPolygonFromFile(const QString &fileName)
 void Draw::clearPolygons()
 {
     // Clear all structures
-    polygons.clear();
     currentPolygon.clear();
     curentPolygonWH.clear();
     polygonsWH.clear();
@@ -323,14 +332,8 @@ void Draw::clearPolygons()
 
 void Draw::addSelectedPolygon(const QPainterPath& selection)
 {
-    qDebug() << "Adding selected polygon";
-    qDebug() << "Selection path element count:" << selection.elementCount();
-    if (selection.isEmpty()) {
-        qDebug() << "Warning: Empty selection path";
-        return;
-    }
+    // Add selected polygon to vector
     selectedPolygonsWH.push_back(selection);
-    qDebug() << "Total selected polygons:" << selectedPolygonsWH.size();
     repaint();
 }
 

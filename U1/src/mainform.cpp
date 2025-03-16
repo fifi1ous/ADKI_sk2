@@ -30,11 +30,10 @@ void MainForm::on_actionRay_Crossing_triggered()
     // Run raycrossing algorithm
     // Get the point
     QPointF q = ui->Canvas->getQ();
+    qDebug()<<q;
     // Get the polygons
     const std::vector<Polygon_>& polygons = ui->Canvas->getPolygons();
     const std::vector<QPainterPath>& PolygonsP = ui->Canvas->getPolygonsWH();
-
-
 
     if (polygons.empty())
     {

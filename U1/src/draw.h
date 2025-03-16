@@ -19,10 +19,7 @@ private:
     QPolygonF currentHole;
     Polygon_ curentCPolygon;
     QPainterPath curentPolygonWH;
-    std::vector<QPolygonF> polygons;
-    std::vector<QPolygonF> selectedPolygons;
     std::vector<QPainterPath> polygonsWH;
-    std::vector<bool> selected;
     std::vector<QPainterPath> selectedPolygonsWH;
     std::vector<Polygon_> polygonComplex;
     bool add_point;
