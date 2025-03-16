@@ -4,6 +4,7 @@
 #include <QPointF>
 #include <QPolygonF>
 
+
 class Algorithms
 {
 public:
