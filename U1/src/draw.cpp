@@ -248,7 +248,7 @@ void Draw::loadPolygonFromFile(const QString &fileName)
 
     while (!in.atEnd())
     {
-        QString line = in.readLine();
+        QString line = in.readLine().trimmed();
         if (line.isEmpty())
         {
             // Process completed polygon when encountering empty line
@@ -262,7 +262,7 @@ void Draw::loadPolygonFromFile(const QString &fileName)
                 currentPolygon.push_back(currentPolygon.first());
                 curentPolygonWH.addPolygon(currentPolygon);
                 polygonsWH.push_back(curentPolygonWH);
-                
+
                 // Clear all temporary structures
                 curentPolygonWH.clear();
                 curentCPolygon.outer.clear();
@@ -272,16 +272,37 @@ void Draw::loadPolygonFromFile(const QString &fileName)
         }
         else
         {
-            // Parse coordinates from non-empty lines
-            QStringList coordinates = line.split(",");
-            if (coordinates.size() == 2)
+            // Check if line represents a point in {x, y} format
+            if (line.startsWith("{") && line.endsWith("}"))
             {
-                bool ok1, ok2;
-                double x = coordinates[0].toDouble(&ok1);
-                double y = coordinates[1].toDouble(&ok2);
-                if (ok1 && ok2)
+                line = line.mid(1, line.length() - 2).trimmed(); // Remove the brackets
+                QStringList coordinates = line.split(",", Qt::SkipEmptyParts);
+                if (coordinates.size() == 2)
                 {
-                    currentPolygon.append(QPointF(x, y));
+                    bool ok1, ok2;
+                    double x = coordinates[0].toDouble(&ok1);
+                    double y = coordinates[1].toDouble(&ok2);
+                    if (ok1 && ok2)
+                    {
+                        // Set the point
+                        q.setX(x);
+                        q.setY(y);
+                    }
+                }
+            }
+            else
+            {
+                // Parse coordinates from non-empty lines
+                QStringList coordinates = line.split(",");
+                if (coordinates.size() == 2)
+                {
+                    bool ok1, ok2;
+                    double x = coordinates[0].toDouble(&ok1);
+                    double y = coordinates[1].toDouble(&ok2);
+                    if (ok1 && ok2)
+                    {
+                        currentPolygon.append(QPointF(x, y));
+                    }
                 }
             }
         }
@@ -298,7 +319,7 @@ void Draw::loadPolygonFromFile(const QString &fileName)
         currentPolygon.push_back(currentPolygon.first());
         curentPolygonWH.addPolygon(currentPolygon);
         polygonsWH.push_back(curentPolygonWH);
-        
+
         // Clear all temporary structures
         curentPolygonWH.clear();
         curentCPolygon.outer.clear();
