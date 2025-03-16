@@ -343,6 +343,8 @@ void Draw::clearSelectedPolygons()
     repaint(); // Repaint the widget to clear the selected polygons
 }
 
+
+
 void Draw::loadPolygonFromShapefile(const QString &fileName)
 {
 
