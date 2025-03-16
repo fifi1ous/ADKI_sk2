@@ -158,6 +158,7 @@ void Draw::paintEvent(QPaintEvent *event)
     painter.drawPath(curentPolygonWH);
 
 
+    // This part of code was done by chatGPT
     // Draw the current polygon being created
     if (!currentPolygon.isEmpty())
     {
@@ -177,6 +178,7 @@ void Draw::paintEvent(QPaintEvent *event)
             painter.drawEllipse(point.x() - r, point.y() - r, 2*r, 2*r);
         }
     }
+    // Here ends the part which was doen by chatGPT
 
     // Draw the current hole being created
     if (!currentHole.isEmpty())
