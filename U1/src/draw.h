@@ -44,7 +44,6 @@ private:
     void mousePressEventLeft(QMouseEvent *e);
     void mousePressEventRight(QMouseEvent *e);
     void addPointToPath(QPointF p);
-    void finalizePolygon();
 signals:
 };
 
