@@ -202,19 +202,23 @@ void MainForm::on_actionWinding_Number_triggered()
 
 void MainForm::on_actionOpen_triggered()
 {
+    // Open a file dialog to select a polygon file
     QString fileName = QFileDialog::getOpenFileName(this, "Open Polygon File", "", "Text Files (*.txt);;Shapefile (*.shp);;All Files (*)");
     if (!fileName.isEmpty())
     {
         if (fileName.endsWith(".txt"))
         {
+            // Load polygon from a text file
             ui->Canvas->loadPolygonFromFile(fileName);
         }
         else if (fileName.endsWith(".shp"))
         {
+            // Load polygon from a shapefile
             ui->Canvas->loadPolygonFromShapefile(fileName);
         }
         else
         {
+            // Show an error message for unsupported file formats
             QMessageBox::warning(this, "Error", "Unsupported file format.");
         }
     }
@@ -222,21 +226,29 @@ void MainForm::on_actionOpen_triggered()
 
 void MainForm::on_actionClear_data_triggered()
 {
+    // Reset the window title
     setWindowTitle("Analyze point and polygon position");
+    // Clear selected polygons from the canvas
     ui->Canvas->clearSelectedPolygons();
+    // Repaint the canvas
     ui->Canvas->repaint();
 }
 
 void MainForm::on_actionClear_all_triggered()
 {
+    // Reset the window title
     setWindowTitle("Analyze point and polygon position");
+    // Clear selected polygons from the canvas
     ui->Canvas->clearSelectedPolygons();
+    // Clear all polygons from the canvas
     ui->Canvas->clearPolygons();
+    // Repaint the canvas
     ui->Canvas->repaint();
 }
 
 void MainForm::on_actionExit_triggered()
 {
+    // Quit the application
     QApplication::quit();
 }
 

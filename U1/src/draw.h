@@ -7,7 +7,7 @@
 #include <vector>
 #include <QPainterPath>
 #include <QMouseEvent>
-#include "Polygon.h"
+#include "polygon.h"
 
 class Draw : public QWidget
 {
