@@ -1,0 +1,27 @@
+\section{Popis problému}
+
+Problém lokalizace bodu v polygonové mapě spočívá v určení toho, ve kterém polygonu se nachází daný bod. Tento úkol je klíčový v geografických informačních systémech (GIS) a je známý jako \textit{Point Location Problem}\cite{Bayer2008}.
+
+\subsection{Formulace problému}
+
+\paragraph{Dáno:}
+\begin{itemize}
+    \item Množina \( n \) bodů \(\{p_i\}\), které tvoří vrcholy \( m \) polygonů \(\{P_j\}\).
+    \item Bod \( q \), jehož polohu vůči polygonům chceme určit.
+\end{itemize}
+
+\paragraph{Určováno:}
+\begin{itemize}
+    \item Polygon \( P \), který obsahuje bod \( q \), nebo informace, že bod \( q \) neleží v žádném polygonu.
+\end{itemize}
+
+\subsection{Techniky řešení problému}
+
+\begin{itemize}
+    \item \textbf{Half-plane test} - Spočívá v porovnání polohy bodu vůči každé hraně polygonu. Nelze jej využít pro nekonvexní polygony, kde mohou existovat hrany obklopující bod z různých stran. V praxi se tento problém řeší rozdělením nekonvexního polygonu na několik konvexních částí, na které lze test aplikovat jednotlivě.
+    
+    \item \textbf{Ray Crossing Algorithm} – Sleduje počet průsečíků polopřímky vycházející z bodu \( q \) s hranami polygonu. Pokud je počet průsečíků lichý, bod leží uvnitř polygonu; pokud je sudý, bod se nachází vně.
+    
+    \item \textbf{Winding Number Algorithm} – Vyhodnocuje součet úhlových změn mezi hranami polygonu a bodem. Pokud je výsledný součet nenulový, bod leží uvnitř polygonu.
+\end{itemize}
+

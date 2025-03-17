@@ -1,0 +1,63 @@
+\newpage
+\section{Dokumentace}
+
+\subsection{Použité knihovny}
+Kód využívá následující knihovny:
+\begin{itemize}
+\item \texttt{\href{https://www.qt.io/}{Qt}} – Knihovna pro správu grafických objektů, včetně tříd jako \texttt{QPointF}, \texttt{QPolygonF}, \texttt{QPainterPath}.
+\item \texttt{\href{http://shapelib.maptools.org/}{shapelib}} – Knihovna pro práci se soubory formátu Shapefile \cite{shapelib}. Upravená verze této knihovny do C++ byla použita z projektu \href{https://github.com/zhihao-liu/shapefile-viewer-qt/tree/master/shapelib}{shapefile-viewer-qt} od Zhihao Liu \cite{liu2025shapelib}.
+\end{itemize}
+
+\subsection{Třída Algorithms}
+Třída poskytuje metody pro geometrické analýzy bodů a polygonů.
+
+\textbf{Veřejné statické metody:}
+\begin{itemize}
+\item \texttt{short analyzeRayCrossing(const QPointF \&q, const QPolygonF \&pol)} – Analyzuje vztah bodu a polygonu pomocí algoritmu Ray Crossing.
+\item \texttt{short analyzeWindingNumber(const QPointF \&q, const QPolygonF \&pol)} – Analyzuje vztah bodu a polygonu pomocí algoritmu Winding Number.
+\item \texttt{bool minMaxBox(const QPointF \&q, const QPolygonF \&pol)} – Kontroluje, zda bod leží uvnitř minmaxboxu polygonu.
+\end{itemize}
+
+\textbf{Soukromé statické metody:}
+\begin{itemize}
+\item \texttt{double calculateDistance(const QPointF \&p1, const QPointF \&p2)} – Vypočítá euklidovskou vzdálenost mezi dvěma body (\texttt{p1} a \texttt{p2}).
+\item \texttt{double calculateCosineValue(double l\_qi, double l\_qi1, double l\_ii1)} – Vypočítá kosinusový úhel mezi vektory.
+\item \texttt{double calculateDeterminant(const QPointF \&p1, const QPointF \&p2, const QPointF \&q)} – Vypočítá determinant matice tvořené třemi body (\texttt{p1}, \texttt{p2}, \texttt{q}).
+\item \texttt{short checkSingularities(const QPointF \&q, const QPolygonF \&pol, int i, int ii)} – Ověří výskyt singulárních bodů v polygonu.
+\end{itemize}
+
+\subsection{Třída Draw}
+Třída pro vykreslování polygonů a interakci s uživatelem.
+
+\textbf{Veřejné metody:}
+\begin{itemize}
+\item \texttt{void mousePressEvent(QMouseEvent *e)} – Zpracuje událost kliknutí myší.
+\item \texttt{void paintEvent(QPaintEvent *event)} – Vykreslí polygony a body.
+\item \texttt{void switch\_source()} – Přepíná typ vstupních dat.
+\item \texttt{void loadPolygonFromFile(const QString \&fileName)} – Načte polygon z \texttt{*.TXT}.
+\item \texttt{void loadPolygonFromShapefile(const QString \&fileName)} – Načte polygon z \texttt{*.SHP}.
+\item \texttt{void clearPolygons()} – Vymaže všechny polygony.
+\item \texttt{void addSelectedPolygon(const QPainterPath\& selection)} – Přidá vybraný polygon.
+\item \texttt{void clearSelectedPolygons()} – Odstraní všechny vybrané polygony.
+\end{itemize}
+
+\textbf{Soukromé metody:}
+\begin{itemize}
+\item \texttt{void mousePressEventLeft(QMouseEvent *e)} – Zpracovává kliknutí levého tlačítka myši.
+\item \texttt{void mousePressEventRight(QMouseEvent *e)} – Zpracovává kliknutí pravého tlačítka myši.
+\item \texttt{void addPointToPath(QPointF p)} – Přidává bod \texttt{p} do aktuální cesty, která tvoří polygon.
+\end{itemize}
+
+\subsection{Třída MainForm}
+Hlavní uživatelské rozhraní aplikace.
+
+\textbf{Soukromé sloty:}
+\begin{itemize}
+\item \texttt{void on\_actionPoint\_Polygon\_triggered()} – Přepnutí vstupu bod/polygon
+\item \texttt{void on\_actionRay\_Crossing\_triggered()} – Spustí analýzu metodou Ray Crossing.
+\item \texttt{void on\_actionWinding\_Number\_triggered()} – Spustí analýzu metodou Winding Number.
+\item \texttt{void on\_actionOpen\_triggered()} – Otevře nabídku pro výběr souboru.
+\item \texttt{void on\_actionClear\_data\_triggered()} – Vymaže aktuální data.
+\item \texttt{void on\_actionClear\_all\_triggered()} – Vymaže všechny objekty.
+\item \texttt{void on\_actionExit\_triggered()} – Ukončí aplikaci.
+\end{itemize}

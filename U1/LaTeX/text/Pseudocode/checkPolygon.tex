@@ -1,0 +1,38 @@
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Analýza polygonu s dírami }
+    \begin{algorithmic}[1]
+        \STATE inicializace
+        
+        \COMMENT{Pro každý polygon provést testování}
+        \FORALL{$polygon_i$ v $polygons$}
+            \STATE $polygon \gets$ $polygon_i.\text{outer}$
+            \STATE $holes \gets$ $polygon_i.\text{holes}$
+            \STATE $resH \gets 0$
+            \STATE $res \gets 0$
+            
+            \COMMENT{Nejprve ověřit min-max box}
+            \IF{\texttt{Algorithms.minMaxBox(q, polygon)}}
+                
+
+                \IF{$holes$ není prázdné}
+                    \FORALL{$hole$ v $holes$}
+                        \STATE $resH \gets$ \texttt{Algoritmus pro analýzu vztahu polygonu a díry}
+                    \ENDFOR
+                \ENDIF
+                
+                \COMMENT{Pokud bod není v díře, analyzovat hlavní polygon}
+                \IF{$resH \neq 1$}
+                    \STATE $res \gets$ \texttt{Algoritmus pro analýzu vztahu polygonu a díry}
+                    
+                    \STATE Další zpracování
+                    
+                \ENDIF
+                
+                \STATE Další zpracování
+            \ENDIF
+        \ENDFOR
+        
+        \STATE Další zpracování
+    \end{algorithmic}
+\end{algorithm}

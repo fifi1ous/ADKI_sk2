@@ -1,0 +1,123 @@
+\section{Postup}
+
+Úloha byla implementována v programovacím jazyce Python. Hlavní program byl vytvořen ve dvou verzích. První verze, \texttt{main.py}, umožňuje uživateli zadat vstupní data pro výpočet nejkratší cesty mezi dvěma obcemi prostřednictvím příkazové řádky. Druhá verze, \texttt{main\_gui.py}, nabízí jednoduché grafické uživatelské rozhraní (GUI), které umožňuje interaktivní výběr obcí z rozbalovacích seznamů (comboboxů), mezi kterými má být nalezena nejkratší cesta.
+
+\subsection{Potřebné moduly}
+Pro tvorbu programu byly využity následující knihovny a moduly:
+\begin{itemize}
+    \item \texttt{tkinter} – pro vytvoření grafického uživatelského rozhraní v druhé verzi programu.
+    \item \texttt{matplotlib} – pro vizualizaci grafu a zobrazení výsledků výpočtu.
+    \item \texttt{graph\_reader} – vlastní modul pro načítání grafu a souvisejících dat (uzlů a obcí).
+    \item \texttt{graph\_path\_finder} – vlastní modul, který implementuje zadané algoritmy.
+\end{itemize}
+
+\subsection{Načtení dat}
+Nejprve bylo potřeba načíst data o grafu a souřadnicích uzlů. Tato data jsou uložena v textových souborech, které jsou následně zpracovány pomocí funkcí \texttt{read\_graph} a \texttt{read\_nodes\_names}:
+\begin{verbatim}
+file = './U3/data/graph_unweighted.txt'
+municipalities_file = './U3/data/municipalities_nearest_nodes.txt'
+G, C = read_graph(file)
+municipalities = read_nodes_names(municipalities_file)
+\end{verbatim}
+Funkce \texttt{read\_graph} načte graf a souřadnice uzlů, přičemž data jsou uložena do proměnných \texttt{G} (graf) a \texttt{C} (souřadnice uzlů). Funkce \texttt{read\_nodes\_names} načte slovník názvů obcí a jejich souřadnic.
+
+\subsection{Přiřazení uzlů k obcím}
+Pro uživatelsky přívětivé vyhledávání cesty bylo nutné přiřadit každé obci odpovídající uzel grafu. Tento krok je realizován pomocí slovníku \texttt{municipality\_to\_node}, který mapuje název obce na uzel:
+\begin{verbatim}
+municipality_to_node = {}
+for municipality, (x, y) in municipalities.items():
+    for node, coords in C.items():
+        if coords == [x, y]:
+            municipality_to_node[municipality] = node
+\end{verbatim}
+Tento kód porovnává souřadnice obcí s odpovídajícími souřadnicemi uzlů a přiřazuje obcím jejich příslušné uzly v grafu.
+
+\subsection{Získání vstupu od uživatele}
+V obou verzích programu je uživatel požádán o zadání počátečního a koncového uzlu pro nalezení nejkratší cesty. Ve verzi s příkazovou řádkou je tento vstup získán pomocí funkce \texttt{input}, zatímco ve verzi s grafickým uživatelským rozhraním (GUI) je tento vstup získán prostřednictvím rozbalovacích nabídek, kde uživatel vybere obce z předem definovaného seznamu. Pokud jsou obě hodnoty validní, odpovídající uzly jsou získány z mapy \texttt{municipality\_to\_node}.
+
+\subsubsection*{Příklad kódu pro verzi s příkazovou řádkou:}
+\begin{verbatim}
+# Verze pro příkazovou řádku
+start_node_name = input("Enter the starting node name: ")
+end_node_name = input("Enter the ending node name: ")
+\end{verbatim}
+
+\subsubsection*{Příklad kódu pro verzi s GUI:}
+\begin{verbatim}
+# Verze pro GUI
+start_combobox = ttk.Combobox(root, values=sorted(list(municipality_to_node.keys())))
+end_combobox = ttk.Combobox(root, values=sorted(list(municipality_to_node.keys())))
+start_combobox.grid(row=0, column=1, padx=10, pady=10)
+end_combobox.grid(row=1, column=1, padx=10, pady=10)
+\end{verbatim}
+
+\subsection{Výpočty a algoritmy}
+Pro analýzu grafu a hledání cest mezi uzly byla v programu využita třída \texttt{GraphPathFinder}, která implementuje různé algoritmy pro prohledávání grafu a hledání cest. Mezi tyto algoritmy patří:
+
+\begin{itemize}
+    \item \textbf{BFS (Breadth-First Search) a DFS (Depth-First Search):} Tyto algoritmy slouží k prohledání grafu. BFS používá prohledávání grafu do šířky, zatímco DFS se používá pro prohledávání grafu do hloubky.
+    \item \textbf{Dijkstra a Bellman-Ford:} Tyto algoritmy jsou určeny k nalezení nejkratší cesty mezi dvěma uzly v grafu, přičemž Dijkstra je efektivní pro grafy s kladnými váhami, zatímco Bellman-Ford zvládá i grafy s negativními váhami.
+    \item \textbf{Prim a Borůvka:} Tyto algoritmy slouží k nalezení minimální kosterního stromu grafu, což je podmnožina hran grafu, která spojuje všechny uzly s minimální váhou.
+\end{itemize}
+
+Pro každý z těchto algoritmů byl napsán kód, který provádí výpočty a zobrazuje výsledky uživateli. Příklad použití algoritmů je následující:
+
+\begin{verbatim}
+# Vytvoření instance pro práci s grafem
+SP = GraphPathFinder(G)
+
+# BFS a DFS pro počáteční uzel
+bfs_path = SP.BFS(start_node)
+dfs_path = SP.DFS(start_node)
+
+# Hledání všech nejkratších cest
+all_shortest_paths = SP.all_shortest_paths()
+
+# Hledání nejkratší cesty mezi počátečním a koncovým uzlem (samo vybere vhodný algoritmus)
+shortest_path, min_cost = SP.shortest_cost_path(start_node, end_node)
+specific_path = SP.rec_path(start_node, end_node, shortest_path)
+
+# Dijkstra's algorithm
+dijkstra_path, dijkstra_weight = SP.dijkstra(start_node, end_node)
+
+# Bellman-Ford algorithm
+bellman_ford_path, bellman_ford_weight = SP.bellman_ford(start_node, end_node)
+
+# Minimum spanning tree using Prim's algorithm
+mst_prim, mst_weight_prim = SP.prim()
+
+# Minimum spanning tree using Borůvka's algorithm
+mst_boruvka, mst_weight_boruvka = SP.boruvka()
+\end{verbatim}
+
+\subsection{Vizualizace grafu}
+
+Pro vizualizaci grafu a výsledků výpočtů byla využita knihovna \texttt{matplotlib}. Před samotným vykreslením výsledků byly v programu připraveny metody pro vykreslování, které obsahují bloky kódu, jež by se v kódu často opakovaly. Tyto metody jsou součástí třídy \texttt{GraphPathFinder} a umožňují efektivní zobrazení různých aspektů grafu, jako jsou uzly, cesty mezi uzly nebo minimální kostery, a to pomocí metod \texttt{plot\_graph}, \texttt{plot\_red\_nodes}, \texttt{plot\_path}, \texttt{plot\_mst} a \texttt{plot\_node\_names}. Výsledky vykreslení jsou zobrazeny ve třech oknech, kde každé okno obsahuje jiný výstup (například graf s nejkratší cestou nebo s minimální kostru podle Primova či Borůvkova algoritmu). Ukázka kódu pro vykreslení grafu a výsledků vypadá následovně:
+
+\begin{verbatim}
+
+
+
+
+# Vykreslení grafu
+SP.plot_graph(C)
+
+# Zvýraznění počátečního a koncového uzlu
+SP.plot_red_nodes({start_node, end_node}, C)
+
+# Vykreslení cesty, pokud existuje
+if path:
+    SP.plot_path(path, C)
+
+# Zobrazení názvů uzlů
+SP.plot_node_names(municipalities)
+
+# Vykreslení minimální kostry grafu
+SP.plot_mst(C, mst, line='r-')
+
+# Nastavení názvu grafu
+plt.title("Title")
+
+# Zobrazení grafu
+plt.show()
+\end{verbatim}

@@ -1,0 +1,66 @@
+\newpage
+\section{Popis algoritmů}
+
+\subsection{Ray Crossing Method}
+Bodem $q$ vedena polopřímka $r$ (tzv. ray):
+\begin{equation}
+    r(q): y = y_q.
+\end{equation}
+
+Počet průsečíků paprsku $r$ s oblastí $P$ určuje příslušnost bodu $q$:
+\begin{equation}
+    k \mod 2 =
+    \begin{cases}
+        1, & q \in P, \\
+        0, & q \notin P.
+    \end{cases}
+\end{equation}
+
+\subsubsection{Vlastnosti}
+\begin{itemize}
+    \item Rychlejší než Winding Number Algorithm.
+    \item Problém singularity: $q$ na hranici polygonu.
+    \item Špatné přiřazení bodu $p_i$ do oblasti $P$, pokud je hrana příliš krátká.
+\end{itemize}
+
+\input{text/Pseudocode/Ray_crossing}
+\newpage
+
+\subsection{Výpočet Winding Number $\Omega$}
+Suma $\Omega$ všech rotací $\omega_i$ (měřená CCW) je dána vztahem:
+\begin{equation}
+    \Omega(q, P) = \frac{1}{2\pi} \sum_{i=1}^{n} \omega(p_i, q, p_{i+1}),
+\end{equation}
+kde $\omega(p_i, q, p_{i+1})$ je orientovaný úhel mezi sousedními vrcholy mnohoúhelníku vzhledem k bodu $q$.
+
+\subsubsection{Vlastnosti}
+\begin{itemize}
+    \item Lepší ošetření singulárních případů než u paprskového algoritmu.
+    \item Pomalejší než paprskový algoritmus.
+    \item Problematický případ $q \equiv p_i$.
+    \item Nutnost předzpracování $O(N)$.
+\end{itemize}
+
+\input{text/Pseudocode/Winding_number}
+
+\newpage
+\subsection{Rychlé vyhledávání potenciálních polygonů pomocí min-max boxu}
+
+Bod se nachází v oblasti, kterou tvoří extrémy vstupního polygonu. Kdy pro bod musí platit:
+
+
+\begin{equation}
+\begin{aligned}
+    x_q &\geq x_{P\min} \land x_q \leq x_{P\max} \\
+    y_q &\geq y_{P\min} \land y_q \leq y_{P\max}
+\end{aligned}
+\end{equation}
+Používá se společně s algoritmem Winding Number nebo metodou Ray Crossing. Pokud bod leží v min-max boxu daného polygonu, je následně ověřen pomocí algoritmu Winding Number nebo metody Ray Crossing.
+\input{text/Pseudocode/minmaxbox}
+
+\subsubsection{Vlastnosti}
+\begin{itemize}
+    \item Velmi rychlé vyhledávání.
+    \item Nedokáže univerzálně odhalit zda je bod uvnitř polygonu.
+    \item Doplňková metoda pro urychlení vyhledávání.
+\end{itemize}

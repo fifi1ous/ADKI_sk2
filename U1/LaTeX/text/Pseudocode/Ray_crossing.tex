@@ -1,0 +1,46 @@
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Metoda \texttt{Ray\_Crossing\_Algorithm}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} bod $q$, polygon $P$
+        \STATE \textbf{Výstup:} číslo udávající polohu bodu vzhledem k $P$ ($0$ - vně, $1$ - uvnitř, $2$ - na hraně, $3$ - ve vrcholu)
+        
+        \STATE $k \gets 0$ \COMMENT{Počet průsečíků}
+        \STATE $n \gets$ počet vrcholů polygonu $P$
+        
+        \FOR{$i \gets 0$ \TO $n-1$}
+            \STATE $ii \gets (i + 1) \mod n$
+            \STATE $x'_i \gets P[i].x - q.x$
+            \STATE $y'_i \gets P[i].y - q.y$
+            \STATE $x'_{ii} \gets P[ii].x - q.x$
+            \STATE $y'_{ii} \gets P[ii].y - q.y$
+            
+            \COMMENT{Kontrola zvláštních případů}
+            \IF{$(|x'_i| \leq \varepsilon \land |y'_i| \leq \varepsilon) \lor (|x'_{ii}| \leq \varepsilon \land |y'_{ii}| \leq \varepsilon)$}
+                \STATE \textbf{return} $3$ \COMMENT{Bod leží ve vrcholu}
+            \ENDIF
+            
+            \STATE $d_{i,ii} \gets \sqrt{(P[i].x - P[ii].x)^2 + (P[i].y - P[ii].y)^2}$
+            \STATE $d_{i,q} \gets \sqrt{(P[i].x - q.x)^2 + (P[i].y - q.y)^2}$
+            \STATE $d_{ii,q} \gets \sqrt{(P[ii].x - q.x)^2 + (P[ii].y - q.y)^2}$
+            
+            \IF{$|d_{i,q} + d_{ii,q} - d_{i,ii}| \leq \varepsilon$}
+                \STATE \textbf{return} $2$ \COMMENT{Bod leží na hraně}
+            \ENDIF
+            
+            \COMMENT{Ray Crossing Test}
+            \IF{$(y'_{ii} > 0 \land y'_i \leq 0) \lor (y'_i > 0 \land y'_{ii} \leq 0)$}
+                \STATE $x'_m \gets \frac{x'_{ii} y'_i - x'_i y'_{ii}}{y'_{ii} - y'_i}$
+                \IF{$x'_m > 0$}
+                    \STATE $k \gets k + 1$
+                \ENDIF
+            \ENDIF
+        \ENDFOR
+        
+        \IF{$k \mod 2 = 0$}
+            \STATE \textbf{return} $0$ \COMMENT{Bod leží vně polygonu}
+        \ELSE
+            \STATE \textbf{return} $1$ \COMMENT{Bod leží uvnitř polygonu}
+        \ENDIF
+    \end{algorithmic}
+\end{algorithm}

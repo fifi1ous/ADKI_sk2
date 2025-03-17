@@ -1,0 +1,109 @@
+\begin{algorithm}
+    \setstretch{0.8}
+    \caption{Obsluha událostí myši pro kreslení polygonů}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} událost myši $e$
+        
+        \COMMENT{Zpracování levého tlačítka myši}
+        \IF{$e.\text{button} = \text{LeftButton}$}
+            \IF{$\text{currentPolygon}$ je prázdný \textbf{a} $\text{isPolygonReady} = \text{true}$}
+
+                \STATE $\text{polygonComplex}.\text{push\_back}(\text{curentCPolygon})$
+                \STATE $\text{curentCPolygon}.\text{outer} \gets \emptyset$
+                \STATE $\text{curentCPolygon}.\text{holes} \gets \emptyset$
+                
+                \COMMENT{Uložit a vyčistit aktuální kreslený polygon}
+                \STATE $\text{polygonsWH}.\text{push\_back}(\text{curentPolygonWH})$
+                \STATE $\text{curentPolygonWH} \gets \emptyset$
+            \ENDIF
+            
+            \COMMENT{Vymazat případné neukončené díry}
+            \STATE $\text{currentHole} \gets \emptyset$
+            
+            \COMMENT{Resetovat stav polygonu}
+            \STATE $\text{isPolygonReady} \gets \text{false}$
+            
+            \COMMENT{Zpracovat událost levého tlačítka}
+            \STATE \textbf{volání} \texttt{mousePressEventLeft}($e$)
+        \ENDIF
+
+        \COMMENT{Zpracování pravého tlačítka myši}
+        \IF{$e.\text{button} = \text{RightButton}$}
+            \IF{\textbf{not} $\text{isPolygonReady}$ \textbf{or} $\text{currentPolygon}$ není prázdný}
+                \STATE \textbf{zobrazit zprávu} "Dokončete polygon před přidáním děr"
+            \ELSE
+                \STATE \textbf{volání} \texttt{mousePressEventRight}($e$)
+            \ENDIF
+        \ENDIF
+
+        \COMMENT{Obnovit vykreslení}
+        \STATE \textbf{repaint}
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+    \setstretch{1}
+    \caption{Zpracování levého tlačítka myši}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} událost myši $e$
+        
+        \COMMENT{Pokud se jedná o dvojklik, ukončit polygon}
+        \IF{$e.\text{type} = \text{MouseButtonDblClick}$}
+            \IF{$\text{currentPolygon}$ není prázdný}
+                \STATE $\text{curentCPolygon}.\text{outer} \gets \text{currentPolygon}$
+                
+                \COMMENT{Uzavřít polygon přidáním prvního bodu na konec}
+                \STATE $\text{currentPolygon}.\text{push\_back}(\text{currentPolygon}.\text{first})$
+                \STATE $\text{curentPolygonWH}.\text{addPolygon}(\text{currentPolygon})$
+                
+                \COMMENT{Označit polygon jako dokončený}
+                \STATE $\text{isPolygonReady} \gets \text{true}$
+                \STATE $\text{currentPolygon} \gets \emptyset$
+            \ENDIF
+            \STATE \textbf{repaint}
+            \STATE \textbf{return}
+        \ENDIF
+        
+        \COMMENT{Získat souřadnice kliknutí}
+        \STATE $x \gets e.\text{pos}.\text{x}$
+        \STATE $y \gets e.\text{pos}.\text{y}$
+
+        \IF{$\text{add\_point} = \text{true}$}
+            \STATE $q.x \gets x$
+            \STATE $q.y \gets y$
+        \ELSE
+            \STATE $\text{p} \gets \text{QPointF}(x, y)$
+            \STATE $\text{currentPolygon}.\text{push\_back}(p)$
+        \ENDIF
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+    \setstretch{1}
+    \caption{Zpracování pravého tlačítka myši}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} událost myši $e$
+        
+        \COMMENT{Pokud se jedná o dvojklik, ukončit díru}
+        \IF{$e.\text{type} = \text{MouseButtonDblClick}$}
+            \IF{$\text{currentHole}$ není prázdný}
+                \STATE $\text{curentCPolygon}.\text{holes}.\text{push\_back}(\text{currentHole})$
+                
+                \COMMENT{Uzavřít díru přidáním prvního bodu na konec}
+                \STATE $\text{currentHole}.\text{push\_back}(\text{currentHole}.\text{first})$
+                \STATE $\text{curentPolygonWH}.\text{addPolygon}(\text{currentHole})$
+                
+                \COMMENT{Vymazat díru}
+                \STATE $\text{currentHole} \gets \emptyset$
+            \ENDIF
+            \STATE \textbf{repaint}
+            \STATE \textbf{return}
+        \ENDIF
+        
+        \COMMENT{Přidat bod do aktuální díry}
+        \STATE $x \gets e.\text{pos}.\text{x}$
+        \STATE $y \gets e.\text{pos}.\text{y}$
+        \STATE $\text{p} \gets \text{QPointF}(x, y)$
+        \STATE $\text{currentHole}.\text{push\_back}(p)$
+    \end{algorithmic}
+\end{algorithm}

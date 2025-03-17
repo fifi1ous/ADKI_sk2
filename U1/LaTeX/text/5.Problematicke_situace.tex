@@ -1,0 +1,86 @@
+\section{Problematické situace}
+
+\subsection{Polygon s dírami}
+Pro práci s polygonem, který může obsahovat díry, je nutné uchovávat údaje o vnější straně polygonu, která je jediná, a o dírách, kterých může být více. Je tedy potřeba zajistit správné přiřazení děr ke každému polygonu. Při vykreslování je nezbytné odlišit vykreslení oblasti, která znázorňuje díru, od zbytku polygonu. Tento problém byl rozdělen na dvě části: jednu, která analyzuje polygon, a druhou, která se zabývá jeho vykreslováním.
+
+\subsubsection{Vytvoření polygonu s dírami}
+Body polygonu, nebo díry daného polygonu jsou ukládány do pomocných proměnných typu \texttt{QPolygonF}. Ty jsou následně ukládány do korespondujících proměnných.
+\begin{itemize}
+    \item Pro analýzu polygonu s dírami byla vytvořena struktura \texttt{Polygon\_}, která se skládá z \texttt{outer} a \texttt{holes}. \texttt{Outer} představuje jeden polygon typu \texttt{QPolygonF}, zatímco \texttt{holes} je vektor typu \newline \texttt{std::vector<QPolygonF>}, který obsahuje všechny díry. Po vytvoření polygonu nebo jeho díry je objekt přidán do pomocné proměnné typu \texttt{Polygon\_}. Po dokončení jednoho polygonu a zahájení nového, nebo při kreslení bodu, je aktuální polygon přidán do \texttt{std::vector<Polygon\_>}, který uchovává všechny polygony.
+    \item Pro vykreslování polygonu je polygon a díry ukládán do pomocné proměnné typu \texttt{QPainterPath}. Po dokončení jednoho polygonu a zahájení nového, nebo při kreslení bodu, je aktuální polygon přidán do \texttt{std::vector<QPainterPath>}, který uchovává všechny polygony pro vykreslování.
+\end{itemize}
+Pro správné manuální vkládání polygonu a jeho děr, je potřeba rozlišit vstup pro díry a pro vnější polygon. Pro tvorbu vnější strany polygonu bylo přiřazeno levé tlačítko myši a pro tvorbu díry bylo přiřazeno pravé tlačítko myši. Je potřeba proto stanovit podmínky pro správné vytvoření polygonu s dírami, které nesmí být porušeny.
+\begin{itemize}
+    \item Nesmí být jako první vytvářena díra.
+    \item Nesmí se vytvářet díra do nedokončeného polygonu.
+    \item Po dokončení děr, musí být polygon uložen do vektoru všech polygonů.
+\end{itemize}
+
+\subsubsection{Atributy a metody pro vytváření polygonu s dírami}
+\textbf{Atributy:}
+\begin{itemize}
+    \item \texttt{QPolygonF currentPolygon} - aktuální polygon.
+    \item \texttt{QPolygonF currentHole} - aktuální díra.
+    \item \texttt{Polygon\_ curentCPolygon} - aktuální polygon komplexní struktury.
+    \item \texttt{QPainterPath curentPolygonWH} - aktuální polygon pro vykreslení.
+    \item \texttt{std::vector<QPainterPath> polygonsWH} - vektor komplexní struktury polygonů.
+    \item \texttt{ std::vector<Polygon\_> polygonComplex} - vektor polygonů pro vykreslení.
+    \item \texttt{bool isPolygonReady = false} - je polygon připravený.
+\end{itemize}
+\textbf{Metody:}
+\begin{itemize}
+    \item \texttt{void mousePressEvent(QMouseEvent *e)} - obsluha událostí myši pro kreslení polygonů.
+    \item \texttt{void mousePressEventLeft(QMouseEvent *e)} - zpracování levého tlačítka myši.
+    \item \texttt{void mousePressEventRight(QMouseEvent *e)} - zpracování pravého tlačítka myši.
+\end{itemize}
+\input{text/Pseudocode/AddingPolygon}
+
+\newpage
+\subsubsection{Analýza polygonu s dírami}
+K analýze, zda se bod nachází v polygonu, je nejprve nutné ověřit, zda neleží v některé z děr daného polygonu. Pokud ano, bod není součástí polygonu. Proto se nejprve provádí analýza jednotlivých děr a teprve poté kontrola vůči samotnému polygonu.
+\input{text/Pseudocode/checkPolygon}
+
+\subsubsection{Vykreslení polygonu s dírami}
+Pro správné vykreslení polygonu nebo děr je potřeba před předáním pomocného polygonu typu \texttt{QPolygonF} do proměnné typu \texttt{QPainterPath} přidat počáteční bod na konec pomocného polygonu.
+
+\subsection{Zvýraznění polygonů}
+Po určení, zda se bod nachází v polygonu, je nutné vybrané polygony znovu vykreslit jinou barvou. Jakmile jsou polygony identifikovány, musí být jejich vykreslení aktualizováno. Pokud se vykreslení výsledků zruší, je potřeba obnovit původní barvu polygonů. Když bod leží v daném polygonu je přidán do \texttt{std::vector<QPainterPath> selectedPolygonsWH}, když se výběr zruší tak jsou prvky z \newline \texttt{std::vector<QPainterPath> selectedPolygonsWH} vymazány. Při překreslování, jsou všechny polygony znovu vykresleny
+\input{text/Pseudocode/Draw}
+
+\subsection{Souřadnice shapefilu}
+Při nahrávání a vykreslování polygonů ze shapefile je nutné provést transformaci souřadnic z geografického souřadnicového systému do souřadnicového systému okna aplikace.
+
+\begin{itemize}
+    \item \textbf{Načtení hranic shapefile} \\
+    Nejprve se pomocí funkce \texttt{SHPGetInfo} zjistí minimální a maximální souřadnice polygonů obsažených ve shapefile (bounding box).
+
+    \item \textbf{Zjištění rozměrů okna aplikace} \\
+    Rozměry vykreslovací plochy se zjistí funkcemi \texttt{width()} a \texttt{height()}. Tyto hodnoty definují maximální prostor, který může být využit pro zobrazení polygonů.
+
+    \item \textbf{Výpočet měřítka transformace} \\
+    Aby se polygon přizpůsobil velikosti vykreslovací oblasti vypočte se měřítkový koeficient:
+    \begin{equation}
+        \text{scale} = \min \left( \frac{\text{widgetWidth}}{\text{maxX} - \text{minX}}, \frac{\text{widgetHeight}}{\text{maxY} - \text{minY}} \right)
+    \end{equation}
+
+    \item \textbf{Výpočet posunu polygonu} \\
+    Po aplikaci měřítka je třeba polygon zarovnat do středu vykreslovací plochy. Posun v ose X a Y se vypočte následovně:
+    \begin{equation}
+        \text{offsetX} = \frac{\text{widgetWidth} - (\text{maxX} - \text{minX}) \cdot \text{scale}}{2} - \text{minX} \cdot \text{scale}
+    \end{equation}
+    \begin{equation}
+        \text{offsetY} = \frac{\text{widgetHeight} - (\text{maxY} - \text{minY}) \cdot \text{scale}}{2} + \text{maxY} \cdot \text{scale}
+    \end{equation}
+
+    \item \textbf{Transformace jednotlivých bodů} \\
+    Každý bod X a Y v polygonu se transformuje následujícím způsobem:
+    \begin{equation}
+        \text{transformedX} = \text{x} \cdot \text{scale} + \text{offsetX}
+    \end{equation}
+    \begin{equation}
+        \text{transformedY} = -\text{y} \cdot \text{scale} + \text{offsetY}
+    \end{equation}
+    
+    \item \textbf{Uložení transformovaných bodů} \\
+    Transformované body jsou uloženy do datové struktury pro polygon.
+\end{itemize}

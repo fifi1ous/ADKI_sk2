@@ -1,0 +1,25 @@
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Metoda \texttt{Min\_Max\_Box}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} bod $q$, polygon $P$
+        \STATE \textbf{Výstup:} $\texttt{true}$, pokud bod leží uvnitř min-max boxu, jinak $\texttt{false}$
+
+        \COMMENT{Inicializace extrémních hodnot}
+        \STATE $x_{\min} \gets \min(x_{\min}, P.x)$
+        \STATE $x_{\max} \gets \max(x_{\max}, P.x)$
+        \STATE $y_{\min} \gets \min(y_{\min}, P.y)$
+        \STATE $y_{\max} \gets \max(y_{\max}, P.y)$
+        
+        \COMMENT{Získání souřadnic bodu $q$}
+        \STATE $x_q \gets q.x$
+        \STATE $y_q \gets q.y$
+        
+        \COMMENT{Test, zda bod leží uvnitř min-max boxu}
+        \IF{$x_q \geq x_{\min} \land x_q \leq x_{\max} \land y_q \geq y_{\min} \land y_q \leq y_{\max}$}
+            \STATE \textbf{return} \texttt{true} \COMMENT{Bod leží uvnitř min-max boxu}
+        \ELSE
+            \STATE \textbf{return} \texttt{false} \COMMENT{Bod leží mimo min-max box}
+        \ENDIF
+    \end{algorithmic}
+\end{algorithm}

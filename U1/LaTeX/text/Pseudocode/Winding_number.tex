@@ -1,0 +1,52 @@
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Metoda \texttt{Winding\_Number\_Algorithm}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} bod $q$, polygon $P$
+        \STATE \textbf{Výstup:} číslo udávající polohu bodu vzhledem k $P$ ($0$ - vně, $1$ - uvnitř, $2$ - na hraně, $3$ - ve vrcholu)
+        
+        \STATE $\omega \gets 0$ \COMMENT{Inicializace součtu úhlů (winding number)}
+        \STATE $n \gets$ počet vrcholů polygonu $P$
+        
+        \FOR{$i \gets 0$ \TO $n-1$}
+            \STATE $ii \gets (i + 1) \mod n$
+            \STATE $p_i \gets P[i]$, $p_{ii} \gets P[ii]$
+            
+            \STATE $x'_i \gets p_i.x - q.x$, $y'_i \gets p_i.y - q.y$
+            \STATE $x'_{ii} \gets p_{ii}.x - q.x$, $y'_{ii} \gets p_{ii}.y - q.y$
+            
+            \COMMENT{Kontrola zvláštních případů}
+            \IF{$(|x'_i| \leq \varepsilon \land |y'_i| \leq \varepsilon) \lor (|x'_{ii}| \leq \varepsilon \land |y'_{ii}| \leq \varepsilon)$}
+                \STATE \textbf{return} $3$ \COMMENT{Bod leží ve vrcholu}
+            \ENDIF
+            
+            \STATE $d_{i,ii} \gets \sqrt{(p_i.x - p_{ii}.x)^2 + (p_i.y - p_{ii}.y)^2}$
+            \STATE $d_{i,q} \gets \sqrt{(p_i.x - q.x)^2 + (p_i.y - q.y)^2}$
+            \STATE $d_{ii,q} \gets \sqrt{(p_{ii}.x - q.x)^2 + (p_{ii}.y - q.y)^2}$
+            
+            \IF{$|d_{i,q} + d_{ii,q} - d_{i,ii}| \leq \varepsilon$}
+                \STATE \textbf{return} $2$ \COMMENT{Bod leží na hraně}
+            \ENDIF
+            
+            \COMMENT{Výpočet úhlu a jeho příspěvku k winding number}
+            \STATE $cos\gamma \gets \frac{d_{i,q}^2 + d_{ii,q}^2 - d_{i,ii}^2}{2 \cdot d_{i,q} \cdot d_{ii,q}}$
+            \STATE $\theta \gets \arccos(cos\gamma)$
+            
+            \COMMENT{Výpočet orientace pomocí determinantů}
+            \STATE $\det \gets (p_{ii}.x - p_i.x) \cdot (q.y - p_i.y) - (p_{ii}.y - p_i.y) \cdot (q.x - p_i.x)$
+            
+            \IF{$\det > 0$}
+                \STATE $\omega \gets \omega + \theta$ \COMMENT{Bod je v levé polorovině}
+            \ELSIF{$\det < 0$}
+                \STATE $\omega \gets \omega - \theta$ \COMMENT{Bod je v pravé polorovině}
+            \ENDIF
+        \ENDFOR
+        
+        \COMMENT{Rozhodnutí na základě součtu úhlů}
+        \IF{$|\omega| \geq 2\pi - \varepsilon$}
+            \STATE \textbf{return} $1$ \COMMENT{Bod leží uvnitř polygonu}
+        \ELSE
+            \STATE \textbf{return} $0$ \COMMENT{Bod leží vně polygonu}
+        \ENDIF
+    \end{algorithmic}
+\end{algorithm}

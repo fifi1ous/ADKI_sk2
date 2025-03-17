@@ -1,0 +1,41 @@
+\section{Závěr}
+
+V rámci této úlohy byla vytvořena aplikace, která umožňuje analýzu polohy bodu vůči polygonové mapě pomocí dvou algoritmů: \texttt{Ray Crossing Algorithm} a \texttt{Winding Number Algorithm}. Aplikace umožňuje uživateli ruční tvorbu polygonové mapy nebo nahrání polygonů ze souboru ve formátech \texttt{*.TXT} a \texttt{*.SHP}. Uživatel může měnit polohu bodu na mapě a aplikace vizuálně zvýrazní výsledek analýzy. Pro vyhodnocení polohy bodu byly ošetřeny speciální případy, kdy bod leží na hraně polygonu nebo je totožný s některým z jeho vrcholů. Aplikace umožňuje zvýraznit odpovídající polygon vizuálně pomocí změny barvy na červenou. Pro zrychlení vyhledávání relevantních polygonů byla použita metoda min-max boxů. Implementace byla provedena v jazyce C++ s využitím frameworku Qt pro grafické rozhraní.
+
+
+\subsection{Další Možné Neřešené Problémy a Náměty na Vylepšení}
+
+\begin{itemize} 
+    \item \textbf{Podpora dalších formátů:} V současnosti aplikace podporuje načítání polygonů ze souborů ve formátech TXT a SHP. Bylo by vhodné rozšířit podporu také o formáty jako GeoJSON nebo GeoPackage, které jsou běžně využívány v GIS aplikacích.
+
+     \item \textbf{Generování náhodných polygonů:} Aplikace by mohla být rozšířena o možnost generování náhodných polygonů.
+
+    \item \textbf{Ukládání vytvořených polygonů:} Aktuálně aplikace umožňuje načítání polygonů, ale ne jejich ukládání. Přidání možnosti exportu polygonů do souboru by zlepšilo použitelnost aplikace.
+
+    \item \textbf{Generování textového souboru s výsledky analýzy:} Aplikace by mohla být rozšířena o možnost generování textového souboru obsahujícího výsledky analýzy polohy bodu vůči polygonům. To by usnadnilo uchování a sdílení výsledků analýz.
+    
+    \item \textbf{Dávkové zpracování:} Dalším vylepším by mohla být implementace dávkového zpracování, které by umožnilo uživateli analyzovat více bodů nebo polygonů najednou bez nutnosti interaktivního zadávání dat.
+    
+    \item \textbf{Možnosti interakce s polygonovou mapou:} Aktuální implementace umožňuje pouze základní práci s polygony. Bylo by možné rozšířit funkcionalitu o editaci polygonů, například odebírání jednotlivých vrcholů nebo přidávání nových.
+    
+    \item \textbf{Zoomování a posouvání mapy:} Aplikace v současnosti nezahrnuje podporu pro přibližování a posun mapy, což by mohlo usnadnit práci s polygony.
+    
+    \item \textbf{Odstranění jednotlivých prvků:} Dalším možným vylepšením by byla možnost selektivního mazání nakreslených prvků, například odstranění konkrétního polygonu nebo jeho editace, aniž by bylo nutné smazat veškeré polygony.
+
+    \item \textbf{Implementace Half-Plane Testu:} Dalším rozšířením by mohla být implementace metody Half-Plane Test. Pro její správnou funkčnost by však bylo nutné nejprve ověřit, zda je polygon konvexní, a pokud ne, rozdělit jej na konvexní části.
+
+    \item \textbf{Nastavení:} Přidat tlačítko umožňující nastavení parametrů, jako jsou barva, tloušťka a velikost.
+
+    \item \textbf{Rušení aktuálně kresleného prvku:}  Možnost zrušit aktuální kresbu pomocí tlačítka.
+
+    \item \textbf{Čtení polygonů s dírami:} Implementovat načítání polygonů uložených v textovém souboru nebo shapefile tak, aby správně identifikovalo a uložilo díry.
+
+    \item \textbf{Polygon s dírami:} Zamezit tvorbě děr mimo polygon nebo uvnitř již existující díry.
+
+    \item \textbf{Aktualizace vektoru polygonů před analýzou:} Jakmile se vytvoří nový polygon přidáním bodu, neproběhne jeho analýza okamžitě, protože ještě není uložen ve vektoru polygonů. Analýza se provede až při vytvoření dalšího bodu nebo polygonu. Proto je vhodné před analýzou nejprve aktualizovat vektor polygonů.
+
+    \item \textbf{Formát textového souboru:} Vytvoří načítání, aby bylo možné načíst textový soubor s různými formáty.
+
+    \item \textbf{Vizuál aplikace:} Zlepšit vizuální stránku aplikace.
+
+\end{itemize}
