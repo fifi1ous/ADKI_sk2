@@ -19,6 +19,8 @@ public:
     void switch_source();
     QPointF getQ() const {return q;}
     QPolygonF getPol()const {return pol;}
+    void loadPolygonFromTextfile(const QString &fileName);
+    void loadPolygonFromShapefile(const QString &fileName);
 
 signals:
 };

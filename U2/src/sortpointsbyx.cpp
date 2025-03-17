@@ -1,9 +1,6 @@
 #include "sortpointsbyx.h"
 
-sortPointsByX::sortPointsByX() {}
-
-bool sortPointsByX:: operator() (const QPointF &p1, const QPointF &p2)
+sortPointsByX::sortPointsByX()
 {
-    return p1.x() < p2.x();
-}
 
+}

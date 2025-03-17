@@ -72,3 +72,14 @@ void Draw::switch_source()
     //Input q or polygon vertex
     add_point = !add_point;
 }
+
+
+void Draw::loadPolygonFromTextfile(const QString &fileName)
+{
+
+}
+
+void Draw::loadPolygonFromShapefile(const QString &fileName)
+{
+
+}
