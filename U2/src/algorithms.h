@@ -3,6 +3,8 @@
 #include <QtGui>
 
 #include <tuple>
+#include "../lib/Eigen/Dense"
+#include "../lib/Eigen/Core"
 
 class Algorithms
 {
@@ -15,7 +17,8 @@ public:
     static QPolygonF rotate(const QPolygonF &pol, double sigma);
     static double getArea(const QPolygonF &pol);
     static QPolygonF resize(const QPolygonF &pol, const QPolygonF &mmbox);
-    static QPolygonF getMAER(const QPolygonF &pol);
+    static QPolygonF createMAER(const QPolygonF &pol);
+    static QPolygonF createERPCA(const QPolygonF &pol);
 
 };
 

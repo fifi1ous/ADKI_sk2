@@ -103,7 +103,7 @@ std::tuple<QPolygonF, double> Algorithms::minMaxBox(const QPolygonF &pol)
     QPointF v4(xmin,ymax);
 
     //Create new polygon
-    QPolygonF pol_new = {v1, v1, v3, v4};
+    QPolygonF pol_new = {v1, v2, v3, v4};
 
     //Compute area
     area = (xmax - xmin) * (ymax - ymin);
@@ -140,7 +140,7 @@ QPolygonF Algorithms::rotate(const QPolygonF &pol, double sigma)
 }
 
 
-static double getArea(const QPolygonF &pol)
+double Algorithms::getArea(const QPolygonF &pol)
 {
     //Compute area using LH formula
 
@@ -157,7 +157,7 @@ static double getArea(const QPolygonF &pol)
 }
 
 
-static QPolygonF resize(const QPolygonF &pol, const QPolygonF &mmbox)
+QPolygonF Algorithms::resize(const QPolygonF &pol, const QPolygonF &mmbox)
 {
     //Resize minimum area enclosing rectangle in order to have the same area as a building
     double Ab = getArea(pol);
@@ -206,21 +206,24 @@ static QPolygonF resize(const QPolygonF &pol, const QPolygonF &mmbox)
 }
 
 
-QPolygonF Algorithms::getMAER(const QPolygonF &pol)
+QPolygonF Algorithms::createMAER(const QPolygonF &pol)
 {
     //Create minimun area enclosing rectangle over the building
-    auto [maer, area_min] = minMaxBox(pol);
+    double sigma_min = 2* M_PI;
+
+    //Construct min-max box
+    auto [mmbox_min, area_min] = minMaxBox(pol);
 
     //Create CH
     QPolygonF ch = createCH(pol);
 
     //Process all segments of CG
     int n = ch.size();
-    for(int i = 0;i<n;i++)
+    for(int i = 0; i < n; i++)
     {
         //Get ch segment and its coordinate differencies
-        double dx = ch[(i+1)%n].x()-ch[i+1].x();
-        double dy = ch[(i+1)%n].y()-ch[i+1].y();
+        double dx = ch[(i+1)%n].x()-ch[i].x();
+        double dy = ch[(i+1)%n].y()-ch[i].y();
 
         //Get angle of rotation
         double sigma = atan2(dy, dx);
@@ -234,19 +237,72 @@ QPolygonF Algorithms::getMAER(const QPolygonF &pol)
         //Update minimum
         if(area < area_min)
         {
-            maer = mmbox;
+            // Update minimum
+            area_min = area;
+            sigma_min = sigma;
+            mmbox_min = mmbox;
         }
 
     }
+    // Resize mmbox
+    QPolygonF mmbox_min_res = resize(pol, mmbox_min);
 
+    // Rotate min-max box with mimimum area
+    return rotate(mmbox_min_res, sigma_min);
 
 }
 
 
 
+QPolygonF Algorithms::createERPCA(const QPolygonF &pol)
+{
+    // Create area enclosing rectangle over the puilding using PCA
 
+    int n = pol.size();
 
+    //Create matrix A
+    Eigen::MatrixXd A(n, 2);
 
+    // Add points to the matrix
 
+    for(int i = 0; i < n; i++)
+    {
+        A(i,0) = pol[i].x();
+        A(i,1) = pol[i].y();
+    }
 
+    //Compute means of coordinates over columns
+    Eigen::RowVector2d M = A.colwise().mean();
 
+    //Subtract mean: B = A - M
+    Eigen::MatrixXd B = A.rowwise() - M;
+
+    //Covariance matrix: C = B' * B / (m - 1)
+    Eigen::MatrixXd C = (B.adjoint() * B) / double(A.rows() - 1);
+
+    //Compute SVD, full version: [U, S, V] = svd(C)
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd(C, Eigen::ComputeFullV | Eigen::ComputeFullU);
+
+    //Get matrices
+    Eigen::MatrixXd U = svd.matrixU();
+    Eigen::MatrixXd S = svd.singularValues();
+    Eigen::MatrixXd V = svd.matrixV();
+
+    //Compute sigma
+
+    //Get angle of rotation
+    double sigma = atan2(V(1,0), V(0,0));
+
+    //Rotation by -sigma
+    QPolygonF pol_rot = rotate(pol, -sigma);
+
+    //Compute min-max box
+    auto [mmbox, area] = minMaxBox(pol_rot);
+
+    // Resize mmbox
+    QPolygonF mmbox_min_res = resize(pol, mmbox);
+
+    // Rotate min-max box with mimimum area
+    return rotate(mmbox_min_res, sigma);
+
+}

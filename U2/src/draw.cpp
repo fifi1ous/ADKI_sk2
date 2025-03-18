@@ -4,10 +4,15 @@
 Draw::Draw(QWidget *parent)
     : QWidget{parent}
 {
-    q.setX(0);
-    q.setY(0);
-    add_point = false;
+    //     QPointF a(50,70);
+    //     QPointF b(150,50);
+    //     QPointF c(150,130);
+    //     QPointF d(50,150);
 
+    //     building.push_back(a);
+    //     building.push_back(b);
+    //     building.push_back(c);
+    //     building.push_back(d);
 }
 
 
@@ -17,22 +22,12 @@ void Draw::mousePressEvent(QMouseEvent *e)
     double x = e->pos().x();
     double y = e->pos().y();
 
-    //Set x,y to q
-    if (add_point)
-    {
-        q.setX(x);
-        q.setY(y);
-    }
+    //Add point to polygon
+    //Create point
+    QPointF p(x, y);
 
     //Add point to polygon
-    else
-    {
-        //Create point
-        QPointF p(x, y);
-
-        //Add point to polygon
-        pol.push_back(p);
-    }
+    building.push_back(p);
 
     //Repaint screen
     repaint();
@@ -51,28 +46,28 @@ void Draw::paintEvent(QPaintEvent *event)
     painter.setPen(Qt::GlobalColor::red);
     painter.setBrush(Qt::GlobalColor::yellow);
 
+    //Draw building
+    painter.drawPolygon(building);
+
+    //Set graphics for CH
+    painter.setPen(Qt::GlobalColor::cyan);
+    painter.setPen(Qt::PenStyle::DashLine);
+    painter.setBrush(Qt::GlobalColor::transparent);
+
     //Draw polygon
-    painter.drawPolygon(pol);
+    painter.drawPolygon(ch);
 
-    //Set graphic attributes, point
-    painter.setPen(Qt::GlobalColor::black);
-    painter.setBrush(Qt::GlobalColor::blue);
 
-    //Draw point
-    const int r = 5;
-    painter.drawEllipse(q.x()-r,q.y()-r, 2*r,2*r);
+    //Set graphics for maer
+    painter.setPen(Qt::GlobalColor::magenta);
+    painter.setBrush(Qt::GlobalColor::transparent);
+
+    //Draw polygon
+    painter.drawPolygon(maer);
 
     //End draw
     painter.end();
 }
-
-
-void Draw::switch_source()
-{
-    //Input q or polygon vertex
-    add_point = !add_point;
-}
-
 
 void Draw::loadPolygonFromTextfile(const QString &fileName)
 {
