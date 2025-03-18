@@ -78,3 +78,15 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
 {
 
 }
+
+void Draw::clearPolygons()
+{
+    building.clear();
+    repaint();
+}
+
+void Draw::clearResults()
+{
+    maer.clear();
+    repaint();
+}

@@ -23,6 +23,8 @@ public:
     QPolygonF getBuilding()const{return building;}
     void setCH(QPolygonF &ch_){ch = ch_;}
     void setMAER(QPolygonF &maer_){maer = maer_;}
+    void clearPolygons();
+    void clearResults();
 
 signals:
 };

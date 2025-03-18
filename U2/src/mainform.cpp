@@ -81,7 +81,21 @@ void MainForm::on_actionPCA_triggered()
 
 void MainForm::on_actionClear_All_triggered()
 {
+    // Clear all polygons from the canvas
+    ui->Canvas->clearResults();
+    // Clear all polygons from the canvas
+    ui->Canvas->clearPolygons();
+    // Repaint the canvas
+    ui->Canvas->repaint();
+}
 
+
+void MainForm::on_actionClear_results_triggered()
+{
+    // Clear all polygons from the canvas
+    ui->Canvas->clearResults();
+    // Repaint the canvas
+    ui->Canvas->repaint();
 }
 
 
