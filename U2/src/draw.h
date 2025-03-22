@@ -18,6 +18,7 @@ private:
     QPolygonF building;
     QPolygonF ch;
     QPolygonF maer;
+    bool isShapefileLoaded = false;
 
 public:
     explicit Draw(QWidget *parent = nullptr);

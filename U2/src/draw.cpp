@@ -8,29 +8,12 @@
 #include <QMessageBox>
 #include <QDebug>
 
+#include "../lib/Shapelib/shapefil.h"
+
 Draw::Draw(QWidget *parent)
     : QWidget{parent}
 {
-        QPointF a(59,33);
-        QPointF b(263,56);
-        QPointF c(236,185);
-        QPointF d(65,149);
 
-        building.push_back(a);
-        building.push_back(b);
-        building.push_back(c);
-        building.push_back(d);
-
-        // Simulate double-click after 0.5s delay
-        QTimer::singleShot(500, this, [this]() {
-            // Simulate the first mouse press event
-            QMouseEvent *firstClick = new QMouseEvent(QEvent::MouseButtonPress, QPointF(100, 100), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-            mousePressEvent(firstClick);
-
-            // Simulate the second mouse press event (double-click)
-            QMouseEvent *secondClick = new QMouseEvent(QEvent::MouseButtonDblClick, QPointF(100, 100), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-            mousePressEvent(secondClick);
-        });
 }
 
 void Draw::mousePressEvent(QMouseEvent *e)
@@ -70,44 +53,6 @@ void Draw::mousePressEvent(QMouseEvent *e)
 }
 
 
-// void Draw::paintEvent(QPaintEvent *event)
-// {
-//     //Draw
-//     QPainter painter(this);
-
-//     //Create object for drawing
-//     painter.begin(this);
-
-//     //Set graphic attributes, polygon
-//     painter.setPen(Qt::GlobalColor::red);
-//     painter.setBrush(Qt::GlobalColor::yellow);
-
-//     //Draw building
-//     painter.drawPolygon(building);
-
-//     // Draw all stored polygons
-//     for (const auto& poly : polygons) {
-//         painter.drawPolygon(poly);
-//     }
-
-//     //Set graphics for CH
-//     painter.setPen(Qt::GlobalColor::cyan);
-//     painter.setPen(Qt::PenStyle::DashLine);
-//     painter.setBrush(Qt::GlobalColor::transparent);
-
-//     //Draw polygon
-//     painter.drawPolygon(ch);
-
-//     //Set graphics for maer
-//     painter.setPen(Qt::GlobalColor::magenta);
-//     painter.setBrush(Qt::GlobalColor::transparent);
-
-//     //Draw polygon
-//     painter.drawPolygon(maer);
-
-//     //End draw
-//     painter.end();
-// }
 void Draw::paintEvent(QPaintEvent *event)
 {
     //Draw
@@ -153,12 +98,133 @@ void Draw::paintEvent(QPaintEvent *event)
 
 void Draw::loadPolygonFromTextfile(const QString &fileName)
 {
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, "Chyba", "Nelze otevřít soubor.");
+        return;
+    }
 
+    QTextStream in(&file);
+    // Clear existing polygons before loading new ones
+    QVector<QPointF> building;
+
+    while (!in.atEnd())
+    {
+        QString line = in.readLine().trimmed();
+        if (line.isEmpty())
+        {
+            // Process completed polygon when encountering empty line
+            if (!building.isEmpty())
+            {
+                polygons.push_back(building);
+                building.clear();
+            }
+        }
+        else
+        {
+            // Parse coordinates from non-empty lines
+            QStringList coordinates = line.split(",");
+            if (coordinates.size() == 2)
+            {
+                bool ok1, ok2;
+                double x = coordinates[0].toDouble(&ok1);
+                double y = coordinates[1].toDouble(&ok2);
+
+                if (ok1 && ok2)
+                {
+                    building.append(QPointF(x, y));
+                }
+            }
+        }
+    }
+
+    // Process the last polygon if not empt
+    if (!building.isEmpty())
+    {
+        polygons.push_back(building);
+    }
+
+    file.close();
+    repaint();
 }
 
 void Draw::loadPolygonFromShapefile(const QString &fileName)
 {
+    // Open the shapefile
+    SHPHandle hSHP = SHPOpen(fileName.toStdString().c_str(), "rb");
+    if (hSHP == nullptr)
+    {
+        QMessageBox::warning(nullptr, "Error", "Cannot open shapefile.");
+        return;
+    }
 
+    int nEntities, nShapeType;
+    double adfMinBound[4], adfMaxBound[4]; // Bounding box
+    SHPGetInfo(hSHP, &nEntities, &nShapeType, adfMinBound, adfMaxBound);
+
+    if (nEntities == 0)
+    {
+        QMessageBox::warning(nullptr, "Warning", "Shapefile contains no data.");
+        SHPClose(hSHP);
+        return;
+    }
+
+    // Clear previous polygons
+    clearPolygons();
+
+    // Bounding box (minimum and maximum coordinates)
+    double minX = adfMinBound[0];
+    double maxX = adfMaxBound[0];
+    double minY = adfMinBound[1];
+    double maxY = adfMaxBound[1];
+
+    // Get widget dimensions
+    double widgetWidth = width();
+    double widgetHeight = height();
+
+    // Calculate uniform scaling factor to maintain aspect ratio
+    double scale = std::min(widgetWidth / (maxX - minX), widgetHeight / (maxY - minY));
+
+     // Calculate translation offsets to center the polygons
+    double offsetX = (widgetWidth - (maxX - minX) * scale) / 2 - minX * scale;
+    double offsetY = (widgetHeight - (maxY - minY) * scale) / 2 + maxY * scale;
+
+    for (int i = 0; i < nEntities; ++i)
+    {
+        SHPObject *psShape = SHPReadObject(hSHP, i);
+        if (psShape == nullptr || psShape->nVertices == 0)
+        {
+            SHPDestroyObject(psShape);
+            continue;
+        }
+
+        QPolygonF currentPolygon;
+
+        for (int j = 0; j < psShape->nVertices; ++j)
+        {
+             // Apply uniform scaling and translation
+            double x = psShape->padfX[j] * scale + offsetX;
+            double y = -psShape->padfY[j] * scale + offsetY; // Invert Y-axis
+
+            // Store the polygon and clear the temporary one
+            currentPolygon.append(QPointF(x, y));
+        }
+
+        if (!currentPolygon.isEmpty())
+        {
+            // Close the polygon and add to drawable polygons
+            currentPolygon.append(currentPolygon.first());
+            polygons.push_back(currentPolygon);
+        }
+
+        SHPDestroyObject(psShape);
+    }
+
+    SHPClose(hSHP);
+
+    //isShapefileLoaded = true;
+    repaint();
 }
 
 void Draw::clearPolygons()
@@ -170,6 +236,6 @@ void Draw::clearPolygons()
 
 void Draw::clearResults()
 {
-    maer.clear();
+    results.clear();
     repaint();
 }

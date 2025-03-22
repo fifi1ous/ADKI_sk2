@@ -43,62 +43,6 @@ void MainForm::on_actionOpen_triggered()
 }
 
 
-// void MainForm::on_actionMBR_triggered()
-// {
-//     //Create minimum bounding rectangle
-
-//     //Get data
-//     QPolygonF building = ui->Canvas->getBuilding();
-
-//     // Check if polygon has at least 3 points
-//     if (building.size() < 3) {
-//         QMessageBox::warning(this, "Error", "Polygon must have at least three vertices");
-//         return;
-//     }
-
-//     //Run function data
-//     QPolygonF maer = Algorithms::createMAER(building);
-
-//     //Set results
-//     ui->Canvas->setMAER(maer);
-
-//     //Repaint
-//     repaint();
-// }
-
-// void MainForm::on_actionMBR_triggered()
-// {
-//     // Získání všech polygonů jako std::vector
-//     std::vector<QPolygonF> polygons = ui->Canvas->getPolygons();
-
-//     if (polygons.empty()) {
-//         QMessageBox::warning(this, "Error", "No polygons to process.");
-//         return;
-//     }
-
-//     std::vector<QPolygonF> results;  // Používáme std::vector pro výsledky
-
-//     // Pro každý polygon v seznamu polygonů vytvoříme MBR
-//     for (const auto& building : polygons) {
-//         // Pokud má polygon alespoň 3 body, můžeme pokračovat
-//         if (building.size() < 3) {
-//             continue;  // Skip invalid polygons
-//         }
-
-//         // Spustíme algoritmus pro vytvoření MBR
-//         QPolygonF maer = Algorithms::createMAER(building);
-
-//         // Uložíme výsledek do seznamu results
-//         results.push_back(maer);
-//     }
-
-//     // Tady si můžeš nastavit výsledky na Canvas, pokud to potřebuješ
-//     // ui->Canvas->setResults(results);  // Pokud máš metodu pro nastavení výsledků
-
-//     // Repaint canvas
-//     ui->Canvas->repaint();
-// }
-
 void MainForm::on_actionMBR_triggered()
 {
     //Get all polygons

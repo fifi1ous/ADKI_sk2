@@ -76,7 +76,6 @@ QPolygonF Algorithms::createCH(const QPolygonF &pol)
     return ch;
 }
 
-
 std::tuple<QPolygonF, double> Algorithms::minMaxBox(const QPolygonF &pol)
 {
     //Create min max box
