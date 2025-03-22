@@ -43,6 +43,9 @@
     </property>
     <addaction name="actionMBR"/>
     <addaction name="actionPCA"/>
+    <addaction name="actionLongest_edge"/>
+    <addaction name="actionWall_average"/>
+    <addaction name="actionWeighted_bisector"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -71,6 +74,9 @@
    <addaction name="separator"/>
    <addaction name="actionMBR"/>
    <addaction name="actionPCA"/>
+   <addaction name="actionLongest_edge"/>
+   <addaction name="actionWall_average"/>
+   <addaction name="actionWeighted_bisector"/>
    <addaction name="separator"/>
    <addaction name="actionClear_results"/>
    <addaction name="actionClear_All"/>
@@ -116,7 +122,7 @@
   <action name="actionPCA">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/wa.png</normaloff>:/icons/wa.png</iconset>
+     <normaloff>:/icons/pca.png</normaloff>:/icons/pca.png</iconset>
    </property>
    <property name="text">
     <string>PCA</string>
@@ -144,6 +150,33 @@
    </property>
    <property name="toolTip">
     <string>Clear all data</string>
+   </property>
+  </action>
+  <action name="actionLongest_edge">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/longestedge.png</normaloff>:/icons/longestedge.png</iconset>
+   </property>
+   <property name="text">
+    <string>Longest edge</string>
+   </property>
+  </action>
+  <action name="actionWall_average">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/wa.png</normaloff>:/icons/wa.png</iconset>
+   </property>
+   <property name="text">
+    <string>Wall average</string>
+   </property>
+  </action>
+  <action name="actionWeighted_bisector">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/weightedbisector.png</normaloff>:/icons/weightedbisector.png</iconset>
+   </property>
+   <property name="text">
+    <string>Weighted bisector</string>
    </property>
   </action>
  </widget>

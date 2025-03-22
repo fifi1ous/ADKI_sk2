@@ -11,5 +11,6 @@
 		<file>icons/open_file.png</file>
 		<file>icons/wa.png</file>
 		<file>icons/weightedbisector.png</file>
+		<file>icons/pca.png</file>
     </qresource>
 </RCC>
