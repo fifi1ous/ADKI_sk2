@@ -1,5 +1,12 @@
 #include "draw.h"
+#include <QMouseEvent>
 #include <QtGui>
+#include <QPainter>
+#include <QFile>
+#include <QTextStream>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QDebug>
 
 Draw::Draw(QWidget *parent)
     : QWidget{parent}
@@ -18,6 +25,21 @@ Draw::Draw(QWidget *parent)
 
 void Draw::mousePressEvent(QMouseEvent *e)
 {
+    // Handle double-click to finish polygon creation
+    if (e->type() == QEvent::MouseButtonDblClick)
+    {
+        // Pokud existuje nějaký aktuální polygon
+        if (!building.isEmpty())
+        {
+            // Přidání aktuálního polygonu do seznamu polygonů
+            polygons.push_back(building);
+
+            // Vyprázdnění aktuálního polygonu pro nový začátek
+            building.clear();
+        }
+        repaint();
+        return;
+    }
     //Get x, y coordinates
     double x = e->pos().x();
     double y = e->pos().y();
@@ -34,6 +56,44 @@ void Draw::mousePressEvent(QMouseEvent *e)
 }
 
 
+// void Draw::paintEvent(QPaintEvent *event)
+// {
+//     //Draw
+//     QPainter painter(this);
+
+//     //Create object for drawing
+//     painter.begin(this);
+
+//     //Set graphic attributes, polygon
+//     painter.setPen(Qt::GlobalColor::red);
+//     painter.setBrush(Qt::GlobalColor::yellow);
+
+//     //Draw building
+//     painter.drawPolygon(building);
+
+//     // Draw all stored polygons
+//     for (const auto& poly : polygons) {
+//         painter.drawPolygon(poly);
+//     }
+
+//     //Set graphics for CH
+//     painter.setPen(Qt::GlobalColor::cyan);
+//     painter.setPen(Qt::PenStyle::DashLine);
+//     painter.setBrush(Qt::GlobalColor::transparent);
+
+//     //Draw polygon
+//     painter.drawPolygon(ch);
+
+//     //Set graphics for maer
+//     painter.setPen(Qt::GlobalColor::magenta);
+//     painter.setBrush(Qt::GlobalColor::transparent);
+
+//     //Draw polygon
+//     painter.drawPolygon(maer);
+
+//     //End draw
+//     painter.end();
+// }
 void Draw::paintEvent(QPaintEvent *event)
 {
     //Draw
@@ -42,30 +102,38 @@ void Draw::paintEvent(QPaintEvent *event)
     //Create object for drawing
     painter.begin(this);
 
-    //Set graphic attributes, polygon
+    //Set graphic attributes of building
     painter.setPen(Qt::GlobalColor::red);
     painter.setBrush(Qt::GlobalColor::yellow);
 
     //Draw building
     painter.drawPolygon(building);
 
-    //Set graphics for CH
-    painter.setPen(Qt::GlobalColor::cyan);
-    painter.setPen(Qt::PenStyle::DashLine);
-    painter.setBrush(Qt::GlobalColor::transparent);
-
-    //Draw polygon
-    painter.drawPolygon(ch);
-
+    //Draw all stored buildings
+    for (const auto& poly : polygons) {
+        painter.drawPolygon(poly);
+    }
 
     //Set graphics for maer
     painter.setPen(Qt::GlobalColor::magenta);
     painter.setBrush(Qt::GlobalColor::transparent);
 
-    //Draw polygon
+    //Draw all results
+    for (const auto& result : results) {
+        painter.drawPolygon(result);
+    }
+
+    //Set graphic atributes for Convex Hull (CH)
+    painter.setPen(Qt::GlobalColor::cyan);
+    painter.setPen(Qt::PenStyle::DashLine);
+    painter.setBrush(Qt::GlobalColor::transparent);
+    painter.drawPolygon(ch);
+
+    //Set graphic atributes for Minimum Bounding Rectangle (MAER)
+    painter.setPen(Qt::GlobalColor::magenta);
+    painter.setBrush(Qt::GlobalColor::transparent);
     painter.drawPolygon(maer);
 
-    //End draw
     painter.end();
 }
 
@@ -82,6 +150,7 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
 void Draw::clearPolygons()
 {
     building.clear();
+    polygons.clear();
     repaint();
 }
 

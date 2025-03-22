@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QPolygonF>
 #include <vector>
+#include <QPainterPath>
+#include <QMouseEvent>
 
 class Draw : public QWidget
 {
@@ -11,6 +13,7 @@ class Draw : public QWidget
 
 private:
     std::vector<QPolygonF> polygons;
+    std::vector<QPolygonF> results;
     QPolygonF currentPolygon;
     QPolygonF building;
     QPolygonF ch;
@@ -29,6 +32,8 @@ public:
     void setMAER(QPolygonF &maer_){maer = maer_;}
     void clearPolygons();
     void clearResults();
+    const std::vector<QPolygonF> getPolygons() const { return polygons; }
+    void setResults(const std::vector<QPolygonF>& newResults);
 
 signals:
 };
