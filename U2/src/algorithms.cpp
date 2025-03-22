@@ -38,7 +38,7 @@ QPolygonF Algorithms::createCH(const QPolygonF &pol)
 
     //Initliaze pj, pj1
     QPointF pj = q;
-    QPointF pj1(r.x(),q.y());
+    QPointF pj1(r.x() - 1, q.y());
 
     //Add first point to ch
     ch.push_back(pj);
