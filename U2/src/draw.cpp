@@ -11,17 +11,27 @@
 Draw::Draw(QWidget *parent)
     : QWidget{parent}
 {
-    //     QPointF a(50,70);
-    //     QPointF b(150,50);
-    //     QPointF c(150,130);
-    //     QPointF d(50,150);
+        QPointF a(59,33);
+        QPointF b(263,56);
+        QPointF c(236,185);
+        QPointF d(65,149);
 
-    //     building.push_back(a);
-    //     building.push_back(b);
-    //     building.push_back(c);
-    //     building.push_back(d);
+        building.push_back(a);
+        building.push_back(b);
+        building.push_back(c);
+        building.push_back(d);
+
+        // Simulate double-click after 0.5s delay
+        QTimer::singleShot(500, this, [this]() {
+            // Simulate the first mouse press event
+            QMouseEvent *firstClick = new QMouseEvent(QEvent::MouseButtonPress, QPointF(100, 100), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            mousePressEvent(firstClick);
+
+            // Simulate the second mouse press event (double-click)
+            QMouseEvent *secondClick = new QMouseEvent(QEvent::MouseButtonDblClick, QPointF(100, 100), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            mousePressEvent(secondClick);
+        });
 }
-
 
 void Draw::mousePressEvent(QMouseEvent *e)
 {
@@ -47,6 +57,10 @@ void Draw::mousePressEvent(QMouseEvent *e)
     //Add point to polygon
     //Create point
     QPointF p(x, y);
+
+    //For testing
+    qDebug() << "x = "<< x << ", y = " << y << "\n" ;
+
 
     //Add point to polygon
     building.push_back(p);
