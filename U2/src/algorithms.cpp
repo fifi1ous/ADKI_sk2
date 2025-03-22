@@ -305,3 +305,47 @@ QPolygonF Algorithms::createERPCA(const QPolygonF &pol)
     return rotate(mmbox_min_res, sigma);
 
 }
+
+
+
+QPolygonF Algorithms::longestEdge(const QPolygonF &pol)
+{
+    double maxLength = 0;
+    double dx = 0, dy = 0;
+
+    int n = pol.size();
+
+    // Find the longest edge
+    for (int i = 0; i < n; ++i)
+    {
+        double dx_i = pol[(i+1) % n].x() - pol[i].x();
+        double dy_i = pol[(i+1) % n].y() - pol[i].y();
+        double length = sqrt(dx_i * dx_i + dy_i * dy_i);
+
+        // Track the maximum length and its direction
+        if (length > maxLength)
+        {
+            maxLength = length;
+            dx = dx_i;
+            dy = dy_i;
+        }
+    }
+
+    // Compute the angle (sigma) of the longest edge
+    double sigma = atan2(dy, dx);
+
+    // Rotate the polygon by -sigma to align the longest edge with the x-axis
+    QPolygonF pol_rot = rotate(pol, -sigma);
+
+    // Create the min-max bounding box of the rotated polygon
+    auto [mmbox, area] = minMaxBox(pol_rot);
+
+    // Rotate the bounding box back to the original orientation
+    QPolygonF enclosingRectangle = rotate(mmbox, sigma);
+
+    // Resize the bounding box to fit the original polygon
+    QPolygonF resizedRectangle = resize(pol, mmbox);
+
+    return resizedRectangle;
+}
+

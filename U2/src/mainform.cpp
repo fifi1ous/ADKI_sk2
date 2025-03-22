@@ -151,3 +151,40 @@ void Draw::setResults(const std::vector<QPolygonF>& newResults)
     }
     repaint();  // Repaint to show results
 }
+
+void MainForm::on_actionLongest_edge_triggered()
+{
+    //Create minimum bounding rectangle
+
+    // Get all polygons
+    std::vector<QPolygonF> polygons = ui->Canvas->getPolygons();
+
+    // Check if there are no polygons to process
+    if (polygons.empty()) {
+        QMessageBox::warning(this, "Error", "No polygons to process.");
+        return;
+    }
+
+    // Use std::vector to store the Longes edge results
+    std::vector<QPolygonF> results;
+
+    // For each polygon in the list of polygons, create the Longest edge
+    for (const auto& building : polygons) {
+        // If the polygon has at least 3 points
+        if (building.size() < 3) {
+            continue;  // Skip invalid polygons
+        }
+
+        // Run the algorithm to create the Longest edge
+        QPolygonF er = Algorithms::longestEdge(building);
+
+        // Store the result in the results vector
+        results.push_back(er);
+    }
+
+    // Set the Longest edge results on the Canvas
+    ui->Canvas->setResults(results);
+
+    // Repaint the canvas to display the updated results
+    ui->Canvas->repaint();
+}

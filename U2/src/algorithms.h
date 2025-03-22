@@ -19,6 +19,7 @@ public:
     static QPolygonF resize(const QPolygonF &pol, const QPolygonF &mmbox);
     static QPolygonF createMAER(const QPolygonF &pol);
     static QPolygonF createERPCA(const QPolygonF &pol);
+    static QPolygonF longestEdge(const QPolygonF &pol);
 
 };
 
