@@ -50,6 +50,12 @@ void MainForm::on_actionMBR_triggered()
     //Get data
     QPolygonF building = ui->Canvas->getBuilding();
 
+    // Check if polygon has at least 3 points
+    if (building.size() < 3) {
+        QMessageBox::warning(this, "Error", "Polygon must have at least three vertices");
+        return;
+    }
+
     //Run function data
     QPolygonF maer = Algorithms::createMAER(building);
 

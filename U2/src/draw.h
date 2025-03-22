@@ -2,12 +2,16 @@
 #define DRAW_H
 
 #include <QWidget>
+#include <QPolygonF>
+#include <vector>
 
 class Draw : public QWidget
 {
     Q_OBJECT
 
 private:
+    std::vector<QPolygonF> polygons;
+    QPolygonF currentPolygon;
     QPolygonF building;
     QPolygonF ch;
     QPolygonF maer;
