@@ -333,18 +333,16 @@ QPolygonF Algorithms::longestEdge(const QPolygonF &pol)
     // Compute the angle (sigma) of the longest edge
     double sigma = atan2(dy, dx);
 
-    // Rotate the polygon by -sigma to align the longest edge with the x-axis
+    //Rotation by -sigma
     QPolygonF pol_rot = rotate(pol, -sigma);
 
-    // Create the min-max bounding box of the rotated polygon
+    //Compute min-max box
     auto [mmbox, area] = minMaxBox(pol_rot);
 
-    // Rotate the bounding box back to the original orientation
-    QPolygonF enclosingRectangle = rotate(mmbox, sigma);
+    // Resize mmbox
+    QPolygonF mmbox_min_res = resize(pol, mmbox);
 
-    // Resize the bounding box to fit the original polygon
-    QPolygonF resizedRectangle = resize(pol, mmbox);
-
-    return resizedRectangle;
+    // Rotate min-max box with mimimum area
+    return rotate(mmbox_min_res, sigma);
 }
 
