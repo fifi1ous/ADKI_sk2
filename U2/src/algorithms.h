@@ -9,18 +9,18 @@
 class Algorithms
 {
 public:
-    Algorithms();
+    //Algorithms() = delete; // Prevent instantiation of object of this class
 
-    static double get2LinesAngle(const QPointF &p1, const QPointF &p2, const QPointF &p3, const QPointF &p4);
-    static QPolygonF createCH(const QPolygonF &pol);
-    static std::tuple<QPolygonF, double> minMaxBox(const QPolygonF &pol);
-    static QPolygonF rotate(const QPolygonF &pol, double sigma);
-    static double getArea(const QPolygonF &pol);
-    static QPolygonF resize(const QPolygonF &pol, const QPolygonF &mmbox);
     static QPolygonF createMAER(const QPolygonF &pol);
     static QPolygonF createERPCA(const QPolygonF &pol);
     static QPolygonF longestEdge(const QPolygonF &pol);
-
+private:
+    static double get2LinesAngle(const QPointF &p1, const QPointF &p2, const QPointF &p3, const QPointF &p4);
+    static double getArea(const QPolygonF &pol);
+    static QPolygonF resize(const QPolygonF &pol, const QPolygonF &mmbox);
+    static QPolygonF rotate(const QPolygonF &pol, double sigma);
+    static QPolygonF createCH(const QPolygonF &pol);
+    static std::tuple<QPolygonF, double> minMaxBox(const QPolygonF &pol);
 };
 
 #endif // ALGORITHMS_H

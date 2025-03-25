@@ -3,7 +3,7 @@
 #include "sortpointsbyy.h"
 #include <cmath>
 
-Algorithms::Algorithms() {}
+//Algorithms::Algorithms() {}
 
 double Algorithms::get2LinesAngle(const QPointF &p1, const QPointF &p2, const QPointF &p3, const QPointF &p4)
 {
@@ -75,6 +75,7 @@ QPolygonF Algorithms::createCH(const QPolygonF &pol)
 
     return ch;
 }
+
 
 std::tuple<QPolygonF, double> Algorithms::minMaxBox(const QPolygonF &pol)
 {
@@ -252,7 +253,6 @@ QPolygonF Algorithms::createMAER(const QPolygonF &pol)
 }
 
 
-
 QPolygonF Algorithms::createERPCA(const QPolygonF &pol)
 {
     // Create area enclosing rectangle over the puilding using PCA
@@ -305,7 +305,6 @@ QPolygonF Algorithms::createERPCA(const QPolygonF &pol)
     return rotate(mmbox_min_res, sigma);
 
 }
-
 
 
 QPolygonF Algorithms::longestEdge(const QPolygonF &pol)

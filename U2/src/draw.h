@@ -22,18 +22,18 @@ private:
 
 public:
     explicit Draw(QWidget *parent = nullptr);
-    void mousePressEvent(QMouseEvent *e);
-    void paintEvent(QPaintEvent *event);
+    void mousePressEvent(QMouseEvent *e) override;
+    void paintEvent(QPaintEvent *event) override;
     void switch_source();
     QPolygonF getPol()const {return building;}
     void loadPolygonFromTextfile(const QString &fileName);
     void loadPolygonFromShapefile(const QString &fileName);
     QPolygonF getBuilding()const{return building;}
     void setCH(QPolygonF &ch_){ch = ch_;}
-    void setMAER(QPolygonF &maer_){maer = maer_;}
+    inline void setMAER(QPolygonF &maer){this->maer = maer;}
     void clearPolygons();
     void clearResults();
-    const std::vector<QPolygonF> getPolygons() const { return polygons; }
+    inline const std::vector<QPolygonF> getPolygons() const { return polygons; }
     void setResults(const std::vector<QPolygonF>& newResults);
 
 signals:

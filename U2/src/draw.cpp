@@ -101,7 +101,7 @@ void Draw::loadPolygonFromTextfile(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QMessageBox::warning(this, "Chyba", "Nelze otevřít soubor.");
+        QMessageBox::warning(this, "Error", "Cannot open the file.");
         return;
     }
 
@@ -223,7 +223,6 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
 
     SHPClose(hSHP);
 
-    //isShapefileLoaded = true;
     repaint();
 }
 
