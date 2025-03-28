@@ -30,6 +30,8 @@ private slots:
 
     void on_actionLongest_edge_triggered();
 
+    void on_actionWall_average_triggered();
+
 private:
     Ui::MainForm *ui;
 };

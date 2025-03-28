@@ -307,7 +307,7 @@ QPolygonF Algorithms::createERPCA(const QPolygonF &pol)
 }
 
 
-QPolygonF Algorithms::longestEdge(const QPolygonF &pol)
+QPolygonF Algorithms::createERLE(const QPolygonF &pol)
 {
     double maxLength = 0;
     double dx = 0, dy = 0;
@@ -346,3 +346,61 @@ QPolygonF Algorithms::longestEdge(const QPolygonF &pol)
     return rotate(mmbox_min_res, sigma);
 }
 
+
+QPolygonF Algorithms::createERWA(const QPolygonF &pol)
+{
+    int n = pol.size();
+    double sigma = 0;
+    double Si_sum = 0;
+
+    // Compute initial direction sigma_12
+    double dx = pol[1].x() - pol[0].x();
+    double dy = pol[1].y() - pol[0].y();
+    double sigma_12 = atan2(dy, dx);
+
+    // Iterate over each vertex
+    for (int i = 0; i < n; i++)
+    {
+        // Compute directions for segments
+        double dx1 = pol[(i - 1 + n) % n].x() - pol[i].x();
+        double dy1 = pol[(i - 1 + n) % n].y() - pol[i].y();
+        double sigma_i = atan2(dy1, dx1);
+
+        double dx2 = pol[(i + 1) % n].x() - pol[i].x();
+        double dy2 = pol[(i + 1) % n].y() - pol[i].y();
+        double sigma_i1 = atan2(dy2, dx2);
+        double Si = sqrt(dx2 * dx2 + dy2 * dy2);
+
+        // Compute internal angle omega_i
+        double omega_i = std::abs(sigma_i - sigma_i1);
+
+        // Compute multiple of π/2
+        double k_i = (2 * omega_i) / M_PI;
+
+        // Compute oriented remainder
+        double ri = (k_i - floor(k_i)) * (M_PI / 2);
+        if (fmod(omega_i, M_PI / 2) > (M_PI / 4))
+        {
+            ri = (M_PI / 2) - ri;
+        }
+
+        // Weighted average sums
+        sigma += ri * Si;
+        Si_sum += Si;
+    }
+
+    // Weighted average
+    sigma = sigma_12 + sigma / Si_sum;
+
+    //Rotation by -sigma
+    QPolygonF pol_rot = rotate(pol, -sigma);
+
+    //Compute min-max box
+    auto [mmbox, area] = minMaxBox(pol_rot);
+
+    // Resize mmbox
+    QPolygonF mmbox_min_res = resize(pol, mmbox);
+
+    // Rotate min-max box with mimimum area
+    return rotate(mmbox_min_res, sigma);
+}

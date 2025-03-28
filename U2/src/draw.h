@@ -17,7 +17,7 @@ private:
     QPolygonF currentPolygon;
     QPolygonF building;
     QPolygonF ch;
-    QPolygonF maer;
+    QPolygonF er;
     bool isShapefileLoaded = false;
 
 public:
@@ -30,7 +30,7 @@ public:
     void loadPolygonFromShapefile(const QString &fileName);
     QPolygonF getBuilding()const{return building;}
     void setCH(QPolygonF &ch_){ch = ch_;}
-    inline void setMAER(QPolygonF &maer){this->maer = maer;}
+    inline void setER(QPolygonF &er){this->er = er;}
     void clearPolygons();
     void clearResults();
     inline const std::vector<QPolygonF> getPolygons() const { return polygons; }

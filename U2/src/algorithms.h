@@ -13,7 +13,8 @@ public:
 
     static QPolygonF createMAER(const QPolygonF &pol);
     static QPolygonF createERPCA(const QPolygonF &pol);
-    static QPolygonF longestEdge(const QPolygonF &pol);
+    static QPolygonF createERLE(const QPolygonF &pol);
+    static QPolygonF createERWA(const QPolygonF &pol);
 private:
     static double get2LinesAngle(const QPointF &p1, const QPointF &p2, const QPointF &p3, const QPointF &p4);
     static double getArea(const QPolygonF &pol);

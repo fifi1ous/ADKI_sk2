@@ -73,7 +73,7 @@ void Draw::paintEvent(QPaintEvent *event)
         painter.drawPolygon(poly);
     }
 
-    //Set graphics for maer
+    //Set graphics for er
     painter.setPen(Qt::GlobalColor::magenta);
     painter.setBrush(Qt::GlobalColor::transparent);
 
@@ -91,7 +91,7 @@ void Draw::paintEvent(QPaintEvent *event)
     //Set graphic atributes for Minimum Bounding Rectangle (MAER)
     painter.setPen(Qt::GlobalColor::magenta);
     painter.setBrush(Qt::GlobalColor::transparent);
-    painter.drawPolygon(maer);
+    painter.drawPolygon(er);
 
     painter.end();
 }
