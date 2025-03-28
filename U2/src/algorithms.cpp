@@ -404,3 +404,9 @@ QPolygonF Algorithms::createERWA(const QPolygonF &pol)
     // Rotate min-max box with mimimum area
     return rotate(mmbox_min_res, sigma);
 }
+
+
+QPolygonF Algorithms::createERWA(const QPolygonF &pol)
+{
+
+}
