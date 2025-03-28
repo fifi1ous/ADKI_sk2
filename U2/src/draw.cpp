@@ -93,7 +93,7 @@ void Draw::paintEvent(QPaintEvent *event)
             painter.drawEllipse(point.x() - r, point.y() - r, 2*r, 2*r);
         }
     }
-    // Here ends the part which was doen by chatGPT
+    // Here ends the part which was done by chatGPT
 
     //Set graphics for er
     painter.setPen(Qt::GlobalColor::magenta);
