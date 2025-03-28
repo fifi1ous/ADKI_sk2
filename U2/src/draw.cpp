@@ -65,13 +65,35 @@ void Draw::paintEvent(QPaintEvent *event)
     painter.setPen(Qt::GlobalColor::red);
     painter.setBrush(Qt::GlobalColor::yellow);
 
-    //Draw building
-    painter.drawPolygon(building);
+    // //Draw building
+    // painter.drawPolygon(building);
 
     //Draw all stored buildings
     for (const auto& poly : polygons) {
         painter.drawPolygon(poly);
     }
+
+    // This part of code was done by chatGPT
+    // Draw the current polygon being created
+    if (!building.isEmpty())
+    {
+        // Draw lines between points
+        painter.setPen(QPen(Qt::blue, 2));  // Blue lines, 2 pixels wide
+        for (int i = 0; i < building.size() - 1; ++i)
+        {
+            painter.drawLine(building[i], building[i + 1]);
+        }
+
+        // Draw points
+        painter.setPen(Qt::blue);
+        painter.setBrush(Qt::blue);
+        int r = 1;  // Point radius
+        for (const QPointF& point : building)
+        {
+            painter.drawEllipse(point.x() - r, point.y() - r, 2*r, 2*r);
+        }
+    }
+    // Here ends the part which was doen by chatGPT
 
     //Set graphics for er
     painter.setPen(Qt::GlobalColor::magenta);
