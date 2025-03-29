@@ -13,6 +13,7 @@ MainForm::MainForm(QWidget *parent)
     , ui(new Ui::MainForm)
 {
     ui->setupUi(this);
+    ui->actionJarvis_Scan->setChecked(true); // Default method for convex hull
 }
 
 MainForm::~MainForm()
@@ -307,4 +308,22 @@ void MainForm::on_actionCovvex_Hull_ON_OFF_triggered() {
 void MainForm::on_actionAbout_triggered()
 {
     QDesktopServices::openUrl(QUrl("https://github.com/fifi1ous/ADKI_sk2/tree/main/U2"));
+}
+
+void MainForm::on_actionGraham_Scan_triggered()
+{
+    if (ui->actionGraham_Scan->isChecked()) {
+        ui->actionJarvis_Scan->setChecked(false);
+    } else {
+        ui->actionGraham_Scan->setChecked(true);
+    }
+}
+
+void MainForm::on_actionJarvis_Scan_triggered()
+{
+    if (ui->actionJarvis_Scan->isChecked()) {
+        ui->actionGraham_Scan->setChecked(false);
+    } else {
+        ui->actionJarvis_Scan->setChecked(true);
+    }
 }

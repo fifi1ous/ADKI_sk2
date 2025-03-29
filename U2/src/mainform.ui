@@ -62,8 +62,8 @@
     </property>
     <addaction name="actionCovvex_Hull_ON_OFF"/>
     <addaction name="separator"/>
-    <addaction name="actionGraham_Scan"/>
     <addaction name="actionJarvis_Scan"/>
+    <addaction name="actionGraham_Scan"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSimplify"/>
@@ -193,11 +193,17 @@
    </property>
   </action>
   <action name="actionGraham_Scan">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Graham Scan</string>
    </property>
   </action>
   <action name="actionJarvis_Scan">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Jarvis Scan</string>
    </property>

@@ -38,6 +38,10 @@ private slots:
 
     void on_actionAbout_triggered();
 
+    void on_actionGraham_Scan_triggered();
+
+    void on_actionJarvis_Scan_triggered();
+
 private:
     Ui::MainForm *ui;
 };
