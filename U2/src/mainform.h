@@ -36,6 +36,8 @@ private slots:
 
     void on_actionCovvex_Hull_ON_OFF_triggered();
 
+    void on_actionAbout_triggered();
+
 private:
     Ui::MainForm *ui;
 };

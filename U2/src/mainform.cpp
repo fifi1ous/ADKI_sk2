@@ -300,3 +300,8 @@ void MainForm::on_actionCovvex_Hull_ON_OFF_triggered() {
     // Repaint the canvas to display the updated chs
     ui->Canvas->repaint();
 }
+
+void MainForm::on_actionAbout_triggered()
+{
+    //
+}
