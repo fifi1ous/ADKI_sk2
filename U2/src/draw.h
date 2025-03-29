@@ -14,6 +14,7 @@ class Draw : public QWidget
 private:
     std::vector<QPolygonF> polygons;
     std::vector<QPolygonF> results;
+    std::vector<QPolygonF> chs;
     QPolygonF currentPolygon;
     QPolygonF building;
     QPolygonF ch;
@@ -29,12 +30,14 @@ public:
     void loadPolygonFromTextfile(const QString &fileName);
     void loadPolygonFromShapefile(const QString &fileName);
     QPolygonF getBuilding()const{return building;}
-    void setCH(QPolygonF &ch_){ch = ch_;}
+    inline void setCH(QPolygonF &ch){this->ch = ch;}
     inline void setER(QPolygonF &er){this->er = er;}
-    void clearPolygons();
-    void clearResults();
+    inline void clearPolygons(){ building.clear(); polygons.clear(); repaint(); }
+    inline void clearResults(){ results.clear(); repaint(); }
+    inline void clearCHs(){chs.clear(); repaint(); }
     inline const std::vector<QPolygonF> getPolygons() const { return polygons; }
     void setResults(const std::vector<QPolygonF>& newResults);
+    inline void setConvexHulls(const std::vector<QPolygonF>& newCHs) {chs = newCHs; repaint(); }
 
 signals:
 };

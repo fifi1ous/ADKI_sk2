@@ -119,8 +119,10 @@ void MainForm::on_actionPCA_triggered()
 
 void MainForm::on_actionClear_All_triggered()
 {
-    // Clear all polygons from the canvas
+    // Clear all results from the canvas
     ui->Canvas->clearResults();
+    // Clear all CHs from the canvas
+    ui->Canvas->clearCHs();
     // Clear all polygons from the canvas
     ui->Canvas->clearPolygons();
     // Repaint the canvas
@@ -130,8 +132,10 @@ void MainForm::on_actionClear_All_triggered()
 
 void MainForm::on_actionClear_results_triggered()
 {
-    // Clear all polygons from the canvas
+    // Clear all results from the canvas
     ui->Canvas->clearResults();
+    // Clear all CHs from the canvas
+    ui->Canvas->clearCHs();
     // Repaint the canvas
     ui->Canvas->repaint();
 }
@@ -260,5 +264,39 @@ void MainForm::on_actionWeighted_bisector_triggered()
     ui->Canvas->setResults(results);
 
     // Repaint the canvas to display the updated results
+    ui->Canvas->repaint();
+}
+
+void MainForm::on_actionCovvex_Hull_ON_OFF_triggered() {
+    // Get all polygons
+    std::vector<QPolygonF> polygons = ui->Canvas->getPolygons();
+
+    // Check if there are no polygons to process
+    if (polygons.empty()) {
+        QMessageBox::warning(this, "Error", "No polygons to process.");
+        return;
+    }
+
+    // Use std::vector to store the convex hull results
+    std::vector<QPolygonF> chs;
+
+    // For each polygon in the list of polygons, create the convex hull
+    for (const auto& building : polygons) {
+        // If the polygon has at least 3 points
+        if (building.size() < 3) {
+            continue;  // Skip invalid polygons
+        }
+
+        // Run the algorithm to create the convex hull
+        QPolygonF ch = Algorithms::createCHJS(building);
+
+        // Store the ch in the chs vector
+        chs.push_back(ch);
+    }
+
+    // Set the convex hull chs on the Canvas
+    ui->Canvas->setConvexHulls(chs);
+
+    // Repaint the canvas to display the updated chs
     ui->Canvas->repaint();
 }

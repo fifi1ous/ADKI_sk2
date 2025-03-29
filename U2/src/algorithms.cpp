@@ -24,59 +24,6 @@ double Algorithms::get2LinesAngle(const QPointF &p1, const QPointF &p2, const QP
     return acos(dot/(n_u*n_v));
 }
 
-
-QPolygonF Algorithms::createCH(const QPolygonF &pol)
-{
-    //Create convex hull using Jarvis scan
-    QPolygonF ch;
-
-    //Get pivot q
-    QPointF q = *std::min_element(pol.begin(), pol.end(), sortPointsByY());
-
-    //Get point
-    QPointF r = *std::min_element(pol.begin(), pol.end(), sortPointsByX());
-
-    //Initliaze pj, pj1
-    QPointF pj = q;
-    QPointF pj1(r.x() - 1, q.y());
-
-    //Add first point to ch
-    ch.push_back(pj);
-
-    //Find all points of ch
-    do
-    {
-        // Maximum and index
-        double omega_max = 0;
-        int i_max = -1;
-
-        //Find point generating max angle
-        for(int i=0; i<pol.size(); i++)
-        {
-            //Find point generating maximum angle
-            double omega = get2LinesAngle(pj, pj1, pj, pol[i]);
-
-            //Update maximum
-            if(omega>omega_max)
-            {
-                omega_max = omega;
-                i_max = i;
-            }
-        }
-
-        //Add point to ch
-        ch.push_back(pol[i_max]);
-
-        //Update vertices
-        pj1 = pj;
-        pj = pol[i_max];
-
-    }while( pj !=q );
-
-    return ch;
-}
-
-
 std::tuple<QPolygonF, double> Algorithms::minMaxBox(const QPolygonF &pol)
 {
     //Create min max box
@@ -206,6 +153,63 @@ QPolygonF Algorithms::resize(const QPolygonF &pol, const QPolygonF &mmbox)
 }
 
 
+QPolygonF Algorithms::createCHJS(const QPolygonF &pol)
+{
+    //Create convex hull using Jarvis scan
+    QPolygonF ch;
+
+    //Get pivot q
+    QPointF q = *std::min_element(pol.begin(), pol.end(), sortPointsByY());
+
+    //Get point
+    QPointF r = *std::min_element(pol.begin(), pol.end(), sortPointsByX());
+
+    //Initliaze pj, pj1
+    QPointF pj = q;
+    QPointF pj1(r.x() - 1, q.y());
+
+    //Add first point to ch
+    ch.push_back(pj);
+
+    //Find all points of ch
+    do
+    {
+        // Maximum and index
+        double omega_max = 0;
+        int i_max = -1;
+
+        //Find point generating max angle
+        for(int i=0; i<pol.size(); i++)
+        {
+            //Find point generating maximum angle
+            double omega = get2LinesAngle(pj, pj1, pj, pol[i]);
+
+            //Update maximum
+            if(omega>omega_max)
+            {
+                omega_max = omega;
+                i_max = i;
+            }
+        }
+
+        //Add point to ch
+        ch.push_back(pol[i_max]);
+
+        //Update vertices
+        pj1 = pj;
+        pj = pol[i_max];
+
+    }while( pj !=q );
+
+    return ch;
+}
+
+
+QPolygonF Algorithms::createCHGS(const QPolygonF &pol) {
+    // implementation
+}
+
+
 QPolygonF Algorithms::createMAER(const QPolygonF &pol)
 {
     //Create minimun area enclosing rectangle over the building
@@ -215,7 +219,7 @@ QPolygonF Algorithms::createMAER(const QPolygonF &pol)
     auto [mmbox_min, area_min] = minMaxBox(pol);
 
     //Create CH
-    QPolygonF ch = createCH(pol);
+    QPolygonF ch = createCHJS(pol);
 
     //Process all segments of CG
     int n = ch.size();

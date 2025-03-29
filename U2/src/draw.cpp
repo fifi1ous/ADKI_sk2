@@ -69,7 +69,8 @@ void Draw::paintEvent(QPaintEvent *event)
     // painter.drawPolygon(building);
 
     //Draw all stored buildings
-    for (const auto& poly : polygons) {
+    for (const auto& poly : polygons)
+    {
         painter.drawPolygon(poly);
     }
 
@@ -100,20 +101,21 @@ void Draw::paintEvent(QPaintEvent *event)
     painter.setBrush(Qt::GlobalColor::transparent);
 
     //Draw all results
-    for (const auto& result : results) {
+    for (const auto& result : results)
+    {
         painter.drawPolygon(result);
     }
 
-    //Set graphic atributes for Convex Hull (CH)
-    painter.setPen(Qt::GlobalColor::cyan);
-    painter.setPen(Qt::PenStyle::DashLine);
+    // Draw Convex Hulls (CHs) with dashed lines
+    QPen pen(Qt::GlobalColor::cyan, 1, Qt::DashLine);
+    painter.setPen(pen);
     painter.setBrush(Qt::GlobalColor::transparent);
-    painter.drawPolygon(ch);
 
-    //Set graphic atributes for Minimum Bounding Rectangle (MAER)
-    painter.setPen(Qt::GlobalColor::magenta);
-    painter.setBrush(Qt::GlobalColor::transparent);
-    painter.drawPolygon(er);
+    //Draw all CHs
+    for (const auto& ch : chs)
+    {
+        painter.drawPolygon(ch);
+    }
 
     painter.end();
 }
@@ -245,18 +247,5 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
 
     SHPClose(hSHP);
 
-    repaint();
-}
-
-void Draw::clearPolygons()
-{
-    building.clear();
-    polygons.clear();
-    repaint();
-}
-
-void Draw::clearResults()
-{
-    results.clear();
     repaint();
 }

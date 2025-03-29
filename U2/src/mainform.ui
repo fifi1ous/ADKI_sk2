@@ -36,6 +36,7 @@
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
+    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuSimplify">
     <property name="title">
@@ -55,8 +56,18 @@
     <addaction name="separator"/>
     <addaction name="actionClear_All"/>
    </widget>
+   <widget class="QMenu" name="menuConvex_Hull">
+    <property name="title">
+     <string>Convex Hull</string>
+    </property>
+    <addaction name="actionCovvex_Hull_ON_OFF"/>
+    <addaction name="separator"/>
+    <addaction name="actionGraham_Scan"/>
+    <addaction name="actionJarvis_Scan"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSimplify"/>
+   <addaction name="menuConvex_Hull"/>
    <addaction name="menuView"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -77,6 +88,8 @@
    <addaction name="actionLongest_edge"/>
    <addaction name="actionWall_average"/>
    <addaction name="actionWeighted_bisector"/>
+   <addaction name="separator"/>
+   <addaction name="actionCovvex_Hull_ON_OFF"/>
    <addaction name="separator"/>
    <addaction name="actionClear_results"/>
    <addaction name="actionClear_All"/>
@@ -177,6 +190,34 @@
    </property>
    <property name="text">
     <string>Weighted bisector</string>
+   </property>
+  </action>
+  <action name="actionGraham_Scan">
+   <property name="text">
+    <string>Graham Scan</string>
+   </property>
+  </action>
+  <action name="actionJarvis_Scan">
+   <property name="text">
+    <string>Jarvis Scan</string>
+   </property>
+  </action>
+  <action name="actionCovvex_Hull_ON_OFF">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/ch.png</normaloff>:/icons/ch.png</iconset>
+   </property>
+   <property name="text">
+    <string>Covvex Hull ON/OFF</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/about.png</normaloff>:/icons/about.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

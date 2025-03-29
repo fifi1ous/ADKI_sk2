@@ -34,6 +34,8 @@ private slots:
 
     void on_actionWeighted_bisector_triggered();
 
+    void on_actionCovvex_Hull_ON_OFF_triggered();
+
 private:
     Ui::MainForm *ui;
 };
