@@ -5,6 +5,9 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include <QDesktopServices>
+#include <QUrl>
+
 MainForm::MainForm(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainForm)
@@ -303,5 +306,5 @@ void MainForm::on_actionCovvex_Hull_ON_OFF_triggered() {
 
 void MainForm::on_actionAbout_triggered()
 {
-    //
+    QDesktopServices::openUrl(QUrl("https://github.com/fifi1ous/ADKI_sk2/tree/main/U2"));
 }
