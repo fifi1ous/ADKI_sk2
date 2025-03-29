@@ -20,3 +20,6 @@ This folder contains the implementation of algorithms to solve the **Point Locat
 - **Support for Polygons with Holes**: Handles polygons with internal holes.
 - **Loading shpefiles**: Uses **[Shapelib](https://shapelib.maptools.org/)** to process shapefiles.
 - **Graphical User Interface (GUI)**: Built with **[Qt Framework](https://qt.io/)** for interactive visualization.
+
+### [U2 - Building Simplification](https://github.com/fifi1ous/ADKI_sk2/tree/main/U2)
+#### [Assignment](https://web.natur.cuni.cz/~bayertom/images/courses/Adk/adkcv2.pdf)
