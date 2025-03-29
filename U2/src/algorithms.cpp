@@ -406,7 +406,58 @@ QPolygonF Algorithms::createERWA(const QPolygonF &pol)
 }
 
 
-QPolygonF Algorithms::createERWA(const QPolygonF &pol)
+QPolygonF Algorithms::createERWB(const QPolygonF &pol)
 {
+    double max_diag_1 = 0, max_diag_2 = 0;
+    double dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
+    int n = pol.size();
 
+    // Find the two longest diagonals
+    for (int i = 0; i < n; ++i)
+    {
+        // Calculate differences in coordinates between vertices
+        for (int j = 0; j < n; ++j) {
+            double dxi = pol[(i + j + 2) % n].x() - pol[i % n].x();
+            double dyi = pol[(i + j + 2) % n].y() - pol[i % n].y();
+            double len_i = sqrt(dxi * dxi + dyi * dyi);// Calculate the length of the diagonal using the Pythagorean theorem
+
+            // If the length is greater than the current longest diagonal
+            if (len_i > max_diag_1)
+            {   // Update the second longest diagonal
+                max_diag_2 = max_diag_1;
+                // Update the longest diagonal
+                max_diag_1 = len_i;
+                // Update the directions of the diagonals
+                dx2 = dx1;
+                dy2 = dy1;
+                dx1 = dxi;
+                dy1 = dyi;
+            // If the length is greater than the second longest diagonal
+            } else if (len_i > max_diag_2 && len_i < max_diag_1)
+            {
+                max_diag_2 = len_i;
+                dx2 = dxi;
+                dy2 = dyi;
+            }
+        }
+    }
+
+    // Direction of the longest diagonals
+    double sigma1 = atan2(dy1, dx1);
+    double sigma2 = atan2(dy2, dx2);
+
+    // Weighted average direction of diagonals
+    double sigma = (sigma1 * max_diag_1 + sigma2 * max_diag_2) / (max_diag_1 + max_diag_2);
+
+    // Rotate polygon according to the computed direction
+    QPolygonF pol_rot = rotate(pol, -sigma);
+
+    // Create minimum bounding box
+    auto [mmbox, area] = minMaxBox(pol_rot);
+
+    // Resize the bounding box
+    QPolygonF mmbox_min_res = resize(pol, mmbox);
+
+    // Rotate the minimum bounding box back to the original direction
+    return rotate(mmbox_min_res, sigma);
 }

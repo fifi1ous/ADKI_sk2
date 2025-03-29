@@ -32,6 +32,8 @@ private slots:
 
     void on_actionWall_average_triggered();
 
+    void on_actionWeighted_bisector_triggered();
+
 private:
     Ui::MainForm *ui;
 };
