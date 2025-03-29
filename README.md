@@ -23,3 +23,4 @@ This folder contains the implementation of algorithms to solve the **Point Locat
 
 ### [U2 - Building Simplification](https://github.com/fifi1ous/ADKI_sk2/tree/main/U2)
 #### [Assignment](https://web.natur.cuni.cz/~bayertom/images/courses/Adk/adkcv2.pdf)
+This folder contains the implementation of algorithms to solve the **Building Simplification**. using the following methods:
