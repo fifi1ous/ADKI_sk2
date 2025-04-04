@@ -9,8 +9,6 @@
 class Algorithms
 {
 public:
-    //Algorithms() = delete; // Prevent instantiation of object of this class
-
     static QPolygonF createMAER(const QPolygonF &pol);
     static QPolygonF createERPCA(const QPolygonF &pol);
     static QPolygonF createERLE(const QPolygonF &pol);

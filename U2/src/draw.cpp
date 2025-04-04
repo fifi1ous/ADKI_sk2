@@ -21,54 +21,44 @@ void Draw::mousePressEvent(QMouseEvent *e)
     // Handle double-click to finish polygon creation
     if (e->type() == QEvent::MouseButtonDblClick)
     {
-        // Pokud existuje nějaký aktuální polygon
+        // If there is building
         if (!building.isEmpty())
         {
-            // Přidání aktuálního polygonu do seznamu polygonů
+            // Add the building to the list of polygons
             polygons.push_back(building);
 
-            // Vyprázdnění aktuálního polygonu pro nový začátek
+            // Clear the building for a new building
             building.clear();
         }
         repaint();
         return;
     }
-    //Get x, y coordinates
+    // Get x, y coordinates
     double x = e->pos().x();
     double y = e->pos().y();
 
-    //Add point to polygon
-    //Create point
+    // Add point to polygon
+    // Create point
     QPointF p(x, y);
 
-    //For testing
-    qDebug() << "x = "<< x << ", y = " << y << "\n" ;
-
-
-    //Add point to polygon
+    // Add point to polygon
     building.push_back(p);
 
-    //Repaint screen
+    // Repaint screen
     repaint();
 }
 
 
 void Draw::paintEvent(QPaintEvent *event)
 {
-    //Draw
+    // Draw
     QPainter painter(this);
 
-    //Create object for drawing
-    painter.begin(this);
-
-    //Set graphic attributes of building
+    // Set graphic attributes of building
     painter.setPen(Qt::GlobalColor::red);
     painter.setBrush(Qt::GlobalColor::yellow);
 
-    // //Draw building
-    // painter.drawPolygon(building);
-
-    //Draw all stored buildings
+    // Draw all stored buildings
     for (const auto& poly : polygons)
     {
         painter.drawPolygon(poly);
@@ -96,11 +86,11 @@ void Draw::paintEvent(QPaintEvent *event)
     }
     // Here ends the part which was done by chatGPT
 
-    //Set graphics for er
+    // Set graphics for er
     painter.setPen(Qt::GlobalColor::magenta);
     painter.setBrush(Qt::GlobalColor::transparent);
 
-    //Draw all results
+    // Draw all results
     for (const auto& result : results)
     {
         painter.drawPolygon(result);
@@ -111,13 +101,11 @@ void Draw::paintEvent(QPaintEvent *event)
     painter.setPen(pen);
     painter.setBrush(Qt::GlobalColor::transparent);
 
-    //Draw all CHs
+    // Draw all CHs
     for (const auto& ch : chs)
     {
         painter.drawPolygon(ch);
     }
-
-    painter.end();
 }
 
 void Draw::loadPolygonFromTextfile(const QString &fileName)
@@ -210,7 +198,7 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
     // Calculate uniform scaling factor to maintain aspect ratio
     double scale = std::min(widgetWidth / (maxX - minX), widgetHeight / (maxY - minY));
 
-     // Calculate translation offsets to center the polygons
+    // Calculate translation offsets to center the polygons
     double offsetX = (widgetWidth - (maxX - minX) * scale) / 2 - minX * scale;
     double offsetY = (widgetHeight - (maxY - minY) * scale) / 2 + maxY * scale;
 

@@ -3,21 +3,19 @@
 #include "sortpointsbyy.h"
 #include <cmath>
 
-//Algorithms::Algorithms() {}
-
 double Algorithms::get2LinesAngle(const QPointF &p1, const QPointF &p2, const QPointF &p3, const QPointF &p4)
 {
-    //Compute angle between two lines
+    // Compute angle between two lines
     double u_x = p2.x() - p1.x();
     double u_y = p2.y() - p1.y();
 
     double v_x = p4.x() - p3.x();
     double v_y = p4.y() - p3.y();
 
-    //Dot product
+    // Dot product
     double dot = u_x*v_x + u_y*v_y;
 
-    //Calculate norms
+    // Calculate norms
     double n_u = std::sqrt(u_x*u_x + u_y*u_y);
     double n_v = std::sqrt(v_x*v_x + v_y*v_y);
 
@@ -26,33 +24,33 @@ double Algorithms::get2LinesAngle(const QPointF &p1, const QPointF &p2, const QP
 
 std::tuple<QPolygonF, double> Algorithms::minMaxBox(const QPolygonF &pol)
 {
-    //Create min max box
+    // Create min max box
     double area;
 
-    //Get extreme points
+    // Get extreme points
     QPointF qymin = *std::min_element(pol.begin(), pol.end(), sortPointsByY());
     QPointF qymax = *std::max_element(pol.begin(), pol.end(), sortPointsByY());
 
     QPointF qxmin = *std::min_element(pol.begin(), pol.end(), sortPointsByX());
     QPointF qxmax = *std::max_element(pol.begin(), pol.end(), sortPointsByX());
 
-    //Get extreme coordinates
+    // Get extreme coordinates
     double xmin = qxmin.x();
     double ymin = qymin.y();
 
     double xmax = qxmax.x();
     double ymax = qymax.y();
 
-    //Create vetices of min max box
+    // Create vetices of min max box
     QPointF v1(xmin,ymin);
     QPointF v2(xmax,ymin);
     QPointF v3(xmax,ymax);
     QPointF v4(xmin,ymax);
 
-    //Create new polygon
+    // Create new polygon
     QPolygonF pol_new = {v1, v2, v3, v4};
 
-    //Compute area
+    // Compute area
     area = (xmax - xmin) * (ymax - ymin);
 
     return {pol_new, area};
@@ -61,24 +59,24 @@ std::tuple<QPolygonF, double> Algorithms::minMaxBox(const QPolygonF &pol)
 
 QPolygonF Algorithms::rotate(const QPolygonF &pol, double sigma)
 {
-    // rotate polygon by angle sigma
+    // Rotate polygon by angle sigma
     QPolygonF pol_rotated;
 
     // Proces polygon one by one
     for(QPointF point: pol)
     {
-        //Get coordinates
+        // Get coordinates
         double xp = point.x();
         double yp = point.y();
 
-        //Rotate point
+        // Rotate point
         double xp_rot = xp*cos(sigma) - yp*sin(sigma);
         double yp_rot = xp*sin(sigma) + yp*cos(sigma);
 
-        //Create new point
+        // Create new point
         QPointF p(xp_rot, yp_rot);
 
-        //Add to the vecotor
+        // Add to the vecotor
         pol_rotated.push_back(p);
 
     }
@@ -89,12 +87,12 @@ QPolygonF Algorithms::rotate(const QPolygonF &pol, double sigma)
 
 double Algorithms::getArea(const QPolygonF &pol)
 {
-    //Compute area using LH formula
+    // Compute area using LH formula
 
     int n = pol.size();
     double area = 0;
 
-    // Proces point one by one
+    // Proces points one by one
     for(int i = 0;i<n;i++)
     {
         area += pol[i].x() * (pol[(i+1)%n].y()-pol[(i-1+n)%n].y());
@@ -106,18 +104,18 @@ double Algorithms::getArea(const QPolygonF &pol)
 
 QPolygonF Algorithms::resize(const QPolygonF &pol, const QPolygonF &mmbox)
 {
-    //Resize minimum area enclosing rectangle in order to have the same area as a building
+    // Resize minimum area enclosing rectangle in order to have the same area as a building
     double Ab = getArea(pol);
     double A = getArea(mmbox);
 
-    //Compute kj
+    // Compute kj
     double k = Ab/A;
 
-    //Compute center of gravity
+    // Compute center of gravity
     double xt = (mmbox[0].x() + mmbox[1].x() + mmbox[2].x() + mmbox[3].x())/4;
     double yt = (mmbox[0].y() + mmbox[1].y() + mmbox[2].y() + mmbox[3].y())/4;
 
-    //Create vectors u1-u4
+    // Create vectors u1-u4
     double u1x = mmbox[0].x() - xt;
     double u1y = mmbox[0].y() - yt;
     double u2x = mmbox[1].x() - xt;
@@ -140,13 +138,13 @@ QPolygonF Algorithms::resize(const QPolygonF &pol, const QPolygonF &mmbox)
     double x4r = xt + sqrt(k)*u4x;
     double y4r = yt + sqrt(k)*u4y;
 
-    //Create new points
+    // Create new points
     QPointF p1(x1r,y1r);
     QPointF p2(x2r,y2r);
     QPointF p3(x3r,y3r);
     QPointF p4(x4r,y4r);
 
-    //Create resized mmbox
+    // Create resized mmbox
     QPolygonF pol_res = {p1, p2, p3, p4};
 
     return pol_res;
@@ -155,36 +153,36 @@ QPolygonF Algorithms::resize(const QPolygonF &pol, const QPolygonF &mmbox)
 
 QPolygonF Algorithms::createCHJS(const QPolygonF &pol)
 {
-    //Create convex hull using Jarvis scan
+    // Create convex hull using Jarvis scan
     QPolygonF ch;
 
-    //Get pivot q
+    // Get pivot q
     QPointF q = *std::min_element(pol.begin(), pol.end(), sortPointsByY());
 
-    //Get point
+    // Get point
     QPointF r = *std::min_element(pol.begin(), pol.end(), sortPointsByX());
 
-    //Initliaze pj, pj1
+    // Initliaze pj, pj1
     QPointF pj = q;
     QPointF pj1(r.x() - 1, q.y());
 
-    //Add first point to ch
+    // Add first point to ch
     ch.push_back(pj);
 
-    //Find all points of ch
+    // Find all points of ch
     do
     {
         // Maximum and index
         double omega_max = 0;
         int i_max = -1;
 
-        //Find point generating max angle
+        // Find point generating max angle
         for(int i=0; i<pol.size(); i++)
         {
-            //Find point generating maximum angle
+            // Find point generating maximum angle
             double omega = get2LinesAngle(pj, pj1, pj, pol[i]);
 
-            //Update maximum
+            // Update maximum
             if(omega>omega_max)
             {
                 omega_max = omega;
@@ -192,10 +190,10 @@ QPolygonF Algorithms::createCHJS(const QPolygonF &pol)
             }
         }
 
-        //Add point to ch
+        // Add point to ch
         ch.push_back(pol[i_max]);
 
-        //Update vertices
+        // Update vertices
         pj1 = pj;
         pj = pol[i_max];
 
@@ -212,33 +210,33 @@ QPolygonF Algorithms::createCHGS(const QPolygonF &pol) {
 
 QPolygonF Algorithms::createMAER(const QPolygonF &pol)
 {
-    //Create minimun area enclosing rectangle over the building
+    // Create minimun area enclosing rectangle over the building
     double sigma_min = 2* M_PI;
 
-    //Construct min-max box
+    // Construct min-max box
     auto [mmbox_min, area_min] = minMaxBox(pol);
 
-    //Create CH
+    // Create CH
     QPolygonF ch = createCHJS(pol);
 
-    //Process all segments of CG
+    // Process all segments of CG
     int n = ch.size();
     for(int i = 0; i < n; i++)
     {
-        //Get ch segment and its coordinate differencies
+        // Get ch segment and its coordinate differencies
         double dx = ch[(i+1)%n].x()-ch[i].x();
         double dy = ch[(i+1)%n].y()-ch[i].y();
 
-        //Get angle of rotation
+        // Get angle of rotation
         double sigma = atan2(dy, dx);
 
-        //Rotation by -sigma
+        // Rotation by -sigma
         QPolygonF ch_rot = rotate(ch, -sigma);
 
-        //Compute min-max box
+        // Compute min-max box
         auto [mmbox, area] = minMaxBox(ch_rot);
 
-        //Update minimum
+        // Update minimum
         if(area < area_min)
         {
             // Update minimum
@@ -259,47 +257,44 @@ QPolygonF Algorithms::createMAER(const QPolygonF &pol)
 
 QPolygonF Algorithms::createERPCA(const QPolygonF &pol)
 {
-    // Create area enclosing rectangle over the puilding using PCA
+    // Create area enclosing rectangle over the building using PCA
 
     int n = pol.size();
 
-    //Create matrix A
+    // Create matrix A
     Eigen::MatrixXd A(n, 2);
 
     // Add points to the matrix
-
     for(int i = 0; i < n; i++)
     {
         A(i,0) = pol[i].x();
         A(i,1) = pol[i].y();
     }
 
-    //Compute means of coordinates over columns
+    // Compute means of coordinates over columns
     Eigen::RowVector2d M = A.colwise().mean();
 
-    //Subtract mean: B = A - M
+    // Subtract mean: B = A - M
     Eigen::MatrixXd B = A.rowwise() - M;
 
-    //Covariance matrix: C = B' * B / (m - 1)
+    // Covariance matrix: C = B' * B / (m - 1)
     Eigen::MatrixXd C = (B.adjoint() * B) / double(A.rows() - 1);
 
-    //Compute SVD, full version: [U, S, V] = svd(C)
+    // Compute SVD, full version: [U, S, V] = svd(C)
     Eigen::JacobiSVD<Eigen::MatrixXd> svd(C, Eigen::ComputeFullV | Eigen::ComputeFullU);
 
-    //Get matrices
+    // Get matrices
     Eigen::MatrixXd U = svd.matrixU();
     Eigen::MatrixXd S = svd.singularValues();
     Eigen::MatrixXd V = svd.matrixV();
 
-    //Compute sigma
-
-    //Get angle of rotation
+    // Compute sigma
     double sigma = atan2(V(1,0), V(0,0));
 
-    //Rotation by -sigma
+    // Rotation by -sigma
     QPolygonF pol_rot = rotate(pol, -sigma);
 
-    //Compute min-max box
+    // Compute min-max box
     auto [mmbox, area] = minMaxBox(pol_rot);
 
     // Resize mmbox
@@ -313,6 +308,8 @@ QPolygonF Algorithms::createERPCA(const QPolygonF &pol)
 
 QPolygonF Algorithms::createERLE(const QPolygonF &pol)
 {
+    // Create area enclosing rectangle over the building using longest edge
+
     double maxLength = 0;
     double dx = 0, dy = 0;
 
@@ -325,7 +322,7 @@ QPolygonF Algorithms::createERLE(const QPolygonF &pol)
         double dy_i = pol[(i+1) % n].y() - pol[i].y();
         double length = sqrt(dx_i * dx_i + dy_i * dy_i);
 
-        // Track the maximum length and its direction
+        // Find the maximum length and its direction
         if (length > maxLength)
         {
             maxLength = length;
@@ -337,10 +334,10 @@ QPolygonF Algorithms::createERLE(const QPolygonF &pol)
     // Compute the angle (sigma) of the longest edge
     double sigma = atan2(dy, dx);
 
-    //Rotation by -sigma
+    // Rotation by -sigma
     QPolygonF pol_rot = rotate(pol, -sigma);
 
-    //Compute min-max box
+    // Compute min-max box
     auto [mmbox, area] = minMaxBox(pol_rot);
 
     // Resize mmbox
@@ -353,6 +350,8 @@ QPolygonF Algorithms::createERLE(const QPolygonF &pol)
 
 QPolygonF Algorithms::createERWA(const QPolygonF &pol)
 {
+    // Create area enclosing rectangle over the building using wall average
+
     int n = pol.size();
     double sigma = 0;
     double Si_sum = 0;
@@ -396,10 +395,10 @@ QPolygonF Algorithms::createERWA(const QPolygonF &pol)
     // Weighted average
     sigma = sigma_12 + sigma / Si_sum;
 
-    //Rotation by -sigma
+    // Rotation by -sigma
     QPolygonF pol_rot = rotate(pol, -sigma);
 
-    //Compute min-max box
+    // Compute min-max box
     auto [mmbox, area] = minMaxBox(pol_rot);
 
     // Resize mmbox
@@ -412,6 +411,8 @@ QPolygonF Algorithms::createERWA(const QPolygonF &pol)
 
 QPolygonF Algorithms::createERWB(const QPolygonF &pol)
 {
+    // Create area enclosing rectangle over the building using weighted bisector
+
     double max_diag_1 = 0, max_diag_2 = 0;
     double dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
     int n = pol.size();
@@ -419,11 +420,13 @@ QPolygonF Algorithms::createERWB(const QPolygonF &pol)
     // Find the two longest diagonals
     for (int i = 0; i < n; ++i)
     {
-        // Calculate differences in coordinates between vertices
         for (int j = 0; j < n; ++j) {
+            // Calculate differences in coordinates between vertices
             double dxi = pol[(i + j + 2) % n].x() - pol[i % n].x();
             double dyi = pol[(i + j + 2) % n].y() - pol[i % n].y();
-            double len_i = sqrt(dxi * dxi + dyi * dyi);// Calculate the length of the diagonal using the Pythagorean theorem
+
+            // Calculate the length of the diagonal using the Pythagorean theorem
+            double len_i = sqrt(dxi * dxi + dyi * dyi);
 
             // If the length is greater than the current longest diagonal
             if (len_i > max_diag_1)

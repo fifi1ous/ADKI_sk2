@@ -49,7 +49,7 @@ void MainForm::on_actionOpen_triggered()
 
 void MainForm::on_actionMBR_triggered()
 {
-    //Get all polygons
+    // Get all polygons
     std::vector<QPolygonF> polygons = ui->Canvas->getPolygons();
 
     // Check if the polygons are empty
@@ -58,7 +58,7 @@ void MainForm::on_actionMBR_triggered()
         return;
     }
 
-    //Use std::vector to store the results
+    // Use std::vector to store the results
     std::vector<QPolygonF> results;
 
     // For each polygon in the list of polygons, create the MBR
@@ -68,24 +68,24 @@ void MainForm::on_actionMBR_triggered()
             continue;  // Skip invalid polygons
         }
 
-        //Run the algorithm to create the MBR
+        // Run the algorithm to create the MBR
         QPolygonF maer = Algorithms::createMAER(building);
 
-        //Store the result
+        // Store the result
         results.push_back(maer);
     }
 
-    //Set the results on the Canvas
+    // Set the results on the Canvas
     ui->Canvas->setResults(results);
 
-    //Repaint the canvas to display the updated results
+    // Repaint the canvas to display the updated results
     ui->Canvas->repaint();
 }
 
 
 void MainForm::on_actionPCA_triggered()
 {
-    //Create minimum bounding rectangle
+    // Create minimum bounding rectangle
 
     // Get all polygons
     std::vector<QPolygonF> polygons = ui->Canvas->getPolygons();
@@ -153,16 +153,16 @@ void MainForm::on_actionExit_triggered()
 
 void Draw::setResults(const std::vector<QPolygonF>& newResults)
 {
-    results.clear();  // Clear previous results
+    results.clear(); // Clear previous results
     for (const auto& result : newResults) {
-        results.push_back(result);  // Add new results
+        results.push_back(result); // Add new results
     }
-    repaint();  // Repaint to show results
+    repaint(); // Repaint to show results
 }
 
 void MainForm::on_actionLongest_edge_triggered()
 {
-    //Create minimum bounding rectangle
+    // Create minimum bounding rectangle
 
     // Get all polygons
     std::vector<QPolygonF> polygons = ui->Canvas->getPolygons();
@@ -199,7 +199,7 @@ void MainForm::on_actionLongest_edge_triggered()
 
 void MainForm::on_actionWall_average_triggered()
 {
-    //Create minimum bounding rectangle
+    // Create minimum bounding rectangle
 
     // Get all polygons
     std::vector<QPolygonF> polygons = ui->Canvas->getPolygons();
@@ -217,7 +217,7 @@ void MainForm::on_actionWall_average_triggered()
     for (const auto& building : polygons) {
         // If the polygon has at least 3 points
         if (building.size() < 3) {
-            continue;  // Skip invalid polygons
+            continue; // Skip invalid polygons
         }
 
         // Run the algorithm to create the Longest edge
@@ -236,7 +236,7 @@ void MainForm::on_actionWall_average_triggered()
 
 void MainForm::on_actionWeighted_bisector_triggered()
 {
-    //Create minimum bounding rectangle
+    // Create minimum bounding rectangle
 
     // Get all polygons
     std::vector<QPolygonF> polygons = ui->Canvas->getPolygons();
@@ -254,7 +254,7 @@ void MainForm::on_actionWeighted_bisector_triggered()
     for (const auto& building : polygons) {
         // If the polygon has at least 3 points
         if (building.size() < 3) {
-            continue;  // Skip invalid polygons
+            continue; // Skip invalid polygons
         }
 
         // Run the algorithm to create the Longest edge
@@ -281,7 +281,7 @@ void MainForm::on_actionCovvex_Hull_ON_OFF_triggered() {
         return;
     }
 
-    // Use std::vector to store the convex hull results
+    //Use std::vector to store the convex hull results
     std::vector<QPolygonF> chs;
 
     // For each polygon in the list of polygons, create the convex hull
