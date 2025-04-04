@@ -24,3 +24,14 @@ This folder contains the implementation of algorithms to solve the **Point Locat
 ### [U2 - Building Simplification](https://github.com/fifi1ous/ADKI_sk2/tree/main/U2)
 #### [Assignment](https://web.natur.cuni.cz/~bayertom/images/courses/Adk/adkcv2.pdf)
 This folder contains the implementation of algorithms to solve the **Building Simplification**. using the following methods:
+- **Minimum Area Enclosing Rectangle**: Rotate the convex hull of the building and compute the bounding box. The bounding box with minimal area is rotated back and resized to have the same area as the original polygon, then serves as the simplified building.
+- **Principal Component Analysis (PCA)**: Uses PCA analysis to determine the main directions in the building and create a rectangle oriented by PCA with the same area as the original polygon, which then serves as the simplified building. For PCA is used the **[Eigen library](https://gitlab.com/libeigen/eigen)**.
+- **Longest Edge**: Finds the longest edge of the polygon, which then serves as the main direction for building generalization.
+- **Wall Average**: Calculates the weighted average of the directions of all edges, using the length of the edge as the weight. This serves as the main direction for building generalization.
+- **Weighted Bisector**: Finds the two longest diagonals and uses their weighted average direction as the main direction for building generalization.
+- **Methods for Convex Hull**: Utilizes the following methods to compute the convex hull:
+  - **Jarvis Scan**
+  - **Graham Scan**
+- **Handling Singular Cases**: Manages special cases in convex hull generation to ensure robustness.
+- **Loading shpefiles**: Uses **[Shapelib](https://shapelib.maptools.org/)** to process shapefiles.
+- **Graphical User Interface (GUI)**: Built with **[Qt Framework](https://qt.io/)** for interactive visualization.
