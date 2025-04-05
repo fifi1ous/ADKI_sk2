@@ -204,24 +204,14 @@ QPolygonF Algorithms::createCHJS(const QPolygonF &pol)
     return ch;
 }
 
-std::vector<double> Algorithms::anglesWithPoints(const QPolygonF &pol, const QPointF &q)
+double Algorithms::getDistance(const QPointF &p1, const QPointF &p2)
 {
-    // Vector of angles
-    std::vector<double> angles;
+    double dx = p1.x() - p2.x();
+    double dy = p1.y() - p2.y();
 
-    // Generate x line
-    QPointF x1 = q;
-    QPointF x2(x1.x()+1,x1.y());
-
-    // Calculate angles
-    for(QPointF point: pol)
-    {
-        // Calculate angles
-        double angle = get2LinesAngle(x1,x2,q,point);
-        angles.push_back(angle);
-    }
-    return angles;
+    return sqrt(dx*dx+dy*dy);
 }
+
 
 QPointF Algorithms::findPivotGS(const QPolygonF &pol)
 {
@@ -264,6 +254,47 @@ QPointF Algorithms::findPivotGS(const QPolygonF &pol)
     return q;
 }
 
+std::vector<double> Algorithms::anglesWithPoints(const QPolygonF &pol, const QPointF &q)
+{
+    // Vector of angles
+    std::vector<double> angles;
+
+    // Generate x line
+    QPointF x1 = q;
+    QPointF x2(x1.x()+1,x1.y());
+
+    // Calculate angles
+    for(QPointF point: pol)
+    {
+        // Calculate angles
+        double angle = get2LinesAngle(x1,x2,q,point);
+        angles.push_back(angle);
+    }
+    return angles;
+}
+
+void Algorithms::sortAnglesPoints(std::vector<double> &angles, QPolygonF &pol_)
+{
+    // Sort the angles and corresponding points
+    std::vector<size_t> indices(angles.size());
+    std::iota(indices.begin(), indices.end(), 0);
+
+    // Sort indices based on angles
+    std::sort(indices.begin(), indices.end(), [&angles](size_t i1, size_t i2) { return angles[i1] < angles[i2]; });
+
+    // Create sorted vectors
+    std::vector<double> sorted_angles;
+    QPolygonF sorted_pol;
+
+    for(size_t i : indices) {
+        sorted_angles.push_back(angles[i]);
+        sorted_pol.push_back(pol_[i]);
+    }
+
+    // Update original vectors
+    angles = sorted_angles;
+    pol_ = sorted_pol;
+}
 
 QPolygonF Algorithms::createCHGS(const QPolygonF &pol)
 {
@@ -287,28 +318,9 @@ QPolygonF Algorithms::createCHGS(const QPolygonF &pol)
     // Vector of angles
     std::vector<double> angles  = anglesWithPoints(pol_,q);
 
-    // Sort the angles and corresponding points
-    std::vector<size_t> indices(angles.size());
-    std::iota(indices.begin(), indices.end(), 0);
-    
-    // Sort indices based on angles
-    std::sort(indices.begin(), indices.end(), 
-        [&angles](size_t i1, size_t i2) { return angles[i1] < angles[i2]; });
-    
-    // Create sorted vectors
-    std::vector<double> sorted_angles;
-    QPolygonF sorted_pol;
-    
-    for(size_t i : indices) {
-        sorted_angles.push_back(angles[i]);
-        sorted_pol.push_back(pol_[i]);
-    }
-    
-    // Update original vectors
-    angles = sorted_angles;
-    pol_ = sorted_pol;
+    // Sort the angles and points in pol_
+    sortAnglesPoints(angles,pol_);
 
-    // Sort the angles
 }
 
 

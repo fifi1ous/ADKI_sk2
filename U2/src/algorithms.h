@@ -24,9 +24,10 @@ private:
     static QPolygonF resize(const QPolygonF &pol, const QPolygonF &mmbox);
     static QPolygonF rotate(const QPolygonF &pol, double sigma);
     static std::tuple<QPolygonF, double> minMaxBox(const QPolygonF &pol);
+    static double getDistance(const QPointF &p1, const QPointF &p2);
     static QPointF findPivotGS(const QPolygonF &pol);
     static std::vector<double> anglesWithPoints(const QPolygonF &pol, const QPointF &q);
-    static void sort(std::vector<double> &angles, QPolygonF &pol_);
+    static void sortAnglesPoints(std::vector<double> &angles, QPolygonF &pol_);
 };
 
 #endif // ALGORITHMS_H
