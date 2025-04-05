@@ -1,7 +1,9 @@
 #include "algorithms.h"
+#include <cmath>
 #include "sortpointsbyx.h"
 #include "sortpointsbyy.h"
-#include <cmath>
+
+#include <QDebug>
 
 double Algorithms::get2LinesAngle(const QPointF &p1, const QPointF &p2, const QPointF &p3, const QPointF &p4)
 {
@@ -202,9 +204,87 @@ QPolygonF Algorithms::createCHJS(const QPolygonF &pol)
     return ch;
 }
 
+std::vector<double> Algorithms::anglesWithPoints(const QPolygonF &pol, const QPointF &q)
+{
+    // Vector of angles
+    std::vector<double> angles;
 
-QPolygonF Algorithms::createCHGS(const QPolygonF &pol) {
-    // implementation
+    // Generate x line
+    QPointF x1 = q;
+    QPointF x2(x1.x()+1,x1.y());
+
+    // Calculate angles
+    for(QPointF point: pol)
+    {
+        // Calculate angles
+        double angle = get2LinesAngle(x1,x2,q,point);
+        angles.push_back(angle);
+    }
+    return angles;
+}
+
+QPointF Algorithms::findPivotGS(const QPolygonF &pol)
+{
+    // Find the pivot point for the Graham scan algorithm
+
+    // Initialize the pivot as the first point in the polygon
+    QPointF q = pol[0];
+    double q_y = q.y();
+
+    // Iterate through all points to find the one with the lowest Y-coordinate
+    for(int i = 1; i < pol.size(); i++)
+    {
+        double c_y = pol[i].y(); // Y-coordinate of the current candidate point
+
+        // If the candidate has a lower or equal Y-coordinate than the current pivot
+        if(c_y <= q_y)
+        {
+            // If Y-coordinates are equal, compare X-coordinates
+            if(c_y == q_y)
+            {
+                double c_x = pol[i].x();
+                double q_x = q.x();
+
+                // Choose the point with the smaller X-coordinate (more to the left)
+                if(c_x < q_x)
+                {
+                    q = pol[i];
+                    q_y = q.y();
+                }
+            }
+            else
+            {
+                // Candidate has a lower Y-coordinate, update the pivot
+                q = pol[i];
+                q_y = q.y();
+            }
+        }
+    }
+
+    return q;
+}
+
+
+QPolygonF Algorithms::createCHGS(const QPolygonF &pol)
+{
+    // Create convex hull using Graham scan
+    QPolygonF ch;
+
+
+    // Get pivot q
+
+    QPointF q = findPivotGS(pol);
+
+    QPolygonF pol_;
+    for(QPointF point: pol)
+    {
+        if(point != q)
+        {
+            pol_.push_back(point);
+        }
+    }
+    // Vector of angles
+    std::vector<double> angles  = anglesWithPoints(pol,q);
 }
 
 

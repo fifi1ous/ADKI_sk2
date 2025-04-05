@@ -3,6 +3,7 @@
 #include <QtGui>
 
 #include <tuple>
+#include <vector>
 #include "../lib/Eigen/Dense"
 #include "../lib/Eigen/Core"
 
@@ -23,6 +24,8 @@ private:
     static QPolygonF resize(const QPolygonF &pol, const QPolygonF &mmbox);
     static QPolygonF rotate(const QPolygonF &pol, double sigma);
     static std::tuple<QPolygonF, double> minMaxBox(const QPolygonF &pol);
+    static QPointF findPivotGS(const QPolygonF &pol);
+    static std::vector<double> anglesWithPoints(const QPolygonF &pol, const QPointF &q);
 };
 
 #endif // ALGORITHMS_H
