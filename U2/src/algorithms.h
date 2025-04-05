@@ -26,6 +26,7 @@ private:
     static std::tuple<QPolygonF, double> minMaxBox(const QPolygonF &pol);
     static QPointF findPivotGS(const QPolygonF &pol);
     static std::vector<double> anglesWithPoints(const QPolygonF &pol, const QPointF &q);
+    static void sort(std::vector<double> &angles, QPolygonF &pol_);
 };
 
 #endif // ALGORITHMS_H
