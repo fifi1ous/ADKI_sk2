@@ -27,7 +27,8 @@ private:
     static double getDistance(const QPointF &p1, const QPointF &p2);
     static QPointF findPivotGS(const QPolygonF &pol);
     static std::vector<double> anglesWithPoints(const QPolygonF &pol, const QPointF &q);
-    static void sortAnglesPoints(std::vector<double> &angles, QPolygonF &pol_);
+    static void sortAnglesPoints(const QPointF &q, std::vector<double> &angles, QPolygonF &pol_);
+    static bool isRightTurn(const QPointF &q1, const QPointF &q2, const QPointF &q3);
 };
 
 #endif // ALGORITHMS_H

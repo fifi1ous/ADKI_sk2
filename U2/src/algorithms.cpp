@@ -273,7 +273,7 @@ std::vector<double> Algorithms::anglesWithPoints(const QPolygonF &pol, const QPo
     return angles;
 }
 
-void Algorithms::sortAnglesPoints(std::vector<double> &angles, QPolygonF &pol_)
+void Algorithms::sortAnglesPoints(const QPointF &q, std::vector<double> &angles, QPolygonF &pol_)
 {
     // Sort the angles and corresponding points
     std::vector<size_t> indices(angles.size());
@@ -282,18 +282,61 @@ void Algorithms::sortAnglesPoints(std::vector<double> &angles, QPolygonF &pol_)
     // Sort indices based on angles
     std::sort(indices.begin(), indices.end(), [&angles](size_t i1, size_t i2) { return angles[i1] < angles[i2]; });
 
-    // Create sorted vectors
+    // Create sorted and filtered vectors
     std::vector<double> sorted_angles;
     QPolygonF sorted_pol;
 
-    for(size_t i : indices) {
-        sorted_angles.push_back(angles[i]);
-        sorted_pol.push_back(pol_[i]);
+    if(!indices.empty())
+    {
+        // Add first point
+        sorted_angles.push_back(angles[indices[0]]);
+        sorted_pol.push_back(pol_[indices[0]]);
+
+        // Process remaining points
+        for(size_t i = 1; i < indices.size(); i++)
+        {
+            size_t current_idx = indices[i];
+            size_t prev_idx = indices[i-1];
+
+            // If angle is different from previous, add the point
+            if(angles[current_idx] != angles[prev_idx]) {
+                sorted_angles.push_back(angles[current_idx]);
+                sorted_pol.push_back(pol_[current_idx]);
+            }
+            // If angle is same, keep the one with greater distance from pivot
+            else
+            {
+                double current_dist = getDistance(pol_[current_idx], q);
+                double prev_dist = getDistance(sorted_pol.back(), q);
+                
+                if(current_dist > prev_dist)
+                {
+                    sorted_pol.back() = pol_[current_idx];
+                }
+            }
+        }
     }
 
     // Update original vectors
     angles = sorted_angles;
     pol_ = sorted_pol;
+}
+
+bool Algorithms::isRightTurn(const QPointF &p1, const QPointF &p2, const QPointF &p3)
+{
+    // Check the point if is on the right
+
+    // Compute vectors
+    double v1x = p2.x() - p1.x();
+    double v1y = p2.y() - p1.y();
+    double v2x = p3.x() - p1.x();
+    double v2y = p3.y() - p1.y();
+
+    // Compute cross product (determinant)
+    double cross = v1x * v2y - v1y * v2x;
+
+    // If cross product is negative, it's a right turn
+    return cross < 0;
 }
 
 QPolygonF Algorithms::createCHGS(const QPolygonF &pol)
@@ -309,7 +352,8 @@ QPolygonF Algorithms::createCHGS(const QPolygonF &pol)
     QPolygonF pol_;
     for(QPointF point: pol)
     {
-        if(point != q)
+        // Check if there is point with the same coordinates as pivot - leave him
+        if((point != q))
         {
             pol_.push_back(point);
         }
@@ -318,9 +362,26 @@ QPolygonF Algorithms::createCHGS(const QPolygonF &pol)
     // Vector of angles
     std::vector<double> angles  = anglesWithPoints(pol_,q);
 
-    // Sort the angles and points in pol_
-    sortAnglesPoints(angles,pol_);
+    // Sort and filter angles and points in pol_
+    sortAnglesPoints(q,angles,pol_);
 
+    // Input pivot and and 2 last point from the angles to the convexhull
+    ch.push_back(q);
+    ch.push_back(pol_[0]);
+    ch.push_back(pol_[1]);
+
+    for (int i = 2; i < pol_.size(); ++i) {
+        QPointF candidate = pol_[i];
+
+        while (ch.size() >= 2 && isRightTurn(ch[ch.size() - 2], ch[ch.size() - 1], candidate)) {
+            ch.pop_back(); // remove last point from convex hull
+        }
+
+        ch.push_back(candidate);
+    }
+
+    qDebug() << "Hello from QDebug!";
+    return ch;
 }
 
 
@@ -584,3 +645,5 @@ QPolygonF Algorithms::createERWB(const QPolygonF &pol)
     // Rotate the minimum bounding box back to the original direction
     return rotate(mmbox_min_res, sigma);
 }
+
+
