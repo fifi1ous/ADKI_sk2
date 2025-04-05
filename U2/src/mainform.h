@@ -44,6 +44,7 @@ private slots:
 
 private:
     Ui::MainForm *ui;
+    bool checkValidation(const QPolygonF &building);
 };
 
 #endif // MAINFORM_H

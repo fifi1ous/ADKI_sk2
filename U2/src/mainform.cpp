@@ -8,6 +8,8 @@
 #include <QDesktopServices>
 #include <QUrl>
 
+#include <QDebug>
+
 MainForm::MainForm(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainForm)
@@ -286,9 +288,11 @@ void MainForm::on_actionCovvex_Hull_ON_OFF_triggered() {
 
     // For each polygon in the list of polygons, create the convex hull
     for (const auto& building : polygons) {
-        // If the polygon has at least 3 points
-        if (building.size() < 3) {
-            continue;  // Skip invalid polygons
+        // Check validity of polygons
+        if (checkValidation(building))
+        {
+            // If true continu
+            continue;
         }
 
         // Run the algorithm to create the convex hull
@@ -326,4 +330,43 @@ void MainForm::on_actionJarvis_Scan_triggered()
     } else {
         ui->actionJarvis_Scan->setChecked(true);
     }
+}
+
+bool MainForm::checkValidation(const QPolygonF &building)
+{
+    // If the polygon has at least 3 points
+    if (building.size() < 3) {
+        return true;  // Skip invalid polygons
+    }
+
+    // Check if the points aren't the same, or the majority isn't the
+    // Cehck for each point
+    for(int i = 0; i < building.size(); i++)
+    {
+        // Set count to -1, because of pivot
+        int count = -1;
+
+        // Set pivot for checking
+        QPointF q = building[i];
+
+        // Check each point
+        for (QPointF point: building)
+        {
+            // If the point are the same increase count
+            if(point == q)
+            {
+                count++;
+            }
+        }
+
+        qDebug() << count;
+        qDebug() << building.size();
+        // Check if the number of same point is smaller than needed points
+        if (count >= building.size()-1 || (building.size() == 3 && count > 1) )
+        {
+            return true; // Skip invalid polygons
+        }
+    }
+
+    return false; // Polygon is valid
 }

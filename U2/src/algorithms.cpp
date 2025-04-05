@@ -647,3 +647,4 @@ QPolygonF Algorithms::createERWB(const QPolygonF &pol)
 }
 
 
+

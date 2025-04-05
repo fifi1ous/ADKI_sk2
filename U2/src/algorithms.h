@@ -17,6 +17,7 @@ public:
     static QPolygonF createERWB(const QPolygonF &pol);
     static QPolygonF createCHJS(const QPolygonF &pol);
     static QPolygonF createCHGS(const QPolygonF &pol);
+    static QPolygonF createCHQH(const QPolygonF &pol);
 
 private:
     static double get2LinesAngle(const QPointF &p1, const QPointF &p2, const QPointF &p3, const QPointF &p4);
