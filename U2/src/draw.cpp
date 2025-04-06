@@ -117,6 +117,9 @@ void Draw::loadPolygonFromTextfile(const QString &fileName)
         return;
     }
 
+    // Clear previous polygons
+    clearPolygons();
+
     QTextStream in(&file);
     // Clear existing polygons before loading new ones
     QVector<QPointF> building;
