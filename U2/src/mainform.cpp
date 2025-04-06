@@ -7,8 +7,7 @@
 
 #include <QDesktopServices>
 #include <QUrl>
-
-#include <QDebug>
+#include <set>
 
 MainForm::MainForm(QWidget *parent)
     : QMainWindow(parent)
@@ -65,9 +64,11 @@ void MainForm::on_actionMBR_triggered()
 
     // For each polygon in the list of polygons, create the MBR
     for (const auto& building : polygons) {
-        // If the polygon has at least 3 points
-        if (building.size() < 3) {
-            continue;  // Skip invalid polygons
+        // Check validity of polygons
+        if (!checkValidation(building))
+        {
+            // If true continu
+            continue;
         }
 
         // Run the algorithm to create the MBR
@@ -103,9 +104,11 @@ void MainForm::on_actionPCA_triggered()
 
     // For each polygon in the list of polygons, create the PCA
     for (const auto& building : polygons) {
-        // If the polygon has at least 3 points
-        if (building.size() < 3) {
-            continue;  // Skip invalid polygons
+        // Check validity of polygons
+        if (!checkValidation(building))
+        {
+            // If true continu
+            continue;
         }
 
         // Run the algorithm to create the PCA
@@ -180,9 +183,11 @@ void MainForm::on_actionLongest_edge_triggered()
 
     // For each polygon in the list of polygons, create the Longest edge
     for (const auto& building : polygons) {
-        // If the polygon has at least 3 points
-        if (building.size() < 3) {
-            continue;  // Skip invalid polygons
+        // Check validity of polygons
+        if (!checkValidation(building))
+        {
+            // If true continu
+            continue;
         }
 
         // Run the algorithm to create the Longest edge
@@ -217,9 +222,11 @@ void MainForm::on_actionWall_average_triggered()
 
     // For each polygon in the list of polygons, create the Longest edge
     for (const auto& building : polygons) {
-        // If the polygon has at least 3 points
-        if (building.size() < 3) {
-            continue; // Skip invalid polygons
+        // Check validity of polygons
+        if (!checkValidation(building))
+        {
+            // If true continu
+            continue;
         }
 
         // Run the algorithm to create the Longest edge
@@ -254,9 +261,11 @@ void MainForm::on_actionWeighted_bisector_triggered()
 
     // For each polygon in the list of polygons, create the Longest edge
     for (const auto& building : polygons) {
-        // If the polygon has at least 3 points
-        if (building.size() < 3) {
-            continue; // Skip invalid polygons
+        // Check validity of polygons
+        if (!checkValidation(building))
+        {
+            // If true continu
+            continue;
         }
 
         // Run the algorithm to create the Longest edge
@@ -289,14 +298,25 @@ void MainForm::on_actionCovvex_Hull_ON_OFF_triggered() {
     // For each polygon in the list of polygons, create the convex hull
     for (const auto& building : polygons) {
         // Check validity of polygons
-        if (checkValidation(building))
+        if (!checkValidation(building))
         {
             // If true continu
             continue;
         }
 
-        // Run the algorithm to create the convex hull
-        QPolygonF ch = Algorithms::createCHJS(building);
+        // Initialize convex hull
+        QPolygonF ch;
+
+        // Run the algorithm to create the convex hull based on selection of algorithm
+        switch(convexHull)
+        {
+        case 0:
+            ch = Algorithms::createCHJS(building);
+            break;
+        case 1:
+            ch = Algorithms::createCHGS(building);
+            break;
+        }
 
         // Store the ch in the chs vector
         chs.push_back(ch);
@@ -316,57 +336,51 @@ void MainForm::on_actionAbout_triggered()
 
 void MainForm::on_actionGraham_Scan_triggered()
 {
-    if (ui->actionGraham_Scan->isChecked()) {
+    convexHull = 1;
+    if (ui->actionGraham_Scan->isChecked())
+    {
         ui->actionJarvis_Scan->setChecked(false);
-    } else {
+    }
+    else
+    {
         ui->actionGraham_Scan->setChecked(true);
     }
 }
 
 void MainForm::on_actionJarvis_Scan_triggered()
 {
-    if (ui->actionJarvis_Scan->isChecked()) {
+    convexHull = 0;
+    if (ui->actionJarvis_Scan->isChecked())
+    {
         ui->actionGraham_Scan->setChecked(false);
-    } else {
+    }
+    else
+    {
         ui->actionJarvis_Scan->setChecked(true);
     }
 }
 
+
 bool MainForm::checkValidation(const QPolygonF &building)
 {
-    // If the polygon has at least 3 points
-    if (building.size() < 3) {
-        return true;  // Skip invalid polygons
-    }
-
-    // Check if the points aren't the same, or the majority isn't the
-    // Cehck for each point
-    for(int i = 0; i < building.size(); i++)
+    // A valid polygon must have at least 3 distinct points
+    if (building.size() < 3)
     {
-        // Set count to -1, because of pivot
-        int count = -1;
-
-        // Set pivot for checking
-        QPointF q = building[i];
-
-        // Check each point
-        for (QPointF point: building)
-        {
-            // If the point are the same increase count
-            if(point == q)
-            {
-                count++;
-            }
-        }
-
-        qDebug() << count;
-        qDebug() << building.size();
-        // Check if the number of same point is smaller than needed points
-        if (count >= building.size()-1 || (building.size() == 3 && count > 1) )
-        {
-            return true; // Skip invalid polygons
-        }
+        return false;  // Invalid
     }
 
-    return false; // Polygon is valid
+    std::set<QPointF,PointComparator> unique_points;
+
+    for (const QPointF pt: building)
+    {
+        unique_points.insert(pt);
+    }
+
+    // If fewer than 3 unique points, it's not a valid polygon
+    if (unique_points.size() < 3)
+    {
+        return false;  // Invalid
+    }
+
+    return true;  // Valid
 }

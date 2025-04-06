@@ -201,6 +201,8 @@ QPolygonF Algorithms::createCHJS(const QPolygonF &pol)
 
     }while( pj !=q );
 
+    qDebug() << "Hello Jarvis";
+
     return ch;
 }
 
@@ -380,7 +382,7 @@ QPolygonF Algorithms::createCHGS(const QPolygonF &pol)
         ch.push_back(candidate);
     }
 
-    qDebug() << "Hello from QDebug!";
+    qDebug() << "Hello Graham";
     return ch;
 }
 

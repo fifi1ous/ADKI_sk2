@@ -45,6 +45,16 @@ private slots:
 private:
     Ui::MainForm *ui;
     bool checkValidation(const QPolygonF &building);
+    struct PointComparator {
+        bool operator()(const QPointF& p1, const QPointF& p2) const {
+            if (p1.x() != p2.x()) {
+                return p1.x() < p2.x(); // Compare by x-coordinate first
+            } else {
+                return p1.y() < p2.y(); // If x-coordinates are equal, compare by y-coordinate
+            }
+        }
+    };
+    short convexHull = 0;
 };
 
 #endif // MAINFORM_H
