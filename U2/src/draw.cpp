@@ -97,7 +97,7 @@ void Draw::paintEvent(QPaintEvent *event)
     }
 
     // Draw Convex Hulls (CHs) with dashed lines
-    QPen pen(Qt::GlobalColor::cyan, 1, Qt::DashLine);
+    QPen pen(Qt::GlobalColor::darkGreen, 1, Qt::DashLine);
     painter.setPen(pen);
     painter.setBrush(Qt::GlobalColor::transparent);
 

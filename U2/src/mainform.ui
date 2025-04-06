@@ -63,7 +63,7 @@
     <property name="title">
      <string>Convex Hull</string>
     </property>
-    <addaction name="actionCovvex_Hull_ON_OFF"/>
+    <addaction name="actionCovvex_Hull"/>
     <addaction name="separator"/>
     <addaction name="actionJarvis_Scan"/>
     <addaction name="actionGraham_Scan"/>
@@ -92,7 +92,7 @@
    <addaction name="actionWall_average"/>
    <addaction name="actionWeighted_bisector"/>
    <addaction name="separator"/>
-   <addaction name="actionCovvex_Hull_ON_OFF"/>
+   <addaction name="actionCovvex_Hull"/>
    <addaction name="separator"/>
    <addaction name="actionClear_results"/>
    <addaction name="actionClear_All"/>
@@ -211,13 +211,22 @@
     <string>Jarvis Scan</string>
    </property>
   </action>
-  <action name="actionCovvex_Hull_ON_OFF">
+  <action name="actionCovvex_Hull">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/ch.png</normaloff>:/icons/ch.png</iconset>
    </property>
    <property name="text">
-    <string>Covvex Hull ON/OFF</string>
+    <string>Calculate convex hull</string>
+   </property>
+   <property name="toolTip">
+    <string>Calculate covvex hull</string>
    </property>
   </action>
   <action name="actionAbout">

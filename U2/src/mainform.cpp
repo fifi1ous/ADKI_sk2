@@ -290,7 +290,8 @@ void MainForm::on_actionWeighted_bisector_triggered()
     ui->Canvas->repaint();
 }
 
-void MainForm::on_actionCovvex_Hull_ON_OFF_triggered() {
+void MainForm::on_actionCovvex_Hull_triggered()
+{
     // Get all polygons
     std::vector<QPolygonF> polygons = ui->Canvas->getPolygons();
 
@@ -300,8 +301,6 @@ void MainForm::on_actionCovvex_Hull_ON_OFF_triggered() {
         return;
     }
 
-    // Clear previos convex hulls
-    chs.clear();
 
     // For each polygon in the list of polygons, create the convex hull
     for (const auto& building : polygons) {
