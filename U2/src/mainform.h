@@ -42,19 +42,27 @@ private slots:
 
     void on_actionJarvis_Scan_triggered();
 
+    void on_actionExport_building_triggered();
+
+    void on_actionExport_CH_triggered();
+
 private:
     Ui::MainForm *ui;
     bool checkValidation(const QPolygonF &building);
     struct PointComparator {
         bool operator()(const QPointF& p1, const QPointF& p2) const {
             if (p1.x() != p2.x()) {
-                return p1.x() < p2.x(); // Compare by x-coordinate first
+                // Compare by x-coordinate first
+                return p1.x() < p2.x();
             } else {
-                return p1.y() < p2.y(); // If x-coordinates are equal, compare by y-coordinate
+                // If x-coordinates are equal, compare by y-coordinate
+                return p1.y() < p2.y();
             }
         }
     };
     short convexHull = 0;
+    std::vector<QPolygonF> results;
+    std::vector<QPolygonF> chs;
 };
 
 #endif // MAINFORM_H

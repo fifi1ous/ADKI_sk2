@@ -1,16 +1,18 @@
 <RCC>
     <qresource prefix="/">
-		<file>icons/about.png</file>
-		<file>icons/ch.png</file>
-		<file>icons/clear.png</file>
-		<file>icons/clear_ch.png</file>
-		<file>icons/clear_er.png</file>
-		<file>icons/exit.png</file>
-		<file>icons/longestedge.png</file>
-		<file>icons/maer.png</file>
-		<file>icons/open_file.png</file>
-		<file>icons/wa.png</file>
-		<file>icons/weightedbisector.png</file>
-		<file>icons/pca.png</file>
+        <file>icons/about.png</file>
+        <file>icons/ch.png</file>
+        <file>icons/clear.png</file>
+        <file>icons/clear_ch.png</file>
+        <file>icons/clear_er.png</file>
+        <file>icons/exit.png</file>
+        <file>icons/longestedge.png</file>
+        <file>icons/maer.png</file>
+        <file>icons/open_file.png</file>
+        <file>icons/wa.png</file>
+        <file>icons/weightedbisector.png</file>
+        <file>icons/pca.png</file>
+        <file>icons/Export.png</file>
+        <file>icons/Export2.png</file>
     </qresource>
 </RCC>

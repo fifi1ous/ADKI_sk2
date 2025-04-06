@@ -59,8 +59,8 @@ void MainForm::on_actionMBR_triggered()
         return;
     }
 
-    // Use std::vector to store the results
-    std::vector<QPolygonF> results;
+    // Clear previos results
+    results.clear();
 
     // For each polygon in the list of polygons, create the MBR
     for (const auto& building : polygons) {
@@ -99,8 +99,8 @@ void MainForm::on_actionPCA_triggered()
         return;
     }
 
-    // Use std::vector to store the PCA results
-    std::vector<QPolygonF> results;
+    // Clear previos results
+    results.clear();
 
     // For each polygon in the list of polygons, create the PCA
     for (const auto& building : polygons) {
@@ -136,6 +136,10 @@ void MainForm::on_actionClear_All_triggered()
     ui->Canvas->clearPolygons();
     // Repaint the canvas
     ui->Canvas->repaint();
+
+    // Clear stored data
+    chs.clear();
+    results.clear();
 }
 
 
@@ -147,6 +151,10 @@ void MainForm::on_actionClear_results_triggered()
     ui->Canvas->clearCHs();
     // Repaint the canvas
     ui->Canvas->repaint();
+
+    // Clear stored data
+    chs.clear();
+    results.clear();
 }
 
 
@@ -178,8 +186,8 @@ void MainForm::on_actionLongest_edge_triggered()
         return;
     }
 
-    // Use std::vector to store the Longes edge results
-    std::vector<QPolygonF> results;
+    // Clear previos results
+    results.clear();
 
     // For each polygon in the list of polygons, create the Longest edge
     for (const auto& building : polygons) {
@@ -217,8 +225,8 @@ void MainForm::on_actionWall_average_triggered()
         return;
     }
 
-    // Use std::vector to store the Longes edge results
-    std::vector<QPolygonF> results;
+    // Clear previos results
+    results.clear();
 
     // For each polygon in the list of polygons, create the Longest edge
     for (const auto& building : polygons) {
@@ -256,8 +264,8 @@ void MainForm::on_actionWeighted_bisector_triggered()
         return;
     }
 
-    // Use std::vector to store the Longes edge results
-    std::vector<QPolygonF> results;
+    // Clear previos results
+    results.clear();
 
     // For each polygon in the list of polygons, create the Longest edge
     for (const auto& building : polygons) {
@@ -292,8 +300,8 @@ void MainForm::on_actionCovvex_Hull_ON_OFF_triggered() {
         return;
     }
 
-    //Use std::vector to store the convex hull results
-    std::vector<QPolygonF> chs;
+    // Clear previos convex hulls
+    chs.clear();
 
     // For each polygon in the list of polygons, create the convex hull
     for (const auto& building : polygons) {
@@ -383,4 +391,32 @@ bool MainForm::checkValidation(const QPolygonF &building)
     }
 
     return true;  // Valid
+}
+
+void MainForm::on_actionExport_building_triggered()
+{
+    if(results.empty())
+    {
+        // Show an error message for unsupported file formats
+        QMessageBox::warning(this, "Warning", "No result to export");
+    }
+    else
+    {
+        // Open a file dialog to select a polygon file
+        QString fileName = QFileDialog::getOpenFileName(this, "Export generalized buidlings", "", "Text Files (*.txt)");
+    }
+}
+
+void MainForm::on_actionExport_CH_triggered()
+{
+    if(results.empty())
+    {
+        // Show an error message for unsupported file formats
+        QMessageBox::warning(this, "Warning", "No result to export");
+    }
+    else
+    {
+    // Open a file dialog to select a polygon file
+    QString fileName = QFileDialog::getOpenFileName(this, "Export convex hull", "", "Text Files (*.txt)");
+    }
 }

@@ -37,6 +37,9 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
     <addaction name="actionAbout"/>
+    <addaction name="separator"/>
+    <addaction name="actionExport_building"/>
+    <addaction name="actionExport_CH"/>
    </widget>
    <widget class="QMenu" name="menuSimplify">
     <property name="title">
@@ -224,6 +227,30 @@
    </property>
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="actionExport_building">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Export.png</normaloff>:/icons/Export.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export building</string>
+   </property>
+   <property name="toolTip">
+    <string>Export generalized building</string>
+   </property>
+  </action>
+  <action name="actionExport_CH">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Export.png</normaloff>:/icons/Export.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export CH</string>
+   </property>
+   <property name="toolTip">
+    <string>Export convex hull</string>
    </property>
   </action>
  </widget>
