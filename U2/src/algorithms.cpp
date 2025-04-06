@@ -3,7 +3,6 @@
 #include "sortpointsbyx.h"
 #include "sortpointsbyy.h"
 
-#include <QDebug>
 
 double Algorithms::get2LinesAngle(const QPointF &p1, const QPointF &p2, const QPointF &p3, const QPointF &p4)
 {
@@ -201,7 +200,6 @@ QPolygonF Algorithms::createCHJS(const QPolygonF &pol)
 
     }while( pj !=q );
 
-    qDebug() << "Hello Jarvis";
 
     return ch;
 }
@@ -382,7 +380,6 @@ QPolygonF Algorithms::createCHGS(const QPolygonF &pol)
         ch.push_back(candidate);
     }
 
-    qDebug() << "Hello Graham";
     return ch;
 }
 
