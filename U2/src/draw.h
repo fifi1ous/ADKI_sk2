@@ -21,6 +21,9 @@ private:
     QPolygonF er;
     bool isShapefileLoaded = false;
 
+    QColor outlineCH = Qt::darkGreen;
+    QColor fillCH = Qt::transparent;
+
 public:
     explicit Draw(QWidget *parent = nullptr);
     void mousePressEvent(QMouseEvent *e) override;
@@ -38,6 +41,8 @@ public:
     inline const std::vector<QPolygonF> getPolygons() const { return polygons; }
     void setResults(const std::vector<QPolygonF>& newResults);
     inline void setConvexHulls(const std::vector<QPolygonF>& newCHs) {chs = newCHs; repaint(); }
+    void changeColourCHOutline(const bool &status);
+    void changeColourCHFilling(const bool &status);
 
 signals:
 };
