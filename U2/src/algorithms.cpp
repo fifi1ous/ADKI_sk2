@@ -1,7 +1,8 @@
 #include "algorithms.h"
+#include <cmath>
 #include "sortpointsbyx.h"
 #include "sortpointsbyy.h"
-#include <cmath>
+
 
 double Algorithms::get2LinesAngle(const QPointF &p1, const QPointF &p2, const QPointF &p3, const QPointF &p4)
 {
@@ -199,12 +200,187 @@ QPolygonF Algorithms::createCHJS(const QPolygonF &pol)
 
     }while( pj !=q );
 
+
     return ch;
 }
 
+double Algorithms::getDistance(const QPointF &p1, const QPointF &p2)
+{
+    double dx = p1.x() - p2.x();
+    double dy = p1.y() - p2.y();
 
-QPolygonF Algorithms::createCHGS(const QPolygonF &pol) {
-    // implementation
+    return sqrt(dx*dx+dy*dy);
+}
+
+
+QPointF Algorithms::findPivotGS(const QPolygonF &pol)
+{
+    // Find the pivot point for the Graham scan algorithm
+
+    // Initialize the pivot as the first point in the polygon
+    QPointF q = pol[0];
+    double q_y = q.y();
+
+    // Iterate through all points to find the one with the lowest Y-coordinate
+    for(int i = 1; i < pol.size(); i++)
+    {
+        double c_y = pol[i].y(); // Y-coordinate of the current candidate point
+
+        // If the candidate has a lower or equal Y-coordinate than the current pivot
+        if(c_y <= q_y)
+        {
+            // If Y-coordinates are equal, compare X-coordinates
+            if(c_y == q_y)
+            {
+                double c_x = pol[i].x();
+                double q_x = q.x();
+
+                // Choose the point with the smaller X-coordinate (more to the left)
+                if(c_x < q_x)
+                {
+                    q = pol[i];
+                    q_y = q.y();
+                }
+            }
+            else
+            {
+                // Candidate has a lower Y-coordinate, update the pivot
+                q = pol[i];
+                q_y = q.y();
+            }
+        }
+    }
+
+    return q;
+}
+
+std::vector<double> Algorithms::anglesWithPoints(const QPolygonF &pol, const QPointF &q)
+{
+    // Vector of angles
+    std::vector<double> angles;
+
+    // Generate x line
+    QPointF x1 = q;
+    QPointF x2(x1.x()+1,x1.y());
+
+    // Calculate angles
+    for(QPointF point: pol)
+    {
+        // Calculate angles
+        double angle = get2LinesAngle(x1,x2,q,point);
+        angles.push_back(angle);
+    }
+    return angles;
+}
+
+void Algorithms::sortAnglesPoints(const QPointF &q, std::vector<double> &angles, QPolygonF &pol_)
+{
+    // Sort the angles and corresponding points
+    std::vector<size_t> indices(angles.size());
+    std::iota(indices.begin(), indices.end(), 0);
+
+    // Sort indices based on angles
+    std::sort(indices.begin(), indices.end(), [&angles](size_t i1, size_t i2) { return angles[i1] < angles[i2]; });
+
+    // Create sorted and filtered vectors
+    std::vector<double> sorted_angles;
+    QPolygonF sorted_pol;
+
+    if(!indices.empty())
+    {
+        // Add first point
+        sorted_angles.push_back(angles[indices[0]]);
+        sorted_pol.push_back(pol_[indices[0]]);
+
+        // Process remaining points
+        for(size_t i = 1; i < indices.size(); i++)
+        {
+            size_t current_idx = indices[i];
+            size_t prev_idx = indices[i-1];
+
+            // If angle is different from previous, add the point
+            if(angles[current_idx] != angles[prev_idx]) {
+                sorted_angles.push_back(angles[current_idx]);
+                sorted_pol.push_back(pol_[current_idx]);
+            }
+            // If angle is same, keep the one with greater distance from pivot
+            else
+            {
+                double current_dist = getDistance(pol_[current_idx], q);
+                double prev_dist = getDistance(sorted_pol.back(), q);
+                
+                if(current_dist > prev_dist)
+                {
+                    sorted_pol.back() = pol_[current_idx];
+                }
+            }
+        }
+    }
+
+    // Update original vectors
+    angles = sorted_angles;
+    pol_ = sorted_pol;
+}
+
+bool Algorithms::isRightTurn(const QPointF &p1, const QPointF &p2, const QPointF &p3)
+{
+    // Check the point if is on the right
+
+    // Compute vectors
+    double v1x = p2.x() - p1.x();
+    double v1y = p2.y() - p1.y();
+    double v2x = p3.x() - p1.x();
+    double v2y = p3.y() - p1.y();
+
+    // Compute cross product (determinant)
+    double cross = v1x * v2y - v1y * v2x;
+
+    // If cross product is negative, it's a right turn
+    return cross < 0;
+}
+
+QPolygonF Algorithms::createCHGS(const QPolygonF &pol)
+{
+    // Create convex hull using Graham scan
+    QPolygonF ch;
+
+
+    // Get pivot q
+    QPointF q = findPivotGS(pol);
+
+    // Create a polygon without the pivot
+    QPolygonF pol_;
+    for(QPointF point: pol)
+    {
+        // Check if there is point with the same coordinates as pivot - leave him
+        if((point != q))
+        {
+            pol_.push_back(point);
+        }
+    }
+
+    // Vector of angles
+    std::vector<double> angles  = anglesWithPoints(pol_,q);
+
+    // Sort and filter angles and points in pol_
+    sortAnglesPoints(q,angles,pol_);
+
+    // Input pivot and and 2 last point from the angles to the convexhull
+    ch.push_back(q);
+    ch.push_back(pol_[0]);
+    ch.push_back(pol_[1]);
+
+    for (int i = 2; i < pol_.size(); ++i) {
+        QPointF candidate = pol_[i];
+
+        while (ch.size() >= 2 && isRightTurn(ch[ch.size() - 2], ch[ch.size() - 1], candidate)) {
+            ch.pop_back(); // remove last point from convex hull
+        }
+
+        ch.push_back(candidate);
+    }
+
+    return ch;
 }
 
 
@@ -468,3 +644,23 @@ QPolygonF Algorithms::createERWB(const QPolygonF &pol)
     // Rotate the minimum bounding box back to the original direction
     return rotate(mmbox_min_res, sigma);
 }
+
+void Algorithms::exportFile(const std::vector<QPolygonF> &results,const QString &fileName)
+{
+    QFile file(fileName);
+
+    file.open(QIODevice::WriteOnly);
+    QTextStream out(&file);
+    for(QPolygonF polygon: results)
+    {
+        for(QPointF point: polygon)
+        {
+            out << point.x()<<", "<<point.y() << "\n";
+        }
+        out << "\n \n";
+    }
+    file.close();
+}
+
+
+
