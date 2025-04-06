@@ -409,7 +409,7 @@ void MainForm::on_actionExport_building_triggered()
 
 void MainForm::on_actionExport_CH_triggered()
 {
-    if(results.empty())
+    if(chs.empty())
     {
         // Show an error message for unsupported file formats
         QMessageBox::warning(this, "Warning", "No result to export");
