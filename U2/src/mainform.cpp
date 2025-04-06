@@ -403,7 +403,7 @@ void MainForm::on_actionExport_building_triggered()
     else
     {
         // Open a file dialog to select where the txt file will be stored
-        QString filePath = QFileDialog::getSaveFileName(this, "Export generalized buidlings", "", "Text Files (*.txt)");
+        QString filePath = QFileDialog::getSaveFileName(this, "Export generalised buildings", "", "Text Files (*.txt)");
         Algorithms::exportFile(results,filePath);
     }
 }
