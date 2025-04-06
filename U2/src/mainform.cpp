@@ -370,27 +370,21 @@ void MainForm::on_actionJarvis_Scan_triggered()
 
 bool MainForm::checkValidation(const QPolygonF &building)
 {
-    // A valid polygon must have at least 3 distinct points
-    if (building.size() < 3)
-    {
-        return false;  // Invalid
-    }
+    // This part of code was done by chatGPT
+    // Create a set of unique points
+    std::set<QPointF, PointComparator> unique_points;
+    // Here ends the part which was done by chatGPT
 
-    std::set<QPointF,PointComparator> unique_points;
-
-    for (const QPointF pt: building)
+    // Fill the set with points
+    for (const QPointF pt : building)
     {
         unique_points.insert(pt);
     }
 
-    // If fewer than 3 unique points, it's not a valid polygon
-    if (unique_points.size() < 3)
-    {
-        return false;  // Invalid
-    }
-
-    return true;  // Valid
+    // Return if there are atleast 3 unique points
+    return unique_points.size() >= 3;
 }
+
 
 void MainForm::on_actionExport_building_triggered()
 {
@@ -420,4 +414,17 @@ void MainForm::on_actionExport_CH_triggered()
         QString filePath = QFileDialog::getSaveFileName(this, "Export convex hull", "", "Text Files (*.txt)");
         Algorithms::exportFile(chs,filePath);
     }
+}
+
+
+void MainForm::on_actionOutline_triggered()
+{
+    bool status = ui->actionOutline->isChecked();
+    ui->Canvas->changeColourCHOutline(status);
+}
+
+void MainForm::on_actionFill_triggered()
+{
+    bool status = ui->actionFill->isChecked();
+    ui->Canvas->changeColourCHFilling(status);
 }

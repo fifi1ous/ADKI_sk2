@@ -64,7 +64,7 @@ void Draw::paintEvent(QPaintEvent *event)
         painter.drawPolygon(poly);
     }
 
-    // This part of code was done by chatGPT
+    // This part of code was done by chatGPT - used from previous asignment
     // Draw the current polygon being created
     if (!building.isEmpty())
     {
@@ -97,9 +97,10 @@ void Draw::paintEvent(QPaintEvent *event)
     }
 
     // Draw Convex Hulls (CHs) with dashed lines
-    QPen pen(Qt::GlobalColor::darkGreen, 1, Qt::DashLine);
+    QPen pen(outlineCH, 1.5, Qt::DashLine);
     painter.setPen(pen);
-    painter.setBrush(Qt::GlobalColor::transparent);
+    QBrush brush(fillCH, Qt::SolidPattern);
+    painter.setBrush(brush);
 
     // Draw all CHs
     for (const auto& ch : chs)
@@ -238,5 +239,33 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
 
     SHPClose(hSHP);
 
+    repaint();
+}
+
+void Draw::changeColourCHOutline(const bool &status)
+{
+    //Change Colour based on status
+    if(status)
+    {
+        outlineCH = Qt::darkGreen;
+    }
+    else
+    {
+        outlineCH = Qt::transparent;
+    }
+    repaint();
+}
+
+void Draw::changeColourCHFilling(const bool &status)
+{
+    //Change Colour based on status
+    if(status)
+    {
+        fillCH  = Qt::green;
+    }
+    else
+    {
+        fillCH  = Qt::transparent;
+    }
     repaint();
 }

@@ -63,10 +63,19 @@
     <property name="title">
      <string>Convex Hull</string>
     </property>
+    <widget class="QMenu" name="menuVisibility">
+     <property name="title">
+      <string>Visibility</string>
+     </property>
+     <addaction name="actionOutline"/>
+     <addaction name="actionFill"/>
+    </widget>
     <addaction name="actionCovvex_Hull"/>
     <addaction name="separator"/>
     <addaction name="actionJarvis_Scan"/>
     <addaction name="actionGraham_Scan"/>
+    <addaction name="separator"/>
+    <addaction name="menuVisibility"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSimplify"/>
@@ -260,6 +269,31 @@
    </property>
    <property name="toolTip">
     <string>Export convex hull</string>
+   </property>
+  </action>
+  <action name="actionOutline">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Outline</string>
+   </property>
+   <property name="toolTip">
+    <string>Outline of convex hull visible</string>
+   </property>
+  </action>
+  <action name="actionFill">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Fill</string>
+   </property>
+   <property name="toolTip">
+    <string>Filling of convex hull  visible</string>
    </property>
   </action>
  </widget>

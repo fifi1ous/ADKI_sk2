@@ -280,7 +280,9 @@ void Algorithms::sortAnglesPoints(const QPointF &q, std::vector<double> &angles,
     std::iota(indices.begin(), indices.end(), 0);
 
     // Sort indices based on angles
+    // This part of code was done by chatGPT
     std::sort(indices.begin(), indices.end(), [&angles](size_t i1, size_t i2) { return angles[i1] < angles[i2]; });
+    // Here ends the part which was done by chatGPT
 
     // Create sorted and filtered vectors
     std::vector<double> sorted_angles;
@@ -322,22 +324,6 @@ void Algorithms::sortAnglesPoints(const QPointF &q, std::vector<double> &angles,
     pol_ = sorted_pol;
 }
 
-bool Algorithms::isRightTurn(const QPointF &p1, const QPointF &p2, const QPointF &p3)
-{
-    // Check the point if is on the right
-
-    // Compute vectors
-    double v1x = p2.x() - p1.x();
-    double v1y = p2.y() - p1.y();
-    double v2x = p3.x() - p1.x();
-    double v2y = p3.y() - p1.y();
-
-    // Compute cross product (determinant)
-    double cross = v1x * v2y - v1y * v2x;
-
-    // If cross product is negative, it's a right turn
-    return cross < 0;
-}
 
 QPolygonF Algorithms::createCHGS(const QPolygonF &pol)
 {
@@ -373,7 +359,7 @@ QPolygonF Algorithms::createCHGS(const QPolygonF &pol)
     for (int i = 2; i < pol_.size(); ++i) {
         QPointF candidate = pol_[i];
 
-        while (ch.size() >= 2 && isRightTurn(ch[ch.size() - 2], ch[ch.size() - 1], candidate)) {
+        while (ch.size() >= 2 && findSide(ch[ch.size() - 2], ch[ch.size() - 1], candidate)==-1) {
             ch.pop_back(); // remove last point from convex hull
         }
 
@@ -647,20 +633,44 @@ QPolygonF Algorithms::createERWB(const QPolygonF &pol)
 
 void Algorithms::exportFile(const std::vector<QPolygonF> &results,const QString &fileName)
 {
+    // Export results into txt file
+
+    // Create file
     QFile file(fileName);
 
+    // Opens file
     file.open(QIODevice::WriteOnly);
     QTextStream out(&file);
+
+    // Go through all results
     for(QPolygonF polygon: results)
     {
+        // Go thtough all points
         for(QPointF point: polygon)
         {
+            // For each point print x and y coordinate
             out << point.x()<<", "<<point.y() << "\n";
         }
+        // After polygon print 2 empty line
         out << "\n \n";
     }
+    // Close file
     file.close();
 }
 
+double Algorithms::pointLineDistance(const QPointF& start, const QPointF& end, const QPointF& p)
+{
+    // Get distance point from line
+    return abs((end.x() - start.x()) * (start.y() - p.y()) - (start.x() - p.x()) * (end.y() - start.y()));
 
+}
+
+short Algorithms::findSide(const QPointF& a, const QPointF& b, const QPointF& p) {
+    // Define on which side of the line is point
+    double val = (b.x() - a.x()) * (p.y() - a.y()) - (b.y() - a.y()) * (p.x() - a.x());
+    // left    =  1
+    // right   = -1
+    // on line =  0
+    return (val > 0) ? 1 : (val < 0) ? -1 : 0;
+}
 

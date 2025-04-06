@@ -46,9 +46,15 @@ private slots:
 
     void on_actionExport_CH_triggered();
 
+    void on_actionFill_triggered();
+
+    void on_actionOutline_triggered();
+
 private:
     Ui::MainForm *ui;
     bool checkValidation(const QPolygonF &building);
+
+    // This part of code was done by chatGPT
     struct PointComparator {
         bool operator()(const QPointF& p1, const QPointF& p2) const {
             if (p1.x() != p2.x()) {
@@ -60,6 +66,8 @@ private:
             }
         }
     };
+    // Here ends the part which was done by chatGPT
+
     short convexHull = 0;
     std::vector<QPolygonF> results;
     std::vector<QPolygonF> chs;
