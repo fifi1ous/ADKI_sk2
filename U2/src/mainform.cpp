@@ -397,13 +397,14 @@ void MainForm::on_actionExport_building_triggered()
 {
     if(results.empty())
     {
-        // Show an error message for unsupported file formats
+        // Show an warning message for empty datasets
         QMessageBox::warning(this, "Warning", "No result to export");
     }
     else
     {
-        // Open a file dialog to select a polygon file
-        QString fileName = QFileDialog::getOpenFileName(this, "Export generalized buidlings", "", "Text Files (*.txt)");
+        // Open a file dialog to select where the txt file will be stored
+        QString filePath = QFileDialog::getSaveFileName(this, "Export generalized buidlings", "", "Text Files (*.txt)");
+        Algorithms::exportFile(results,filePath);
     }
 }
 
@@ -411,12 +412,13 @@ void MainForm::on_actionExport_CH_triggered()
 {
     if(chs.empty())
     {
-        // Show an error message for unsupported file formats
-        QMessageBox::warning(this, "Warning", "No result to export");
+        // Show an warning message for empty datasets
+        QMessageBox::warning(this, "Warning", "No convex hulls to export");
     }
     else
     {
-    // Open a file dialog to select a polygon file
-    QString fileName = QFileDialog::getOpenFileName(this, "Export convex hull", "", "Text Files (*.txt)");
+        // Open a file dialog to select where the txt file will be stored
+        QString filePath = QFileDialog::getSaveFileName(this, "Export convex hull", "", "Text Files (*.txt)");
+        Algorithms::exportFile(chs,filePath);
     }
 }

@@ -18,6 +18,7 @@ public:
     static QPolygonF createCHJS(const QPolygonF &pol);
     static QPolygonF createCHGS(const QPolygonF &pol);
     static QPolygonF createCHQH(const QPolygonF &pol);
+    static void exportFile(const std::vector<QPolygonF> &results,const QString &fileName);
 
 private:
     static double get2LinesAngle(const QPointF &p1, const QPointF &p2, const QPointF &p3, const QPointF &p4);

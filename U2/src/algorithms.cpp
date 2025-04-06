@@ -645,5 +645,22 @@ QPolygonF Algorithms::createERWB(const QPolygonF &pol)
     return rotate(mmbox_min_res, sigma);
 }
 
+void Algorithms::exportFile(const std::vector<QPolygonF> &results,const QString &fileName)
+{
+    QFile file(fileName);
+
+    file.open(QIODevice::WriteOnly);
+    QTextStream out(&file);
+    for(QPolygonF polygon: results)
+    {
+        for(QPointF point: polygon)
+        {
+            out << point.x()<<", "<<point.y() << "\n";
+        }
+        out << "\n \n";
+    }
+    file.close();
+}
+
 
 
