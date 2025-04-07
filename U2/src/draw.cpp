@@ -219,7 +219,7 @@ void Draw::loadPolygonFromShapefile(const QString &fileName)
 
         for (int j = 0; j < psShape->nVertices; ++j)
         {
-             // Apply uniform scaling and translation
+            // Apply uniform scaling and translation
             double x = psShape->padfX[j] * scale + offsetX;
             double y = -psShape->padfY[j] * scale + offsetY; // Invert Y-axis
 

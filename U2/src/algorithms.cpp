@@ -310,7 +310,7 @@ void Algorithms::sortAnglesPoints(const QPointF &q, std::vector<double> &angles,
             {
                 double current_dist = getDistance(pol_[current_idx], q);
                 double prev_dist = getDistance(sorted_pol.back(), q);
-                
+
                 if(current_dist > prev_dist)
                 {
                     sorted_pol.back() = pol_[current_idx];
@@ -601,7 +601,7 @@ QPolygonF Algorithms::createERWB(const QPolygonF &pol)
                 dy2 = dy1;
                 dx1 = dxi;
                 dy1 = dyi;
-            // If the length is greater than the second longest diagonal
+                // If the length is greater than the second longest diagonal
             } else if (len_i > max_diag_2 && len_i < max_diag_1)
             {
                 max_diag_2 = len_i;
@@ -673,4 +673,3 @@ short Algorithms::findSide(const QPointF& a, const QPointF& b, const QPointF& p)
     // on line =  0
     return (val > 0) ? 1 : (val < 0) ? -1 : 0;
 }
-

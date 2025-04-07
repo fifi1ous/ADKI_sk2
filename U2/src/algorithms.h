@@ -17,7 +17,6 @@ public:
     static QPolygonF createERWB(const QPolygonF &pol);
     static QPolygonF createCHJS(const QPolygonF &pol);
     static QPolygonF createCHGS(const QPolygonF &pol);
-    static QPolygonF createCHQH(const QPolygonF &pol);
     static void exportFile(const std::vector<QPolygonF> &results,const QString &fileName);
 
 private:
