@@ -157,6 +157,10 @@ QPolygonF Algorithms::createCHJS(const QPolygonF &pol)
     // Create convex hull using Jarvis scan
     QPolygonF ch;
 
+    // If the polygon has only 3 vertexes, return polygon as CH
+    if (pol.size() == 3)
+        return pol;
+
     // Get pivot q
     QPointF q = *std::min_element(pol.begin(), pol.end(), sortPointsByY());
 
@@ -330,6 +334,10 @@ QPolygonF Algorithms::createCHGS(const QPolygonF &pol)
     // Create convex hull using Graham scan
     QPolygonF ch;
 
+
+    // If the polygon has only 3 vertexes, return polygon as CH
+    if (pol.size() == 3)
+        return pol;
 
     // Get pivot q
     QPointF q = findPivotGS(pol);
