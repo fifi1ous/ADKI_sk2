@@ -1,0 +1,22 @@
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Vykreslení vybraných polygonů}
+    \begin{algorithmic}[1]
+
+        \STATE {Vykreslení všech polygonů}
+        \FORALL{$polygon$ v $polygonsWH$}
+            \STATE $painter.setPen(Qt::GlobalColor::red)$
+            \STATE $painter.setBrush(Qt::GlobalColor::yellow)$
+            \STATE $painter.drawPath(polygon)$
+        \ENDFOR
+
+        \STATE {Vykreslení vybraných polygonů s opačnými barvami}
+        \FORALL{$selectedPolygon$ v $selectedPolygonsWH$}
+            \STATE $painter.setPen(Qt::GlobalColor::yellow)$
+            \STATE $painter.setBrush(Qt::GlobalColor::red)$
+            \STATE $painter.drawPath(selectedPolygon)$
+        \ENDFOR
+
+        
+    \end{algorithmic}
+\end{algorithm}

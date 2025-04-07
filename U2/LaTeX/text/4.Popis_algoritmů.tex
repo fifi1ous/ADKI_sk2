@@ -1,0 +1,376 @@
+\section{Popis algoritmů}
+
+\subsection{Algoritmy pro tvorbu konvexní obálky}
+
+\subsubsection{Jarvis scan}
+Jarvisův sken, známý také jako Gift Wrapping Algorithm, je algoritmus sloužící ke konstrukci konvexní obálky z množiny bodů v rovině. Princip spočívá v postupném „obalování“ bodů – algoritmus vždy přidává takový bod, který tvoří s aktuálním směrem největší úhel.\\
+
+\hspace{-1.15cm}
+Nejprve se začne vybráním pivotu $q$, bodu s nejmenší $y$ souřadnicí:
+\begin{equation}
+    q = \text{min}(y_i)
+\end{equation}
+Následně se vybere bod $r$ s nejmenší $x$ souřadnicí:
+\begin{equation}
+    r = \text{min}(x_i)
+\end{equation}
+Jou inicializovány body $p_j$ a $p_{j1}$, $p_{j1}$ tvoří posunutá $x$ souřadnice bodu $r$ a $y$ souřadnice bodu $y$:
+\begin{equation}
+    p_j = q
+\end{equation}
+\begin{equation}
+    p_{j1}(r.x-1,q.y)
+\end{equation}
+Pivot $q$ je přidán do do konvexní obálky $ch$:
+\begin{equation}
+    ch.\text{push\_back}(q)
+\end{equation}
+Následně se projdou všechny body a najde se takový, který tvoří svírá s $p{j}$ a $p_{j-1}$ maximální úhel. Výběr je provázen pouze u bodů, které již nejsou v $ch$:
+\begin{equation}
+    p_{j+1} = \text{max} \angle( p_{j-1},p_j, p_i)
+\end{equation}
+Bod je následně do konvexní obálky:
+\begin{equation}
+    ch.\text{push\_back}(p_{j+1})
+\end{equation}
+
+\input{text/Pseudocode/CHJS}
+
+\subsubsection{Graham scan}
+Grahamův scan je algoritmus, který vytváří konvexní obálku množiny bodů. Algoritmus začíná dvěma počátečními body $p_1$ a $p_2$. Pro každý kandidátský bod $k$ se zjišťuje, zda leží vlevo od přímky tvořené body $p_1$ a $p_2$. Pokud ano, bod $k$ se přidá do konvexní obálky. Pokud však leží vpravo od této přímky, bod $p_2$ je z obálky odebrán a nahrazen kandidátem $k$.\\
+
+\hspace{-1.15cm}
+Nejprve je nalezen bod $q$ který má minimální $y$ souřadnici: 
+\begin{equation}
+    q = \text{min}(y_i)
+\end{equation}
+Pokud je více bodů, které mají stejnou $y$ souřadnici, vybere se bod, který má menší $x$ souřadnici:
+\begin{equation}
+    \text{if}~\text{pocet}~q>1~\text{then}~q = {min}(x_q)
+\end{equation}
+Následně je vypočítán od přímky která tvoří je rovnoběžná s osou $x$ a prochází bodem $q$ úhel ke všem ostatním bodům v množině:
+\begin{equation}
+    \omega _i = \angle( q.x+1,q,p_i)
+\end{equation}
+Všechny body $p_i$ jsou seřazeny sestupně podle úhlů~$\omega_i$ vzhledem k pivotu~$q$, kde platí:
+\begin{equation}
+    p = \text{sort}(\omega,\downarrow)
+\end{equation}
+Pokud mají dva body stejný úhel $\omega_i = \omega_j$, je ponechán pouze ten, který má větší vzdálenost od pivota~$q$, tedy ten pro nějž platí.\\
+Následně jsou do konvexní obálky přidány body $q$,$p_1$,$p_2$:
+\begin{equation}
+    ch.\text{push\_back}(q,p_1,p_2)
+\end{equation}
+Projdou se všechny zbylé body a pokud $p_{i}$ je vlevo od přímky tvořenou $p_{i-1}$ a $p_{i-2}$. Je přidán do $ch$:
+\begin{equation}
+    ch.\text{push\_back}(p_{i})
+\end{equation}
+Pokud je pokud bod $p_{i}$ vpravo od přímky tvořenou $p_{i-1}$ a $p_{i-2}$. Je odebrán bod $p_{i-1}$ a přidán $p_{i}$:
+\begin{equation}
+    ch.\text{pop\_back}(p_{i-1})
+\end{equation}
+\begin{equation}
+    ch.\text{push\_back}(p_{i})
+\end{equation}
+\input{text/Pseudocode/CHGS}
+
+\subsection{Algoritmy pro generalizaci budov}
+
+\subsubsection{Minimum Area Enclosing Rectangle}
+Tento algoritmus slouží k nalezení obdélníku s nejmenší plochou, který obsahuje všechny body daného polygonu. Využívá se přitom konstrukce konvexní obálky, která se postupně otáčí podle orientace jednotlivých jejích hran. Pro každou rotaci se vypočítá min-max box a vybírá se ten s nejmenší plochou. Po nalezení min-max boxu s nejmenší plochou se tento min-max box rotuje zpět do původní orientace. Výsledný obdélník je dále upraven tak, aby měl stejný obsah jako původní polygon a zachoval jeho těžiště\cite{Bayer2008}.\\
+
+\hspace{-1.15cm}
+Nejprve se vytvoří konvexní obálka \( CH \) z množiny bodů budovy \( P \):
+\begin{equation}
+    CH = \text{createCH}(P)
+\end{equation}
+Pro každou hranu konvexní obálky mezi body \( p_i \) a \( p_{i+1} \) se vypočítá úhel rotace \( \sigma \):
+\begin{equation}
+    \sigma = \arctan2(y_{i+1} - y_i, x_{i+1} - x_i)
+\end{equation}
+Konvexní obálka se otočí o úhel \( -\sigma \):
+\begin{equation}
+    CH_{\text{rot}} = \mathbf{R}(-\sigma) CH
+\end{equation}
+Kde \textbf{R}(-\(\sigma\)) je rotační matice:
+\[
+\mathbf{R}(\-\sigma) = 
+\begin{bmatrix}
+\cos\-\sigma & -\sin\-\sigma \\
+\sin\-\sigma & \cos\-\sigma
+\end{bmatrix}
+\]
+Po rotaci se vypočítá min-max box a jeho plocha:
+\begin{align}
+    \text{MMBox} &= \left\{
+    \begin{bmatrix} x_{\min} \\ y_{\min} \end{bmatrix},
+    \begin{bmatrix} x_{\max} \\ y_{\min} \end{bmatrix},
+    \begin{bmatrix} x_{\max} \\ y_{\max} \end{bmatrix},
+    \begin{bmatrix} x_{\min} \\ y_{\max} \end{bmatrix}
+    \right\}\\
+    \nonumber\\
+    \text{area} &= (x_{\max} - x_{\min})(y_{\max} - y_{\min})
+\end{align}
+Pokud je plocha menší než aktuálně nejmenší nalezená:
+\begin{equation}
+    \text{if } \text{area} < \text{area}_{\min} \text{ then } 
+    \text{area}_{\min} = \text{area},\quad
+    \sigma_{\min} = \sigma,\quad
+    \text{MMBox}_{\min} = \text{MMBox}
+\end{equation}
+Po projití všech hran se spočítá plocha původního polygonu pomocí L'Huilierových vzorců:
+\begin{equation}
+    A_P = \frac{1}{2} \left| \sum_{i=1}^{n} x_i(y_{i+1} - y_{i-1}) \right|
+\end{equation}
+Min-max box se zmenší tak, aby měl stejný obsah jako původní polygon budovy\( A_P \). Nejprve se spočítá těžiště:
+\[
+\mathbf{c} = \frac{1}{4} \sum_{j=1}^4 \mathbf{v}_j, \quad \mathbf{v}_j \in \text{MMBox}_{\min}
+\]
+Pak se každý bod redukuje k těžišti:
+\begin{equation}
+    \mathbf{q}_j = \mathbf{c} + \sqrt{\frac{A_P}{\text{area}_{\min}}} \cdot (\mathbf{v}_j - \mathbf{c})
+\end{equation}
+Výsledný zmenšený box:
+\[
+\text{MMBox}_{\text{res}} = \{ \mathbf{q}_1, \mathbf{q}_2, \mathbf{q}_3, \mathbf{q}_4 \}
+\]
+Nakonec se box otočí zpět o úhel \( \sigma_{\min} \):
+\begin{equation}
+    \text{MAER} = \left\{ \mathbf{R}(\sigma_{\min}) \cdot \mathbf{q}_j \mid j = 1,\dots,4 \right\}
+\end{equation}
+
+\input{text/Pseudocode/MAER}
+
+\subsubsection{Principal Component Analysis (PCA)}
+Metoda, která určuje hlavní směry budovy pomocí analýzy hlavních komponent. Výsledný obdélník je natočený podle hlavních směrů budovy a má obsah shodný s obsahem budovy. Těžiště obdélníku je shodné s těžištěm polygonu. Pro výpočet hlavních komponent je využita knihovna \href{https://gitlab.com/libeigen/eigen}{eigen}\cite{eigen}.\\
+
+\hspace{-1.15cm}
+Nejprve se vytvoří matice \( \mathbf{A} \) z množiny bodů budovy \( P \):
+\begin{equation}
+    \mathbf{A} = \begin{pmatrix}
+    x_1 & y_1 \\
+    x_2 & y_2 \\
+    \vdots & \vdots \\
+    x_n & y_n
+    \end{pmatrix}
+\end{equation}
+Vypočítají se průměry souřadnic přes sloupce:
+\begin{equation}
+    \mathbf{M} = \frac{1}{n} \sum_{i=1}^{n} \mathbf{A}_i
+\end{equation}
+Od matice \( \mathbf{A} \) se odečtou průměry \( \mathbf{M} \), čímž vznikne matice \( \mathbf{B} \):
+\begin{equation}
+    \mathbf{B} = \mathbf{A} - \mathbf{M}
+\end{equation}
+Vypočítá se kovarianční matice \( \mathbf{C} \):
+\begin{equation}
+    \mathbf{C} = \frac{\mathbf{B}^T \mathbf{B}}{n - 1}
+\end{equation}
+Provede se singulární rozklad (SVD) kovarianční matice \( \mathbf{C} \):
+\begin{equation}
+    \mathbf{C} = \mathbf{U} \mathbf{\Sigma} \mathbf{V}^T
+\end{equation}
+kde \( \mathbf{U} \) a \( \mathbf{V} \) jsou matice vlastních vektorů a \( \mathbf{\Sigma} \) je diagonální matice singulárních hodnot. \\
+\hspace{-1.15cm}
+Úhel rotace \( \sigma \) se vypočítá jako:
+\begin{equation}
+    \sigma = \arctan2(\mathbf{V}_{1,0}, \mathbf{V}_{0,0})
+\end{equation}
+Polygon \( P \) se otočí o úhel \( -\sigma \):
+\begin{equation}
+    P_{\text{rot}} = \mathbf{R}(-\sigma) P
+\end{equation}
+Po rotaci se vypočítá min-max box a jeho plocha:
+\begin{align}
+    \text{MMBox} &= \left\{
+    \begin{bmatrix} x_{\min} \\ y_{\min} \end{bmatrix},
+    \begin{bmatrix} x_{\max} \\ y_{\min} \end{bmatrix},
+    \begin{bmatrix} x_{\max} \\ y_{\max} \end{bmatrix},
+    \begin{bmatrix} x_{\min} \\ y_{\max} \end{bmatrix}
+    \right\}\\
+    \nonumber\\
+    \text{area} &= (x_{\max} - x_{\min})(y_{\max} - y_{\min})
+\end{align}
+Min-max box se zmenší tak, aby měl stejný obsah jako původní polygon budovy\( A_P \). Nejprve se spočítá těžiště:
+\[
+\mathbf{c} = \frac{1}{4} \sum_{j=1}^4 \mathbf{v}_j, \quad \mathbf{v}_j \in \text{MMBox}_{\min}
+\]
+Pak se každý bod redukuje k těžišti:
+\begin{equation}
+    \mathbf{q}_j = \mathbf{c} + \sqrt{\frac{A_P}{\text{area}_{\min}}} \cdot (\mathbf{v}_j - \mathbf{c})
+\end{equation}
+Výsledný zmenšený box:
+\[
+\text{MMBox}_{\text{res}} = \{ \mathbf{q}_1, \mathbf{q}_2, \mathbf{q}_3, \mathbf{q}_4 \}
+\]
+Nakonec se box otočí zpět o úhel \( \sigma \):
+\begin{equation}
+    \text{PCA} = \left\{ \mathbf{R}(\sigma) \cdot \mathbf{q}_j \mid j = 1,\dots,4 \right\}
+\end{equation}
+
+\input{text/Pseudocode/PCA}
+
+\subsubsection{Longest Edge}
+Metoda, která určuje natočení obdélníku na základě nejdelší hrany polygonu. Obsah obdélníku je shodný s obsahem polygonu. Těžiště obdélníku je shodné s těžištěm polygonu.\\ Nejprve se najde nejdelší hrana polygonu \( P \):
+\begin{equation}
+    \text{maxLength} = 0
+\end{equation}
+Pro každou hranu mezi body \( p_i \) a \( p_{i+1} \) se vypočítají rozdíly souřadnic:
+\begin{equation}
+    dx_i = x_{i+1} - x_i
+\end{equation}
+\begin{equation}
+    dy_i = y_{i+1} - y_i
+\end{equation}
+Délka hrany se vypočítá jako:
+\begin{equation}
+    \text{length} = \sqrt{dx_i^2 + dy_i^2}
+\end{equation}
+Pokud je délka hrany větší než \( \text{maxLength} \), aktualizuje se \( \text{maxLength} \) a směrové rozdíly \( dx \) a \( dy \):
+\begin{equation}
+    \text{if } \text{length} > \text{maxLength} \text{ then}
+\end{equation}
+\begin{equation}
+    \quad \text{maxLength} = \text{length}
+\end{equation}
+\begin{equation}
+    \quad dx = dx_i
+\end{equation}
+\begin{equation}
+    \quad dy = dy_i
+\end{equation}
+Úhel rotace \( \sigma \) se vypočítá jako:
+\begin{equation}
+    \sigma = \arctan2(dy, dx)
+\end{equation}
+Polygon \( P \) se otočí o úhel \( -\sigma \):
+\begin{equation}
+    P_{\text{rot}} = \mathbf{R}(-\sigma) P
+\end{equation}
+Po rotaci se vypočítá min-max box a jeho plocha:
+\begin{align}
+    \text{MMBox} &= \left\{
+    \begin{bmatrix} x_{\min} \\ y_{\min} \end{bmatrix},
+    \begin{bmatrix} x_{\max} \\ y_{\min} \end{bmatrix},
+    \begin{bmatrix} x_{\max} \\ y_{\max} \end{bmatrix},
+    \begin{bmatrix} x_{\min} \\ y_{\max} \end{bmatrix}
+    \right\}\\
+    \nonumber\\
+    \text{area} &= (x_{\max} - x_{\min})(y_{\max} - y_{\min})
+\end{align}
+Min-max box se zmenší tak, aby měl stejný obsah jako původní polygon budovy\( A_P \). Nejprve se spočítá těžiště:
+\begin{equation}
+\mathbf{c} = \frac{1}{4} \sum_{j=1}^4 \mathbf{v}_j, \quad \mathbf{v}_j \in \text{MMBox}_{\min}
+\end{equation}
+Pak se každý bod redukuje k těžišti:
+\begin{equation}
+    \mathbf{q}_j = \mathbf{c} + \sqrt{\frac{A_P}{\text{area}_{\min}}} \cdot (\mathbf{v}_j - \mathbf{c})
+\end{equation}
+Výsledný zmenšený box:
+\begin{equation}
+\text{MMBox}_{\text{res}} = \{ \mathbf{q}_1, \mathbf{q}_2, \mathbf{q}_3, \mathbf{q}_4 \}
+\end{equation}
+Nakonec se box otočí zpět o úhel \( \sigma \):
+\begin{equation}
+    \text{LE} = \left\{ \mathbf{R}(\sigma) \cdot \mathbf{q}_j \mid j = 1,\dots,4 \right\}
+\end{equation}
+
+\input{text/Pseudocode/LE}
+
+\subsubsection{Wall Average}
+Na každou stranu budovy je aplikována operace mod($\pi/2$). Ze zbytků hodnot je spočten vážený průměr, kde váhou je délka strany. Tato metoda je robustní, avšak citlivá na nepravé úhly. Nejprve jsou určeny směrnice $\sigma_i$ všech hran, poté jsou spočteny vnitřní úhly $\omega_i$.\\
+Nejprve se vypočítá počáteční směr $\sigma_{1,2}$:
+\begin{equation}
+    \sigma_{1,2} = \arctan2(y_2 - y_1, x_2 - x_1)
+\end{equation}
+Pro každý vrchol $p_i$ se vypočítají směrnice $\sigma_i$ a $\sigma_{i+1}$:
+\begin{align}
+    \sigma_i &= \arctan2(y_i - y_{i-1}, x_i - x_{i-1}) \\
+    \sigma_{i+1} &= \arctan2(y_{i+1} - y_i, x_{i+1} - x_i)
+\end{align}
+Délka strany $s_i$ je:
+\begin{equation}
+    s_i = \sqrt{(x_{i+1} - x_i)^2 + (y_{i+1} - y_i)^2}
+\end{equation}
+Vnitřní úhel $\omega_i$ je:
+\begin{equation}
+    \omega_i = |\sigma_i - \sigma_{i+1}|
+\end{equation}
+Násobek $\pi/2$ je:
+\begin{equation}
+    k_i = \frac{2\omega_i}{\pi}
+\end{equation}
+Orientovaný zbytek po dělení je:
+\begin{equation}
+    r_i = (k_i - \lfloor k_i \rfloor) \frac{\pi}{2}
+\end{equation}
+Pokud $\omega_i \mod \pi/2 > \pi/4$, pak:
+\begin{equation}
+    r_i = \frac{\pi}{2} - r_i
+\end{equation}
+Hlavní směr budovy $\sigma$ je:
+\begin{equation}
+    \sigma = \sigma_{1,2} + \frac{\sum_{i=1}^{n} r_i s_i}{\sum_{i=1}^{n} s_i}
+\end{equation}
+Dále je postup obdobný jako u předchozích metod.
+
+\input{text/Pseudocode/WA}
+
+\subsubsection{Weighted Bisector}
+Metoda, která určuje natočení obdélníku na základě váženého průměru orientací hran polygonu. Váhy jsou přiřazeny jednotlivým hranám podle jejich délky. Velikost obdélníku je volena tak, aby měl obdélník obsah shodný s polygonem. Těžiště obdélníku je shodné s těžištěm polygonu.\\
+Nejprve se najdou dvě nejdelší úhlopříčky polygonu \( P \):
+\begin{equation}
+    \text{max\_diag\_1} = 0, \quad \text{max\_diag\_2} = 0
+\end{equation}
+Pro každou dvojici vrcholů \( p_i \) a \( p_j \) se vypočítají rozdíly souřadnic:
+\begin{equation}
+    dx_i = x_j - x_i
+\end{equation}
+\begin{equation}
+    dy_i = y_j - y_i
+\end{equation}
+Délka úhlopříčky se vypočítá jako:
+\begin{equation}
+    \text{len}_i = \sqrt{dx_i^2 + dy_i^2}
+\end{equation}
+Pokud je délka úhlopříčky větší než \( \text{max\_diag\_1} \), aktualizuje se \( \text{max\_diag\_2} \) a \( \text{max\_diag\_1} \) a směrové rozdíly \( dx \) a \( dy \):
+\begin{equation}
+    \text{if } \text{len}_i > \text{max\_diag\_1} \text{ then}
+\end{equation}
+\begin{equation}
+    \quad \text{max\_diag\_2} = \text{max\_diag\_1}
+\end{equation}
+\begin{equation}
+    \quad \text{max\_diag\_1} = \text{len}_i
+\end{equation}
+\begin{equation}
+    \quad dx_2 = dx_1, \quad dy_2 = dy_1
+\end{equation}
+\begin{equation}
+    \quad dx_1 = dx_i, \quad dy_1 = dy_i
+\end{equation}
+Pokud je délka úhlopříčky větší než \( \text{max\_diag\_2} \) a menší než \( \text{max\_diag\_1} \), aktualizuje se \( \text{max\_diag\_2} \) a směrové rozdíly \( dx \) a \( dy \):
+\begin{equation}
+    \text{else if } \text{len}_i > \text{max\_diag\_2} \text{ and } \text{len}_i < \text{max\_diag\_1} \text{ then}
+\end{equation}
+\begin{equation}
+    \quad \text{max\_diag\_2} = \text{len}_i
+\end{equation}
+\begin{equation}
+    \quad dx_2 = dx_i, \quad dy_2 = dy_i
+\end{equation}
+Směr nejdelších úhlopříček se vypočítá jako:
+\begin{equation}
+    \sigma_1 = \arctan2(dy_1, dx_1)
+\end{equation}
+\begin{equation}
+    \sigma_2 = \arctan2(dy_2, dx_2)
+\end{equation}
+Vážený průměr směru úhlopříček se vypočítá jako:
+\begin{equation}
+    \sigma = \frac{\sigma_1 \cdot \text{max\_diag\_1} + \sigma_2 \cdot \text{max\_diag\_2}}{\text{max\_diag\_1} + \text{max\_diag\_2}}
+\end{equation}
+Dále je postup obdobný jako u předchozích metod.
+\newpage
+\input{text/Pseudocode/WB}
+

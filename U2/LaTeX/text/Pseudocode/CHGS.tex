@@ -1,0 +1,103 @@
+\begin{algorithm}
+    \setstretch{0.8}
+    \caption{Metoda \texttt{createCHGS}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} polygon $P$
+        \STATE \textbf{Výstup:} konvexní obal polygonu $P$
+
+        \STATE $\text{CH} \gets \emptyset$
+        \IF{$\text{size}(P) = 3$}
+            \STATE \textbf{return} $P$
+        \ENDIF
+
+        \STATE $q \gets \text{findPivotGS}(P)$ \COMMENT{nejnižší bod podle $y$}
+
+        \STATE $P' \gets P \setminus \{q\}$ \COMMENT{odstraň pivot z množiny bodů}
+
+        \STATE $\alpha \gets \text{anglesWithPoints}(P', q)$ \COMMENT{úhly vůči pivotu}
+        \STATE \text{sortAnglesPoints}$(q, \alpha, P')$ \COMMENT{seřazení bodů podle úhlu}
+
+        \STATE přidej $q$, $P'[0]$, $P'[1]$ do $\text{CH}$
+
+        \FOR{$i \gets 2$ \TO $\text{size}(P') - 1$}
+            \STATE $c \gets P'[i]$
+            \WHILE{$\text{size}(CH) \geq 2$ \AND $\text{findSide}(CH_{-2}, CH_{-1}, c) = -1$}
+                \STATE \text{odstraň poslední bod z } $\text{CH}$
+            \ENDWHILE
+            \STATE přidej $c$ do $\text{CH}$
+        \ENDFOR
+
+        \STATE \textbf{return} $\text{CH}$
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+    \setstretch{0.8}
+    \caption{Metoda \texttt{findPivotGS} -- hledání pivotu pro Graham Scan}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} polygon $P$
+        \STATE \textbf{Výstup:} pivotní bod $q$ s nejmenší $y$ souřadnicí (případně nejmenší $x$)
+
+        \STATE $q \gets P[0]$
+        \STATE $q_y \gets y$-ová souřadnice bodu $q$
+
+        \FOR{$i \gets 1$ \TO $\text{size}(P) - 1$}
+            \STATE $c \gets P[i]$
+            \STATE $c_y \gets y$-ová souřadnice bodu $c$
+
+            \IF{$c_y \leq q_y$}
+                \IF{$c_y = q_y$}
+                    \STATE $c_x \gets x$-ová souřadnice bodu $c$
+                    \STATE $q_x \gets x$-ová souřadnice bodu $q$
+                    \IF{$c_x < q_x$}
+                        \STATE $q \gets c$
+                        \STATE $q_y \gets c_y$
+                    \ENDIF
+                \ELSE
+                    \STATE $q \gets c$
+                    \STATE $q_y \gets c_y$
+                \ENDIF
+            \ENDIF
+        \ENDFOR
+
+        \STATE \textbf{return} $q$
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+    \setstretch{0.8}
+    \caption{Metoda \texttt{sortAnglesPoints} -- třídění bodů podle úhlů od pivotu}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} pivotní bod $q$, vektor úhlů $\alpha$, polygon $P'$
+        \STATE \textbf{Výstup:} seřazené a vyfiltrované $\alpha$ a $P'$
+
+        \STATE vytvoř vektor indexů $I \gets [0, 1, \dots, n-1]$
+
+        \STATE vytvoř vektor indexů $\alpha_{\text{sorted}}$
+        \STATE $P'_{\text{sorted}} \gets []$
+
+        \IF{$I$ není prázdný}
+            \STATE přidej $\alpha[I_0]$ do $\alpha_{\text{sorted}}$
+            \STATE přidej $P'[I_0]$ do $P'_{\text{sorted}}$
+
+            \FOR{$i \gets 1$ \TO $\text{size}(I) - 1$}
+                \STATE $i_{\text{cur}} \gets I[i]$
+                \STATE $i_{\text{prev}} \gets I[i - 1]$
+
+                \IF{$\alpha[i_{\text{cur}}] \neq \alpha[i_{\text{prev}}]$}
+                    \STATE přidej $\alpha[i_{\text{cur}}]$ do $\alpha_{\text{sorted}}$
+                    \STATE přidej $P'[i_{\text{cur}}]$ do $P'_{\text{sorted}}$
+                \ELSE
+                    \STATE $d_{\text{cur}} \gets \text{vzdálenost}(P'[i_{\text{cur}}], q)$
+                    \STATE $d_{\text{prev}} \gets \text{vzdálenost}(P'_{\text{sorted}}.\text{last}, q)$
+                    \IF{$d_{\text{cur}} > d_{\text{prev}}$}
+                        \STATE nahraď poslední bod v $P'_{\text{sorted}}$ bodem $P'[i_{\text{cur}}]$
+                    \ENDIF
+                \ENDIF
+            \ENDFOR
+        \ENDIF
+
+        \STATE $\alpha \gets \alpha_{\text{sorted}}$
+        \STATE $P' \gets P'_{\text{sorted}}$
+    \end{algorithmic}
+\end{algorithm}

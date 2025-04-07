@@ -1,0 +1,20 @@
+\section{Zadání}
+
+Zadáním úlohy bylo implementovat generalizaci budov do úrovně detailu LOD0.
+
+\begin{itemize}
+\item Vstup: množina budov \( B = \{B_i\}_{i=1}^n \), kde budova \( B_i \) je reprezentována množinou lomových bodů \( \{P_{i,j}\}_{j=1}^m \).
+\item Výstup: \( G(B_i) \).
+
+\item Ze souboru načtěte vstupní data představovaná lomovými body budov a proveďte generalizaci budov do úrovně detailu LOD0. Pro tyto účely použijte vhodnou datovou sadu, například ZABAGED. Testování proveďte nad třemi datovými sadami (historické centrum města, sídliště, izolovaná zástavba).
+
+\item Pro každou budovu určete její hlavní směry metodami:
+    \begin{itemize}
+        \item Minimum Area Enclosing Rectangle,
+        \item PCA.
+    \end{itemize}
+
+\item U první metody použijte některý z algoritmů pro konstrukci konvexní obálky. Budovu při generalizaci do úrovně LOD0 nahraďte obdélníkem orientovaným v obou hlavních směrech, se středem v těžišti budovy, jehož plocha bude stejná jako plocha budovy. Výsledky generalizace vhodně vizualizujte.
+
+\item Otestujte a porovnejte efektivitu obou metod s využitím hodnotících kritérií. Pokuste se rozhodnout, pro které tvary budov dávají metody nevhodné výsledky, a pro které naopak poskytují vhodnou aproximaci.
+\end{itemize}
