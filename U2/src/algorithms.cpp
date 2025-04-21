@@ -152,6 +152,61 @@ QPolygonF Algorithms::resize(const QPolygonF &pol, const QPolygonF &mmbox)
 }
 
 
+QPolygonF Algorithms::createCHJS(const QPolygonF &pol)
+{
+    // Create convex hull using Jarvis scan
+    QPolygonF ch;
+
+    // If the polygon has only 3 vertexes, return polygon as CH
+    if (pol.size() == 3)
+        return pol;
+
+    // Get pivot q
+    QPointF q = *std::min_element(pol.begin(), pol.end(), sortPointsByY());
+
+    // Get point
+    QPointF r = *std::min_element(pol.begin(), pol.end(), sortPointsByX());
+
+    // Initliaze pj, pj1
+    QPointF pj = q;
+    QPointF pj1(r.x() - 1, q.y());
+
+    // Add first point to ch
+    ch.push_back(pj);
+
+    // Find all points of ch
+    do
+    {
+        // Maximum and index
+        double omega_max = 0;
+        int i_max = -1;
+
+        // Find point generating max angle
+        for(int i=0; i<pol.size(); i++)
+        {
+            // Find point generating maximum angle
+            double omega = get2LinesAngle(pj, pj1, pj, pol[i]);
+
+            // Update maximum
+            if(omega>omega_max)
+            {
+                omega_max = omega;
+                i_max = i;
+            }
+        }
+
+        // Add point to ch
+        ch.push_back(pol[i_max]);
+
+        // Update vertices
+        pj1 = pj;
+        pj = pol[i_max];
+
+    }while( pj !=q );
+
+
+    return ch;
+}
 
 double Algorithms::getDistance(const QPointF &p1, const QPointF &p2)
 {
@@ -226,6 +281,7 @@ void Algorithms::sortAnglesPoints(const QPointF &q, std::vector<double> &angles,
 {
     // Sort the angles and corresponding points
     std::vector<size_t> indices(angles.size());
+    std::iota(indices.begin(), indices.end(), 0);
 
     // Sort indices based on angles
     // This part of code was done by chatGPT
