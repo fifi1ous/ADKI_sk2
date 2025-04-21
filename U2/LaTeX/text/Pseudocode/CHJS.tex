@@ -1,0 +1,39 @@
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Metoda \texttt{Jarvis Scan}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} polygon $P$
+        \STATE \textbf{Výstup:} konvexní obal polygonu $P$
+
+        \STATE $\text{CH} \gets \emptyset$
+        \IF{$\text{size}(P) = 3$}
+            \STATE \textbf{return} $P$
+        \ENDIF
+
+        \STATE $q \gets \min(P)$ podle $y$-ové souřadnice
+        \STATE $r \gets \min(P)$ podle $x$-ové souřadnice
+
+        \STATE $p_j \gets q$
+        \STATE $p_{j1} \gets (r_x - 1, q_y)$
+        \STATE \text{přidej } $p_j$ do $\text{CH}$
+
+        \REPEAT
+            \STATE $\omega_{\text{max}} \gets 0$
+            \STATE $i_{\text{max}} \gets -1$
+
+            \FOR{$i \gets 0$ \TO $\text{size}(P)-1$}
+                \STATE $\omega \gets \text{get2LinesAngle}(p_j, p_{j1}, p_j, P[i])$
+                \IF{$\omega > \omega_{\text{max}}$}
+                    \STATE $\omega_{\text{max}} \gets \omega$
+                    \STATE $i_{\text{max}} \gets i$
+                \ENDIF
+            \ENDFOR
+
+            \STATE přidej $P[i_{\text{max}}]$ do $\text{CH}$
+            \STATE $p_{j1} \gets p_j$
+            \STATE $p_j \gets P[i_{\text{max}}]$
+        \UNTIL{$p_j = q$}
+
+        \STATE \textbf{return} $\text{CH}$
+    \end{algorithmic}
+\end{algorithm}

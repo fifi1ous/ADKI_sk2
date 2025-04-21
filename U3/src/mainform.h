@@ -17,6 +17,11 @@ public:
     MainForm(QWidget *parent = nullptr);
     ~MainForm();
 
+private slots:
+    void on_actionCreate_DT_triggered();
+
+    void on_actionCreate_Contour_lines_triggered();
+
 private:
     Ui::MainForm *ui;
 };

@@ -1,0 +1,46 @@
+\section{Vstupní data}
+Data pro analýzu lze do aplikace získat manuálním zadáním, popřípadě načtením z textového souboru, nebo ze souboru shapefile.
+\subsection{Vstupní data od uživatele}
+Data jsou získány čtením souřadnic cursoru myši nad widgetem
+aplikace.
+\begin{itemize}
+    \item Levé tlačítko vloží bod do polygonu.
+    \item Dvojklik levého tlačítka ukončí polygon.
+\end{itemize}
+
+\subsection{Načítání dat z textového souboru}
+Při načítání dat z textového souboru je třeba, aby soubor měl specifický formát. Každý bod v polygonu je reprezentován souřadnicemi \( x \) a \( y \), oddělenými čárkou. Každý polygon je oddělen prázdným řádkem. Příklad formátu souboru:
+
+\begin{quote}
+100, 100 \\
+100, 200 \\
+200, 200 \\
+200, 100 \\
+
+100, 200 \\
+200, 200 \\
+200, 300 \\
+100, 300 \\
+
+\end{quote}
+
+\noindent V tomto formátu:
+\begin{itemize}
+    \item Každá skupina souřadnic (například \(100,100\); \(100,200\); \(200,200\); \(200,100\)) tvoří jeden polygon.
+    \item Každý prázdný řádek mezi skupinami souřadnic označuje konec jednoho polygonu a začátek dalšího.
+\end{itemize}
+Před načtením jsou vymazány veškeré údaje, které jsou načtené, nebo vytvořené v aplikaci. Polygony z textového souboru jsou načítány do proměnné pro analýzu polygonů, tak do proměnné pro vykreslování polygonů.
+
+\subsection{Načítání dat z shapefile souboru}
+Načítání dat z formátu shapefile probíhá pomocí knihovny \texttt{\href{http://shapelib.maptools.org/}{shapelib}}, přičemž je použita její \href{https://github.com/zhihao-liu/shapefile-viewer-qt/tree/master/shapelib}{upravená verze pro C++}. Ještě před načtením dat jsou vymazány veškeré údaje, které jsou načtené nebo vytvořené v aplikaci. Funkce \texttt{loadPolygonFromShapefile} načítá soubor shapefile a každý objekt (tedy polygon) v souboru je přetvořen na seznam bodů. Následně jsou tyto body transformovány tak, aby se správně zobrazily v uživatelském rozhraní aplikace.
+
+\begin{itemize}
+    \item Soubor je otevřen pro čtení pomocí funkce \texttt{SHPOpen}, která otevře shapefile soubor v režimu čtení binárního souboru \texttt{"rb"}. Pokud není soubor dostupný, aplikace zobrazuje chybovou hlášku.
+    \item Po otevření shapefile souboru se načítají základní informace o počtu entit (polygonů), typu tvaru a souřadnicích hranic (bounding box) pomocí funkce \texttt{SHPGetInfo}. Pokud soubor neobsahuje žádné entity, aplikace zobrazí varovnou zprávu.
+    \item Pro každý polygon se získají souřadnice jeho vrcholů pomocí funkce \texttt{SHPReadObject}, která načte polygon z shapefile souboru. Tyto souřadnice jsou následně transformovány, aby se správně zobrazily na widgetu aplikace. Změna měřítka škáluje polygony a posun je použit pro umístění polygonů na správné místo na obrazovce.
+    \item Funkce \texttt{SHPDestroyObject} je volána po zpracování každého polygonu, aby se uvolnila paměť alokovaná pro daný objekt shapefile.
+    \item Polygony jsou následně ukládány do struktury, která se skládá z vnějšího obvodu a případných děr.
+    \item Po zpracování všech polygonů je soubor zavřen pomocí funkce \texttt{SHPClose}.
+\end{itemize}
+
+Pro ukázku byla použita data budov v centru města, panelovém sídlišti a ve vilové čtvrti získaná z \href{https://ags.cuzk.gov.cz/arcgis/rest/services/RUIAN/MapServer}{RÚIAN (Registr územní identifikace, adres a nemovitostí)}\cite{ags_cuzk}.

@@ -1,0 +1,29 @@
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Metoda \texttt{PCA (Principal Component Analysis)}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} polygon $P$
+        \STATE \textbf{Výstup:} obdélník obsahující všechny body polygonu $P$ pomocí PCA
+        
+        \STATE $n \gets \text{size}(P)$
+        \STATE $\mathbf{A} \gets \text{matrix}(n, 2)$
+        
+        \FOR{$i \gets 0$ \TO $n-1$}
+            \STATE $\mathbf{A}(i,0) \gets P[i].x$
+            \STATE $\mathbf{A}(i,1) \gets P[i].y$
+        \ENDFOR
+        
+        \STATE $\mathbf{M} \gets \text{mean}(\mathbf{A})$
+        \STATE $\mathbf{B} \gets \mathbf{A} - \mathbf{M}$
+        \STATE $\mathbf{C} \gets \frac{\mathbf{B}^T \mathbf{B}}{n - 1}$
+        
+        \STATE $\mathbf{U}, \mathbf{\Sigma}, \mathbf{V} \gets \text{SVD}(\mathbf{C})$
+        
+        \STATE $\sigma \gets \arctan2(\mathbf{V}_{1,0}, \mathbf{V}_{0,0})$
+        \STATE $P_{\text{rot}} \gets \text{rotate}(P, -\sigma)$
+        \STATE $\text{mmbox}, \text{area} \gets \text{minMaxBox}(P_{\text{rot}})$
+        
+        \STATE $\text{mmbox\_min\_res} \gets \text{resize}(P, \text{mmbox})$
+        \STATE \textbf{return} \text{rotate}($\text{mmbox\_min\_res}, \sigma$)
+    \end{algorithmic}
+\end{algorithm}

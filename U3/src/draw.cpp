@@ -1,20 +1,23 @@
 #include "draw.h"
 #include <QtGui>
+#include <time.h>
 
 Draw::Draw(QWidget *parent)
     : QWidget{parent}
 {
-    /*
-    QPointF a(50,70);
-    QPointF b(150,50);
-    QPointF c(150,130);
-    QPointF d(50,150);
 
-    building.push_back(a);
-    building.push_back(b);
-    building.push_back(c);
-    building.push_back(d);
-*/
+    QPoint3DF a(50,70);
+    QPoint3DF b(150,50);
+    QPoint3DF c(150,130);
+    QPoint3DF d(50,150);
+
+    points.push_back(a);
+    points.push_back(b);
+    points.push_back(c);
+    points.push_back(d);
+
+    //Initalize random number generator
+    srand(time(NULL));
 }
 
 
@@ -24,11 +27,14 @@ void Draw::mousePressEvent(QMouseEvent *e)
     double x = e->pos().x();
     double y = e->pos().y();
 
-    //Create point
-    QPointF p(x, y);
+    //Random height of the point
+    double z = rand()%1000 + 100.0;
 
-    //Add point to polygon
-    building.push_back(p);
+    //Create point
+    QPoint3DF p(x, y, z);
+
+    //Add point to cloud
+    points.push_back(p);
 
     //Repaint screen
     repaint();
@@ -43,17 +49,34 @@ void Draw::paintEvent(QPaintEvent *event)
     //Create object for drawing
     painter.begin(this);
 
-    //Set graphic attributes, polygon
-    painter.setPen(Qt::GlobalColor::red);
-    painter.setBrush(Qt::GlobalColor::yellow);
 
-    //Draw building
-    painter.drawPolygon(building);
+    //Set graphic attributes, point
+    painter.setPen(Qt::GlobalColor::black);
+    painter.setBrush(Qt::GlobalColor::blue);
 
-    //Set graphics for CH
-    painter.setPen(Qt::GlobalColor::cyan);
-    painter.setPen(Qt::PenStyle::DashLine);
-    painter.setBrush(Qt::GlobalColor::transparent);
+    //Draw points
+    const int r = 5;
+    for (QPoint3DF point: points)
+    {
+       painter.drawEllipse(point.x()-r,point.y()-r, 2*r,2*r);
+    }
+
+    //Draw DT
+    painter.setPen(Qt::GlobalColor::green);
+    for (Edge e: dt)
+    {
+        painter.drawLine(e.getStart(), e.getEnd());
+    }
+
+    //Draw contour lines
+    painter.setPen(Qt::GlobalColor::darkGray);
+    for (Edge e: contour_lines)
+    {
+        painter.drawLine(e.getStart(), e.getEnd());
+    }
+
+
+    /*
 
     //Draw polygon
     painter.drawPolygon(ch);
@@ -66,6 +89,7 @@ void Draw::paintEvent(QPaintEvent *event)
     //Draw polygon
     painter.drawPolygon(er);
 
+    */
     //End draw
     painter.end();
 }
