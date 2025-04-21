@@ -14,17 +14,24 @@ SOURCES += \
     edge.cpp \
     main.cpp \
     mainform.cpp \
-    qpoint3df.cpp
+    qpoint3df.cpp \
+    settings2.cpp \
+    sortpointsbyx.cpp \
+    sortpointsbyy.cpp
 
 HEADERS += \
     algorithms.h \
     draw.h \
     edge.h \
     mainform.h \
-    qpoint3df.h
+    qpoint3df.h \
+    settings2.h \
+    sortpointsbyx.h \
+    sortpointsbyy.h
 
 FORMS += \
-    mainform.ui
+    mainform.ui \
+    settings2.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

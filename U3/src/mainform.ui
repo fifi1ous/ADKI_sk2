@@ -65,10 +65,17 @@
     <addaction name="separator"/>
     <addaction name="actionClear_All"/>
    </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionParameters"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAnalysis"/>
    <addaction name="menuView"/>
    <addaction name="menuClear"/>
+   <addaction name="menuSettings"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -91,6 +98,8 @@
    <addaction name="separator"/>
    <addaction name="actionClear_Results"/>
    <addaction name="actionClear_All"/>
+   <addaction name="separator"/>
+   <addaction name="actionParameters"/>
    <addaction name="separator"/>
    <addaction name="actionExit"/>
   </widget>
@@ -219,6 +228,15 @@
    </property>
    <property name="toolTip">
     <string>Clear All Data</string>
+   </property>
+  </action>
+  <action name="actionParameters">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/images/icons/settings.png</normaloff>:/images/icons/settings.png</iconset>
+   </property>
+   <property name="text">
+    <string>Parameters</string>
    </property>
   </action>
  </widget>
