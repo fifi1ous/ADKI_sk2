@@ -682,3 +682,71 @@ short Algorithms::findSide(const QPointF& a, const QPointF& b, const QPointF& p)
     return (val > 0) ? 1 : (val < 0) ? -1 : 0;
 }
 
+double Algorithms::getMainDirection(const QPolygonF &rect)
+{
+    // Finds the main direction of a rectangle
+    double max_len = 0.0;
+    double sigma = 0.0;
+
+    for (int i = 0; i < rect.size(); ++i) {
+        QPointF p1 = rect[i];
+        QPointF p2 = rect[(i + 1) % rect.size()];
+        double dx = p2.x() - p1.x();
+        double dy = p2.y() - p1.y();
+        double len = std::hypot(dx, dy);
+        if (len > max_len) {
+            max_len = len;
+            sigma = std::atan2(dy, dx);
+        }
+    }
+    return sigma;
+}
+
+std::vector<double> Algorithms::segmentAngleDeviations(const QPolygonF &polygon, double main_dir)
+{
+    // Calculates deviations of each polygon edge
+    std::vector<double> deviations;
+
+    for (int i = 0; i < polygon.size() - 1; ++i) {
+        QPointF p1 = polygon[i];
+        QPointF p2 = polygon[i + 1];
+
+        double dx = p2.x() - p1.x();
+        double dy = p2.y() - p1.y();
+        double sigma_i = std::atan2(dy, dx);
+
+        double k_i = (2.0 * sigma_i) / M_PI;
+        double r_i = (k_i - std::floor(k_i)) * (M_PI / 2.0);
+
+        double k = (2.0 * main_dir) / M_PI;
+        double r = (k - std::floor(k)) * (M_PI / 2.0);
+
+        deviations.push_back(r_i - r);
+    }
+
+    return deviations;
+}
+
+void Algorithms::evaluateAccuracy(const QPolygonF &original, const QPolygonF &generalized, double &delta_sigma_1, double &delta_sigma_2)
+{
+    double sigma = getMainDirection(generalized);
+    std::vector<double> deviations = segmentAngleDeviations(original, sigma);
+
+    if (deviations.empty()) {
+        delta_sigma_1 = 0.0;
+        delta_sigma_2 = 0.0;
+        return;
+    }
+
+    double sum_abs = 0.0;
+    double sum_sq = 0.0;
+
+    for (double d : deviations) {
+        sum_abs += std::abs(d);
+        sum_sq += d * d;
+    }
+
+    delta_sigma_1 = (M_PI / (2.0 * deviations.size())) * sum_abs;
+    delta_sigma_2 = (M_PI / (2.0 * deviations.size())) * std::sqrt(sum_sq);
+}
+

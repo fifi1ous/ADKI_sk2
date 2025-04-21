@@ -62,7 +62,23 @@ void MainForm::on_actionMBR_triggered()
     // Clear previos results
     results.clear();
 
-    // For each polygon in the list of polygons, create the MBR
+    // // For each polygon in the list of polygons, create the MBR
+    // for (const auto& building : polygons) {
+    //     // Check validity of polygons
+    //     if (!checkValidation(building))
+    //     {
+    //         // If true continu
+    //         continue;
+    //     }
+
+    //     // Run the algorithm to create the MBR
+    //     QPolygonF maer = Algorithms::createMAER(building);
+
+    //     // Store the result
+    //     results.push_back(maer);
+    // }
+
+    int index = 1;
     for (const auto& building : polygons) {
         // Check validity of polygons
         if (!checkValidation(building))
@@ -76,6 +92,16 @@ void MainForm::on_actionMBR_triggered()
 
         // Store the result
         results.push_back(maer);
+
+
+        // Calculate generalization precision
+        double delta1, delta2;
+
+        Algorithms::evaluateAccuracy(building, maer, delta1, delta2);
+
+        qDebug() << "Budova č." << index << "(MAER): delta_1 =" << delta1 * 180.0 / M_PI << "°, delta_2 =" << delta2 * 180.0 / M_PI << "°";
+
+        ++index;
     }
 
     // Set the results on the Canvas

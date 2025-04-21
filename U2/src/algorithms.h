@@ -19,6 +19,11 @@ public:
     static QPolygonF createCHGS(const QPolygonF &pol);
     static void exportFile(const std::vector<QPolygonF> &results,const QString &fileName);
 
+    static double getMainDirection(const QPolygonF &rect);
+    static std::vector<double> segmentAngleDeviations(const QPolygonF &polygon, double main_dir);
+    static void evaluateAccuracy(const QPolygonF &original, const QPolygonF &generalized, double &delta_sigma_1, double &delta_sigma_2);
+
+
 private:
     static double get2LinesAngle(const QPointF &p1, const QPointF &p2, const QPointF &p3, const QPointF &p4);
     static double getArea(const QPolygonF &pol);
