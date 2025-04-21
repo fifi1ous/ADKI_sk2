@@ -1,0 +1,40 @@
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Metoda \texttt{Weighted Bisector}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} polygon $P$
+        \STATE \textbf{Výstup:} obdélník představující generalizaci polygonu
+        
+        \STATE $\text{max\_diag\_1} \gets 0$, $\text{max\_diag\_2} \gets 0$
+        \STATE $dx_1 \gets 0$, $dy_1 \gets 0$, $dx_2 \gets 0$, $dy_2 \gets 0$
+        \STATE $n \gets \text{size}(P)$
+        
+        \FOR{$i \gets 0$ \TO $n-1$}
+            \FOR{$j \gets 0$ \TO $n-1$}
+                \STATE $dx_i \gets x_{i+j+2} - x_i$
+                \STATE $dy_i \gets y_{i+j+2} - y_i$
+                \STATE $\text{len}_i \gets \sqrt{dx_i^2 + dy_i^2}$
+                
+                \IF{$\text{len}_i > \text{max\_diag\_1}$}
+                    \STATE $\text{max\_diag\_2} \gets \text{max\_diag\_1}$
+                    \STATE $\text{max\_diag\_1} \gets \text{len}_i$
+                    \STATE $dx_2 \gets dx_1$, $dy_2 \gets dy_1$
+                    \STATE $dx_1 \gets dx_i$, $dy_1 \gets dy_i$
+                \ELSIF{$\text{len}_i > \text{max\_diag\_2} \text{ and } \text{len}_i < \text{max\_diag\_1}$}
+                    \STATE $\text{max\_diag\_2} \gets \text{len}_i$
+                    \STATE $dx_2 \gets dx_i$, $dy_2 \gets dy_i$
+                \ENDIF
+            \ENDFOR
+        \ENDFOR
+        
+        \STATE $\sigma_1 \gets \arctan2(dy_1, dx_1)$
+        \STATE $\sigma_2 \gets \arctan2(dy_2, dx_2)$
+        \STATE $\sigma \gets \frac{\sigma_1 \cdot \text{max\_diag\_1} + \sigma_2 \cdot \text{max\_diag\_2}}{\text{max\_diag\_1} + \text{max\_diag\_2}}$
+        
+        \STATE $P_{\text{rot}} \gets \text{rotate}(P, -\sigma)$
+        \STATE $\text{mmbox}, \text{area} \gets \text{minMaxBox}(P_{\text{rot}})$
+        
+        \STATE $\text{mmbox\_min\_res} \gets \text{resize}(P, \text{mmbox})$
+        \STATE \textbf{return} \text{rotate}($\text{mmbox\_min\_res}, \sigma$)
+    \end{algorithmic}
+\end{algorithm}

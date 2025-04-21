@@ -1,0 +1,29 @@
+\section{Popis problému}
+
+Problém generalizace budov do úrovně detailu LOD0 spočívá v zjednodušení tvaru polygonů na obdélníky za účelem zmenšení množství dat a zlepšení čitelnosti v mapě.
+
+\subsection{Formulace problému}
+
+\paragraph{Dáno:}
+\begin{itemize}
+    \item Množina \( n \) budov \( B = \{B_i\} \), kde každá budova \( B_i \) je reprezentována množinou lomových bodů \( \{P_{i,j}\} \).
+\end{itemize}
+
+\paragraph{Určováno:}
+\begin{itemize}
+    \item Generalizovaný tvar budovy \( G(B_i) \) do úrovně detailu LOD0.
+\end{itemize}
+
+\subsection{Techniky řešení problému}
+
+\begin{itemize}
+    \item \textbf{Minimum Area Enclosing Rectangle} – Tato metoda určuje obdélník s nejmenší plochou, který obsahuje všechny body budovy. Pro určení tohoto obdélníku se využívá konstrukce konvexní obálky. Nalezený obdélník je následně zmenšen, aby měl stejný obsah jako původní polygon budovy a těžiště zůstalo na stejném míste.
+
+    \item \textbf{PCA (Principal Component Analysis)} – Metoda, která určuje hlavní směry budovy pomocí analýzy hlavních komponent. Výsledný obdélník je natočený podle hlavních směrů budovy a má obsah shodný s obsahem budovy. Těžiště obdélníku je budovy je shodné s těžištěm polygonu.
+    
+    \item \textbf{Longest Edge} – Metoda, která určuje natočení obdélníku na základě nejdelší hrany polygonu. Obsah obdélníku je shodný s obsahem polygonu. Těžiště obdélníku je budovy je shodné s těžištěm polygonu.
+    
+    \item \textbf{Wall Average} – Metoda, která určuje natočení obdélníku na základě průměrné orientace všech hran polygonu. Velikost obdélníku je volena tak, aby měl stejný obsah jako původní polygon. Těžiště obdélníku je budovy je shodné s těžištěm polygonu.
+    
+    \item \textbf{Weighted Bisector} – Metoda, která určuje natočení obdélníku na základě váženého průměru orientací hran polygonu. Váhy jsou přiřazeny jednotlivým hranám podle jejich délky. Velikost obdélníku je volena tak, aby měl obdélník obsah shodný s polygonem. Těžiště obdélníku je budovy je shodné s těžištěm polygonu.
+\end{itemize}

@@ -1,0 +1,96 @@
+\section{Dokumentace}
+
+\subsection{Použité knihovny}
+Kód využívá následující knihovny:
+\begin{itemize}
+\item \texttt{\href{https://www.qt.io/}{Qt}} – Knihovna pro správu grafických objektů, včetně tříd jako \texttt{QPointF}, \texttt{QPolygonF}.
+\item \texttt{\href{http://shapelib.maptools.org/}{shapelib}} – Knihovna pro práci se soubory formátu Shapefile \cite{shapelib}. Upravená verze této knihovny do C++ byla použita z projektu \href{https://github.com/zhihao-liu/shapefile-viewer-qt/tree/master/shapelib}{shapefile-viewer-qt} od Zhihao Liu \cite{liu2025shapelib}.
+\item \texttt{\href{https://gitlab.com/libeigen/eigen}{Eigen}} – Knihovna pro lineární algebru v C++, včetně operací s maticemi a vektory\cite{eigen}.
+\end{itemize}
+
+\subsection{Třída Algorithms}
+Třída poskytuje metody pro generalizaci bodů
+
+\textbf{Veřejné statické metody:}
+\begin{itemize}
+\item \texttt{QPolygonF createMAER(const QPolygonF \&pol)} – Generalizuje budovu pomocí metody Minimum Area Enclosing Rectangle.
+\item \texttt{QPolygonF createERPCA(const QPolygonF \&pol)} – Generalizuje budovu pomocí metody Enclosing Rectangle using PCA.
+\item \texttt{QPolygonF createERLE(const QPolygonF \&pol)} – Generalizuje budovu pomocí metody Enclosing Rectangle using Longest Edge.
+\item \texttt{QPolygonF createERWA(const QPolygonF \&pol)} – Generalizuje budovu pomocí metody Enclosing Rectangle using Wall Average.
+\item \texttt{QPolygonF createERWB(const QPolygonF \&pol)} – Generalizuje budovu pomocí metody Enclosing Rectangle using Weighted Bisector.
+\item \texttt{QPolygonF createCHJS(const QPolygonF \&pol)} – Vytváří konvexní obálku pomocí motdy Jarvis Scan.
+\item \texttt{QPolygonF createCHGS(const QPolygonF \&pol)} – Vytváří konvexní obálku pomocí motdy Graham Scan.
+\item \texttt{void exportFile(const std::vector<QPolygonF> \&results,const QString \&fileName)} – Vytvoří textový soubor výsledků.
+\end{itemize}
+
+\textbf{Soukromé statické metody:}
+\begin{itemize}
+\item \texttt{double get2LinesAngle(const QPointF \&p1, const QPointF \&p2, const QPointF \&p3, const QPointF \&p4)} – Vypočítá úhel mezi přímkou tvořenou body (\texttt{p1} a \texttt{p2}) a přímkou tvořenou body (\texttt{p3} a \texttt{p4}).
+\item \texttt{double getArea(const QPolygonF \&pol)} – Vypočítá plochu polygonu.
+\item \texttt{QPolygonF resize(const QPolygonF \&pol, const QPolygonF \&mmbox)} – Změní velikost polygonu.
+\item \texttt{QPolygonF rotate(const QPolygonF \&pol, double sigma)} – Otočí polygon o úhel \texttt{sigma}.
+\item \texttt{std::tuple<QPolygonF, double> minMaxBox(const QPolygonF \&pol)} – Vytvoří Minimum Bounding Box daného polygonu.
+\item \texttt{double getDistance(const QPointF \&p1, const QPointF \&p2)} – Vypočítá euklidovskou vzdálenost mezi dvěma body (\texttt{p1} a \texttt{p2}).
+\item \texttt{QPointF findPivotGS(const QPolygonF \&pol)} – Nalezne pivot pro Graham Scan.
+\item \texttt{std::vector<double> anglesWithPoints(const QPolygonF \&pol, const QPointF \&q)} – Vypočte úhel mezi body a pivotem.
+\item \texttt{void sortAnglesPoints(const QPointF \&q, std::vector<double> \&angles, QPolygonF \&pol\_)} – Seřadí úhly sestupně a korespondující body sestupně podle úhlu.
+\item \texttt{double pointLineDistance(const QPointF\& A, const QPointF\& B, const QPointF\& P)} – Vypočte vzdálenost bodu od přímky.
+\item \texttt{short findSide(const QPointF\& a, const QPointF\& b, const QPointF\& p)} – Vrátí informaci o pozici bodu \texttt{p1} vůči přímce tvořenou body \texttt{a} a \texttt{b}
+\end{itemize}
+
+\subsection{Třída sortPointsByX}
+Třída pro seřazení bodů podle souřadnice \texttt{x}.
+\begin{itemize}
+    \item \texttt{bool  operator()(const QPointF \&p1, const QPointF \&p2)} – Vratí \texttt{True}, pokud \texttt{x.p1} je menší než \texttt{x.p2}.
+\end{itemize}
+
+\subsection{Třída sortPointsByY}
+Třída pro seřazení bodů podle souřadnice \texttt{y}.
+\begin{itemize}
+    \item \texttt{bool  operator()(const QPointF \&p1, const QPointF \&p2)} – Vratí \texttt{True}, pokud \texttt{y.p1} je menší než \texttt{y.p2}.
+\end{itemize}
+
+\subsection{Třída Draw}
+Třída pro vykreslování polygonů a interakci s uživatelem.
+
+\textbf{Veřejné metody:}
+\begin{itemize}
+    \item \texttt{void mousePressEvent(QMouseEvent *e)} – Zpracuje událost kliknutí myší.
+    \item \texttt{void paintEvent(QPaintEvent *event)} – Vykreslí polygony a body.
+    \item \texttt{void switch\_source()} – Přepíná typ vstupních dat.
+    \item \texttt{QPolygonF getPol()} – Vrátí polygon.
+    \item \texttt{void loadPolygonFromFile(const QString \&fileName)} – Načte polygon z \texttt{*.TXT}.
+    \item \texttt{void loadPolygonFromShapefile(const QString \&fileName)} – Načte polygon z \texttt{*.SHP}.
+    \item \texttt{void clearPolygons()} – Vymaže všechny polygony.
+    \item \texttt{void clearResults()} – Vymaže výsledky.
+    \item \texttt{void clearCHs()} – Vymaže konvexní obálky.
+    \item \texttt{const std::vector<QPolygonF> getPolygons()} – Vrátí všechny polygony.
+    \item \texttt{void setResults(const std::vector<QPolygonF>\& newResults)} – Uloží výsledky do vektoru polygonů.
+    \item \texttt{void setConvexHulls(const std::vector<QPolygonF>\& newCHs)} – Uloží konvexní obálky do veltoru polygonů.
+    \item \texttt{void changeColourCHOutline(const bool \&status)} – Nastaví barvu obrysu.
+    \item \texttt{changeColourCHFilling(const bool \&status)} – Nastaví barvu výplně.
+\end{itemize}
+
+
+\subsection{Třída MainForm}
+Hlavní uživatelské rozhraní aplikace.
+
+\begin{itemize}
+\item \texttt{void on\_actionOpen\_triggered()} – Otevře nabídku pro výběr souboru.
+\item \texttt{void on\_actionMBR\_triggered()} – Spustí výpočet minimálního ohraničujícího obdélníku (MBR).
+\item \texttt{void on\_actionPCA\_triggered()} – Spustí výpočet pomocí hlavních komponent (PCA).
+\item \texttt{void on\_actionClear\_All\_triggered()} – Vymaže všechny objekty a výsledky.
+\item \texttt{void on\_actionExit\_triggered()} – Ukončí aplikaci.
+\item \texttt{void on\_actionClear\_results\_triggered()} – Vymaže výsledky analýz.
+\item \texttt{void on\_actionLongest\_edge\_triggered()} – Spustí výpočet pomocí nejdelší hrany (LE).
+\item \texttt{void on\_actionWall\_average\_triggered()} – Spustí výpočet pomocí wall avarage (WA).
+\item \texttt{void on\_actionWeighted\_bisector\_triggered()} – Spustí výpočet pomocí weighted bisector (WB).
+\item \texttt{void on\_actionCovvex\_Hull\_triggered()} – Spustí výpočet konvexního obalu.
+\item \texttt{void on\_actionAbout\_triggered()} – Zobrazí informace o aplikaci.
+\item \texttt{void on\_actionGraham\_Scan\_triggered()} – Spustí Graham Scan algoritmus.
+\item \texttt{void on\_actionJarvis\_Scan\_triggered()} – Spustí Jarvis Scan algoritmus.
+\item \texttt{void on\_actionExport\_building\_triggered()} – Exportuje generalizované budovy do souboru.
+\item \texttt{void on\_actionExport\_CH\_triggered()} – Exportuje konvexní obálky do souboru.
+\item \texttt{void on\_actionFill\_triggered()} – Změní viditelnost výplně konvexní obálky.
+\item \texttt{void on\_actionOutline\_triggered()} – Změní viditelnost obrysu konvexní obálky.
+\end{itemize}

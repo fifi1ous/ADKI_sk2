@@ -1,0 +1,30 @@
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Metoda \texttt{Minimum Area Enclosing Rectangle}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} polygon $P$
+        \STATE \textbf{Výstup:} minimální obdélník obsahující všechny body polygonu $P$
+        
+        \STATE $\sigma_{\text{min}} \gets 2\pi$
+        \STATE $\text{mmbox\_min}, \text{area\_min} \gets \text{minMaxBox}(P)$
+        \STATE $CH \gets \text{createCH}(P)$
+        \STATE $n \gets \text{size}(CH)$
+        
+        \FOR{$i \gets 0$ \TO $n-1$}
+            \STATE $dx \gets x_{i+1} - x_i$
+            \STATE $dy \gets y_{i+1} - y_i$
+            \STATE $\sigma \gets \arctan2(dy, dx)$
+            \STATE $CH_{\text{rot}} \gets \text{rotate}(CH, -\sigma)$
+            \STATE $\text{mmbox}, \text{area} \gets \text{minMaxBox}(CH_{\text{rot}})$
+            
+            \IF{$\text{area} < \text{area\_min}$}
+                \STATE $\text{area\_min} \gets \text{area}$
+                \STATE $\sigma_{\text{min}} \gets \sigma$
+                \STATE $\text{mmbox\_min} \gets \text{mmbox}$
+            \ENDIF
+        \ENDFOR
+        
+        \STATE $\text{mmbox\_min\_res} \gets \text{resize}(P, \text{mmbox\_min})$
+        \STATE \textbf{return} \text{rotate}($\text{mmbox\_min\_res}, \sigma_{\text{min}}$)
+    \end{algorithmic}
+\end{algorithm}

@@ -1,0 +1,37 @@
+\section{Závěr}
+
+V rámci této úlohy byla vytvořena aplikace, která umožňuje generalizaci budov do úrovně detailu LOD0 pomocí několika metod: \texttt{Minimum Area Enclosing Rectangle}, \texttt{Principal Component Analysis (PCA)}, \texttt{Longest Edge}, \texttt{Wall Average} a \texttt{Weighted Bisector}. Pro výpočet metodou MAER je využita tvorba konvexní obálky metodou Jarvis scan a Graham scan, mezi nimiž může uživatel přepínat a které může také vizualizovat. Aplikace umožňuje uživateli ruční tvorbu polygonů budov nebo nahrání polygonů ze souboru ve formátech \texttt{*.TXT} a \texttt{*.SHP}. Výsledky generalizovaných budov nebo konvexních obálek lze exportovat do formátu \texttt{*.TXT} ve stejném formátu, který slouží pro nahrávání dat. Aplikace byla testována na třech datových sadách (historické centrum města, panelové sídliště a vilová čtvrť).
+
+\subsection{Další Možné Neřešené Problémy a Náměty na Vylepšení}
+
+\begin{itemize} 
+    \item \textbf{Podpora dalších formátů pro vstup:} V současnosti aplikace podporuje načítání polygonů ze souborů ve formátech TXT a SHP. Bylo by vhodné rozšířit podporu také o formáty jako GeoJSON nebo GeoPackage, které jsou běžně využívány v GIS aplikacích.
+
+    \item \textbf{Podpora dalších formátů pro výstup} V současnosti aplikace podporuje ukládání výsledků pouze pro TXT. Bylo by vhodné rozšířit podporu také o formáty jako CSV, SHP GeoJSON nebo GeoPackage, které jsou běžně využívány v GIS aplikacích.
+
+    \item \textbf{Generování náhodných polygonů:} Aplikace by mohla být rozšířena o možnost generování náhodných polygonů.
+    
+    \item \textbf{Dávkové zpracování:} Dalším vylepšením by mohlo být aplikaci kromě zpracování v GUI umožnit i dávkové zpracování polygonů v příkazové řádce, které by mohlo vypadat například takto:\\ \texttt{BuildingSimplification.exe -CHGS Puvodni.shp > ConvexHull.txt}\\ \texttt{BuildingSimplification.exe -MAER Puvodni.shp > Generalizovane.txt}.
+    
+    \item \textbf{Editace budov:} Aktuální implementace umožňuje pouze základní práci s polygony. Bylo by možné rozšířit funkcionalitu o editaci polygonů, například odebírání jednotlivých vrcholů nebo přidávání nových.
+    
+    \item \textbf{Zoomování a posouvání mapy:} Aplikace v současnosti nezahrnuje podporu pro přibližování a posun mapy, což by mohlo usnadnit práci s polygony.
+    
+    \item \textbf{Odstranění jednotlivých prvků:} Dalším možným vylepšením by byla možnost selektivního mazání nakreslených prvků, například odstranění konkrétního polygonu nebo jeho editace, aniž by bylo nutné smazat veškeré polygony.
+
+    \item \textbf{Rušení aktuálně kresleného prvku:} Možnost zrušit aktuální kresbu pomocí tlačítka.
+
+    \item \textbf{Nastavení:} Přidat tlačítko umožňující nastavení parametrů, jako jsou barva, tloušťka a velikost.
+
+    \item \textbf{Formát textového souboru:} Vytvořit načítání souboru z TXT, které bude umět přijímat různou strukturu dat, například více možností oddělovačů.
+
+    \item \textbf{Vizuál aplikace:} Zlepšit vizuální stránku aplikace.
+
+    \item \textbf{Konvexní obálky:} Vytvářet konvexní obálky pomocí dalších metod například Quick Hull, Sweep Line a nebo Devide and Conquer.
+
+    \item \textbf{Výběr metody generalizace:} Umožnit nastavení metody generalizace pro jednotlivé budovy.
+
+    \item \textbf{Vizualizace výsledků:} Zajistit možnost překryvného zobrazení výsledků jednotlivých metod pro snadnější porovnání.
+
+
+\end{itemize}

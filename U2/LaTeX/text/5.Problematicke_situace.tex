@@ -1,0 +1,39 @@
+\section{Problematické situace}
+
+\subsection{Souřadnice shapefilu}
+Při nahrávání a vykreslování polygonů ze shapefile je nutné provést transformaci souřadnic z geografického souřadnicového systému do souřadnicového systému okna aplikace.
+
+\begin{itemize}
+    \item \textbf{Načtení hranic shapefile} \\
+    Nejprve se pomocí funkce \texttt{SHPGetInfo} zjistí minimální a maximální souřadnice polygonů obsažených ve shapefile (bounding box).
+
+    \item \textbf{Zjištění rozměrů okna aplikace} \\
+    Rozměry vykreslovací plochy se zjistí funkcemi \texttt{width()} a \texttt{height()}. Tyto hodnoty definují maximální prostor, který může být využit pro zobrazení polygonů.
+
+    \item \textbf{Výpočet měřítka transformace} \\
+    Aby se polygon přizpůsobil velikosti vykreslovací oblasti vypočte se měřítkový koeficient:
+    \begin{equation}
+        \text{scale} = \min \left( \frac{\text{widgetWidth}}{\text{maxX} - \text{minX}}, \frac{\text{widgetHeight}}{\text{maxY} - \text{minY}} \right)
+    \end{equation}
+
+    \item \textbf{Výpočet posunu polygonu} \\
+    Po aplikaci měřítka je třeba polygon zarovnat do středu vykreslovací plochy. Posun v ose X a Y se vypočte následovně:
+    \begin{equation}
+        \text{offsetX} = \frac{\text{widgetWidth} - (\text{maxX} - \text{minX}) \cdot \text{scale}}{2} - \text{minX} \cdot \text{scale}
+    \end{equation}
+    \begin{equation}
+        \text{offsetY} = \frac{\text{widgetHeight} - (\text{maxY} - \text{minY}) \cdot \text{scale}}{2} + \text{maxY} \cdot \text{scale}
+    \end{equation}
+
+    \item \textbf{Transformace jednotlivých bodů} \\
+    Každý bod X a Y v polygonu se transformuje následujícím způsobem:
+    \begin{equation}
+        \text{transformedX} = \text{x} \cdot \text{scale} + \text{offsetX}
+    \end{equation}
+    \begin{equation}
+        \text{transformedY} = -\text{y} \cdot \text{scale} + \text{offsetY}
+    \end{equation}
+    
+    \item \textbf{Uložení transformovaných bodů} \\
+    Transformované body jsou uloženy do datové struktury pro polygon.
+\end{itemize}
