@@ -685,8 +685,8 @@ short Algorithms::findSide(const QPointF& a, const QPointF& b, const QPointF& p)
 double Algorithms::getMainDirection(const QPolygonF &rect)
 {
     // Finds the main direction of a rectangle
-    double longestLength = 0.0;   // store the longest edge length
-    double direction = 0.0;       // store the angle of the longest edge
+    double longestLength = 0; // store the longest edge length
+    double direction = 0;     // store the angle of the longest edge
 
     for (int i = 0; i < rect.size(); ++i) {
         // Get two points of one edge
@@ -703,10 +703,9 @@ double Algorithms::getMainDirection(const QPolygonF &rect)
         // If this edge is the longest, save its length and angle
         if (length > longestLength) {
             longestLength = length;
-            direction = std::atan2(dy, dx); // angle of the edge
+            direction = std::atan2(dy, dx);// angle of the edge
         }
     }
-
     return direction;
 }
 
@@ -716,9 +715,11 @@ std::vector<double> Algorithms::segmentAngleDeviations(const QPolygonF &polygon,
     std::vector<double> deviations;
 
     for (int i = 0; i < polygon.size() - 1; ++i) {
+        // Get two points of the edge
         QPointF p1 = polygon[i];
         QPointF p2 = polygon[i + 1];
 
+        // Calculate direction of this edge
         double dx = p2.x() - p1.x();
         double dy = p2.y() - p1.y();
         double sigma_i = std::atan2(dy, dx);
@@ -729,17 +730,21 @@ std::vector<double> Algorithms::segmentAngleDeviations(const QPolygonF &polygon,
         double k = (2.0 * main_dir) / M_PI;
         double r = (k - std::floor(k)) * (M_PI / 2.0);
 
+        // Save the difference
         deviations.push_back(r_i - r);
     }
-
     return deviations;
 }
 
 void Algorithms::evaluateAccuracy(const QPolygonF &original, const QPolygonF &generalized, double &delta_sigma_1, double &delta_sigma_2)
 {
+    // Get the main direction (angle) of the generalized polygon
     double sigma = getMainDirection(generalized);
+
+    // Get angular deviations of the original polygon from this direction
     std::vector<double> deviations = segmentAngleDeviations(original, sigma);
 
+    // If the polygon is empty, return 0 values
     if (deviations.empty()) {
         delta_sigma_1 = 0.0;
         delta_sigma_2 = 0.0;
@@ -749,12 +754,16 @@ void Algorithms::evaluateAccuracy(const QPolygonF &original, const QPolygonF &ge
     double sum_abs = 0.0;
     double sum_sq = 0.0;
 
+    // Sum all absolute and squared deviations
     for (double d : deviations) {
         sum_abs += std::abs(d);
         sum_sq += d * d;
     }
 
+    // Compute mean angular deviation (Δσ1)
     delta_sigma_1 = (M_PI / (2.0 * deviations.size())) * sum_abs;
+
+    // Compute root mean square angular deviation (Δσ2)
     delta_sigma_2 = (M_PI / (2.0 * deviations.size())) * std::sqrt(sum_sq);
 }
 

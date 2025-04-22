@@ -62,23 +62,7 @@ void MainForm::on_actionMBR_triggered()
     // Clear previos results
     results.clear();
 
-    // // For each polygon in the list of polygons, create the MBR
-    // for (const auto& building : polygons) {
-    //     // Check validity of polygons
-    //     if (!checkValidation(building))
-    //     {
-    //         // If true continu
-    //         continue;
-    //     }
-
-    //     // Run the algorithm to create the MBR
-    //     QPolygonF maer = Algorithms::createMAER(building);
-
-    //     // Store the result
-    //     results.push_back(maer);
-    // }
-
-    int index = 1;
+    // For each polygon in the list of polygons, create the MBR
     for (const auto& building : polygons) {
         // Check validity of polygons
         if (!checkValidation(building))
@@ -92,16 +76,6 @@ void MainForm::on_actionMBR_triggered()
 
         // Store the result
         results.push_back(maer);
-
-
-        // Calculate generalization precision
-        double delta1, delta2;
-
-        Algorithms::evaluateAccuracy(building, maer, delta1, delta2);
-
-        qDebug() << "Budova č." << index << "(MAER): delta_1 =" << delta1 * 180.0 / M_PI << "°, delta_2 =" << delta2 * 180.0 / M_PI << "°";
-
-        ++index;
     }
 
     // Set the results on the Canvas
@@ -454,3 +428,112 @@ void MainForm::on_actionFill_triggered()
     bool status = ui->actionFill->isChecked();
     ui->Canvas->changeColourCHFilling(status);
 }
+
+// This part of code was done by chatGPT
+void MainForm::showAccuracyDialog(const QString &text)
+{
+    // Create dialog window
+    QDialog *dialog = new QDialog(this);
+    dialog->setWindowTitle("Generalization Accuracy");
+
+    // Scrollable text area
+    QPlainTextEdit *editor = new QPlainTextEdit(dialog);
+    editor->setReadOnly(true);
+    editor->setPlainText(text);
+
+    // Close button
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+    connect(buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
+
+    // Layout
+    QVBoxLayout *layout = new QVBoxLayout(dialog);
+    layout->addWidget(editor);
+    layout->addWidget(buttonBox);
+
+    dialog->resize(600, 500); // default window size
+    dialog->exec();
+}
+
+void MainForm::on_actionShow_Accuracy_triggered()
+{
+    // Get original buildings
+    std::vector<QPolygonF> polygons = ui->Canvas->getPolygons();
+
+    // Check if polygons are loaded
+    if (polygons.empty()) {
+        QMessageBox::warning(this, "Warning", "No input buildings loaded.");
+        return;
+    }
+
+    // Check if generalization has been done
+    if (results.empty()) {
+        QMessageBox::warning(this, "Warning", "No generalization has been performed yet.");
+        return;
+    }
+
+    // Check if counts match
+    if (polygons.size() != results.size()) {
+        QMessageBox::warning(this, "Warning", "Mismatch between number of original and generalized buildings.");
+        return;
+    }
+
+    // Prepare variables for statistics
+    double sum_delta1 = 0, sum_delta2 = 0;
+    double max_delta1 = 0, min_delta1 = std::numeric_limits<double>::max();
+    int count_over_threshold = 0;
+    const double DEG_THRESHOLD = 10.0; // threshold in degrees
+
+    QStringList detailLines;
+
+    // Process each building
+    for (size_t i = 0; i < polygons.size(); ++i) {
+        double delta1, delta2;
+        Algorithms::evaluateAccuracy(polygons[i], results[i], delta1, delta2);
+
+        // Convert from radians to degrees
+        double deg_delta1 = delta1 * 180.0 / M_PI;
+        double deg_delta2 = delta2 * 180.0 / M_PI;
+
+        // Update sums
+        sum_delta1 += deg_delta1;
+        sum_delta2 += deg_delta2;
+
+        // Update min/max
+        if (deg_delta1 > max_delta1) max_delta1 = deg_delta1;
+        if (deg_delta1 < min_delta1) min_delta1 = deg_delta1;
+
+        // Count how many are over the allowed threshold
+        if (deg_delta1 > DEG_THRESHOLD) ++count_over_threshold;
+
+        // Save individual result line
+        detailLines << QString("Building %1: Δσ₁ = %2°, Δσ₂ = %3°")
+                           .arg(i + 1)
+                           .arg(QString::number(deg_delta1, 'f', 2))
+                           .arg(QString::number(deg_delta2, 'f', 2));
+    }
+
+    // Calculate averages
+    int total = static_cast<int>(polygons.size());
+    double avg_delta1 = sum_delta1 / total;
+    double avg_delta2 = sum_delta2 / total;
+    double percentage_over = (count_over_threshold * 100.0) / total;
+
+    // Build summary text
+    QString summary;
+    summary += "Generalization Accuracy Summary:\n\n";
+    summary += QString("Total buildings: %1\n").arg(total);
+    summary += QString("Average Δσ₁: %1°\n").arg(QString::number(avg_delta1, 'f', 2));
+    summary += QString("Average Δσ₂: %1°\n").arg(QString::number(avg_delta2, 'f', 2));
+    summary += QString("Minimum Δσ₁: %1°\n").arg(QString::number(min_delta1, 'f', 2));
+    summary += QString("Maximum Δσ₁: %1°\n").arg(QString::number(max_delta1, 'f', 2));
+    summary += QString("Buildings over 10°: %1 (%2%)\n\n")
+                   .arg(count_over_threshold)
+                   .arg(QString::number(percentage_over, 'f', 1));
+
+    summary += "Details:\n" + detailLines.join("\n");
+
+    // Show scrollable dialog with the summary
+    showAccuracyDialog(summary);
+}
+// Here ends the part which was done by chatGPT
+

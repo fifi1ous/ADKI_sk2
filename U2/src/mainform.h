@@ -2,6 +2,10 @@
 #define MAINFORM_H
 
 #include <QMainWindow>
+#include <QDialog>
+#include <QPlainTextEdit>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainForm; }
@@ -50,6 +54,8 @@ private slots:
 
     void on_actionOutline_triggered();
 
+    void on_actionShow_Accuracy_triggered();
+
 private:
     Ui::MainForm *ui;
     bool checkValidation(const QPolygonF &building);
@@ -71,6 +77,8 @@ private:
     short convexHull = 0;
     std::vector<QPolygonF> results;
     std::vector<QPolygonF> chs;
+
+    void showAccuracyDialog(const QString &text);
 };
 
 #endif // MAINFORM_H

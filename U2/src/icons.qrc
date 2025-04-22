@@ -14,5 +14,6 @@
         <file>icons/pca.png</file>
         <file>icons/Export.png</file>
         <file>icons/Export2.png</file>
+        <file>icons/accuracy.png</file>
     </qresource>
 </RCC>
