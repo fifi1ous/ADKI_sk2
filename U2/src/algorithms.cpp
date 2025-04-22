@@ -685,21 +685,29 @@ short Algorithms::findSide(const QPointF& a, const QPointF& b, const QPointF& p)
 double Algorithms::getMainDirection(const QPolygonF &rect)
 {
     // Finds the main direction of a rectangle
-    double max_len = 0.0;
-    double sigma = 0.0;
+    double longestLength = 0.0;   // store the longest edge length
+    double direction = 0.0;       // store the angle of the longest edge
 
     for (int i = 0; i < rect.size(); ++i) {
-        QPointF p1 = rect[i];
-        QPointF p2 = rect[(i + 1) % rect.size()];
-        double dx = p2.x() - p1.x();
-        double dy = p2.y() - p1.y();
-        double len = std::hypot(dx, dy);
-        if (len > max_len) {
-            max_len = len;
-            sigma = std::atan2(dy, dx);
+        // Get two points of one edge
+        QPointF a = rect[i];
+        QPointF b = rect[(i + 1) % rect.size()];
+
+        // Compute difference in x and y
+        double dx = b.x() - a.x();
+        double dy = b.y() - a.y();
+
+        // Compute length of the edge
+        double length = std::sqrt(dx * dx + dy * dy);
+
+        // If this edge is the longest, save its length and angle
+        if (length > longestLength) {
+            longestLength = length;
+            direction = std::atan2(dy, dx); // angle of the edge
         }
     }
-    return sigma;
+
+    return direction;
 }
 
 std::vector<double> Algorithms::segmentAngleDeviations(const QPolygonF &polygon, double main_dir)
