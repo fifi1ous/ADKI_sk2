@@ -730,8 +730,16 @@ std::vector<double> Algorithms::segmentAngleDeviations(const QPolygonF &polygon,
         double k = (2.0 * main_dir) / M_PI;
         double r = (k - std::floor(k)) * (M_PI / 2.0);
 
+        // Calculate absolute difference
+        double diff = std::abs(r_i - r);
+
+        // Apply correction: map to [0, π/4] range
+        if (diff > M_PI / 4.0) {
+            diff = M_PI / 2.0 - diff;
+        }
+
         // Save the difference
-        deviations.push_back(r_i - r);
+        deviations.push_back(diff);
     }
     return deviations;
 }
