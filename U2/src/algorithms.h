@@ -18,9 +18,6 @@ public:
     static QPolygonF createCHJS(const QPolygonF &pol);
     static QPolygonF createCHGS(const QPolygonF &pol);
     static void exportFile(const std::vector<QPolygonF> &results,const QString &fileName);
-
-    static double getMainDirection(const QPolygonF &rect);
-    static std::vector<double> segmentAngleDeviations(const QPolygonF &polygon, double main_dir);
     static void evaluateAccuracy(const QPolygonF &original, const QPolygonF &generalized, double &delta_sigma_1, double &delta_sigma_2);
 
 
@@ -36,6 +33,8 @@ private:
     static void sortAnglesPoints(const QPointF &q, std::vector<double> &angles, QPolygonF &pol_);
     static double pointLineDistance(const QPointF& A, const QPointF& B, const QPointF& P);
     static short findSide(const QPointF& a, const QPointF& b, const QPointF& p);
+    static double getMainDirection(const QPolygonF &rect);
+    static std::vector<double> segmentAngleDeviations(const QPolygonF &polygon, double main_dir);
 };
 
 #endif // ALGORITHMS_H
