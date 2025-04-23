@@ -53,3 +53,5 @@ win32 {
 unix {
     DESTDIR = $$PWD/../bin/linux
 }
+
+win32: RC_FILE += app.rc
