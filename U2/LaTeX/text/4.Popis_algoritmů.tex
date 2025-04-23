@@ -73,6 +73,7 @@ Pokud je pokud bod $p_{i}$ vpravo od přímky tvořenou $p_{i-1}$ a $p_{i-2}$. J
     ch.\text{push\_back}(p_{i})
 \end{equation}
 \input{text/Pseudocode/CHGS}
+\newpage
 
 \subsection{Algoritmy pro generalizaci budov}
 
@@ -207,7 +208,7 @@ Nakonec se box otočí zpět o úhel \( \sigma \):
 \begin{equation}
     \text{PCA} = \left\{ \mathbf{R}(\sigma) \cdot \mathbf{q}_j \mid j = 1,\dots,4 \right\}
 \end{equation}
-
+\newpage
 \input{text/Pseudocode/PCA}
 
 \subsubsection{Longest Edge}
@@ -374,3 +375,38 @@ Dále je postup obdobný jako u předchozích metod.
 \newpage
 \input{text/Pseudocode/WB}
 
+\subsection{Hodnoticí kritéria přesnosti generalizace}
+
+Přesnost generalizace budov je v této aplikaci posuzována na základě shody směrů jednotlivých hran původní budovy s hlavním směrem výsledného generalizačního obdélníku. Pro kvantitativní hodnocení byla zavedena dvě hodnotící kritéria, která měří úhlové odchylky:
+
+\begin{itemize}
+    \item $\Delta \sigma_1$ – střední absolutní úhlová odchylka, která vyjadřuje průměrnou odchylku hran vůči hlavnímu směru,
+    \item $\Delta \sigma_2$ – střední kvadratická (RMS) úhlová odchylka, která více zohledňuje větší odchylky.
+\end{itemize}
+
+Výpočty obou hodnotících kritérií vycházejí z následujících rovnic:
+
+\begin{equation}
+    \Delta \sigma_1 = \frac{\pi}{2n} \sum_{i=1}^{n} \left| r_i - r \right|
+\end{equation}
+
+\begin{equation}
+    \Delta \sigma_2 = \frac{\pi}{2n} \sqrt{ \sum_{i=1}^{n} \left( r_i - r \right)^2 }
+\end{equation}
+
+kde:
+
+\begin{itemize}
+    \item $n$ je počet hran (segmentů) původního polygonu,
+    \item $\sigma_i$ je orientace $i$-té hrany polygonu ve směrových radiánech,
+    \item $r_i$ je tzv. normalizovaný zbytek směru $\sigma_i$ podle vztahu:
+    \[
+    r_i = \left( \frac{2\sigma_i}{\pi} - \left\lfloor \frac{2\sigma_i}{\pi} \right\rfloor \right) \cdot \frac{\pi}{2}
+    \]
+    \item $r$ je obdobně normalizovaný hlavní směr generalizovaného obdélníku $\sigma$:
+    \[
+    r = \left( \frac{2\sigma}{\pi} - \left\lfloor \frac{2\sigma}{\pi} \right\rfloor \right) \cdot \frac{\pi}{2}
+    \]
+\end{itemize}
+
+Obě hodnotící kritéria vyjadřují úhlové odchylky v radiánech, pro srozumitelnější interpretaci jsou výsledky převedeny na stupně. Nižší hodnoty značí lepší shodu segmentů budovy s určeným hlavním směrem. V kartografické praxi se za přijatelnou považuje hodnota $\Delta \sigma_1 < 10^\circ$.

@@ -1,3 +1,38 @@
 \section{Výstupní data}
 Výsledky jsou vizualizovány přímo v aplikaci. Původní budova je zobrazena červeným obrysem se žlutou výplní, zatímco generalizované budovy jsou zobrazeny růžovou barvou. Konvexní obálka je vykreslena tmavě zelenou čárkovanou linií a doplněna zelenou výplní. Zobrazení konvexní obálky lze dle potřeby vypnout či zapnout. Popřípadě nastavit viditelnost výplně
 Pro účely uložení výsledků je možné exportovat jak generalizované budovy, tak i konvexní obálku do textového souboru ve stejném formátu jako vstupní data.
+
+\subsection*{Hodnocení přesnosti generalizace}
+
+Součástí výstupních dat je také možnost zobrazení přesnosti detekce hlavních směrů budov. Hodnocení probíhá pomocí dvou kartografických metrik: $\Delta \sigma_1$ a $\Delta \sigma_2$. Tyto hodnoty jsou počítány pro každou budovu a následně sumarizovány pro jednotlivé oblasti. Tabulka níže ukazuje přehled průměrných hodnot úhlových odchylek a podíl budov, u kterých $\Delta \sigma_1$ překročila hodnotu 10°, což je běžně akceptovaná mez v kartografické praxi.
+
+\begin{table}[h]
+    \centering
+    \caption{Shrnutí přesnosti generalizace pro jednotlivé metody a oblasti}
+    \begin{tabular}{|l|l|c|c|c|}
+        \hline
+        \textbf{Oblast} & \textbf{Metoda} & \textbf{\diameter $\Delta \sigma_1$ [°]} & \textbf{\diameter $\Delta \sigma_2$ [°]} & \textbf{$\Delta \sigma_1 > 10^\circ$ [\%]} \\
+        \hline\hline
+        Historické centrum  & MAER & 5.48  & 2.67  & 14.9 \\
+        Historické centrum  & PCA     & 25.97 & 8.31  & 83.7 \\
+        Historické centrum  & Longest Edge                     & 5.87  & 2.75  & 16.3 \\
+        Historické centrum  & Wall Average                     & 9.52  & 3.41  & 30.7 \\
+        Historické centrum  & Weighted Bisector                & 23.06 & 6.86  & 50.8 \\
+        \hline
+        Sídliště & MAER & 3.63  & 2.03 & 10.2 \\
+        Sídliště & PCA     & 16.00 & 4.93 & 56.5 \\
+        Sídliště & Longest Edge                     & 2.37  & 1.84 & 1.4  \\
+        Sídliště & Wall Average                     & 4.43  & 1.94 & 5.6  \\
+        Sídliště & Weighted Bisector                & 13.01 & 4.10 & 29.6 \\
+        \hline
+        Izolovaná zástavba & MAER & 4.53  & 2.55 & 13.2 \\
+        Izolovaná zástavba & PCA     & 30.51 & 9.84 & 86.4 \\
+        Izolovaná zástavba & Longest Edge                     & 4.20  & 2.52 & 13.2 \\
+        Izolovaná zástavba & Wall Average                     & 7.59  & 2.88 & 32.8 \\
+        Izolovaná zástavba & Weighted Bisector                & 19.32 & 5.90 & 41.3 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+
+

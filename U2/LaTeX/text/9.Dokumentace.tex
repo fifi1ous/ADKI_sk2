@@ -21,6 +21,7 @@ Třída poskytuje metody pro generalizaci bodů
 \item \texttt{QPolygonF createCHJS(const QPolygonF \&pol)} – Vytváří konvexní obálku pomocí motdy Jarvis Scan.
 \item \texttt{QPolygonF createCHGS(const QPolygonF \&pol)} – Vytváří konvexní obálku pomocí motdy Graham Scan.
 \item \texttt{void exportFile(const std::vector<QPolygonF> \&results,const QString \&fileName)} – Vytvoří textový soubor výsledků.
+\item \texttt{void evaluateAccuracy(const QPolygonF \&original, const QPolygonF \&generalized, double \&delta\_sigma\_1, double \&delta\_sigma\_2)} – Vyhodnotí přesnost generalizace pomocí úhlových metrik $\Delta \sigma_1$ a $\Delta \sigma_2$.
 \end{itemize}
 
 \textbf{Soukromé statické metody:}
@@ -36,6 +37,8 @@ Třída poskytuje metody pro generalizaci bodů
 \item \texttt{void sortAnglesPoints(const QPointF \&q, std::vector<double> \&angles, QPolygonF \&pol\_)} – Seřadí úhly sestupně a korespondující body sestupně podle úhlu.
 \item \texttt{double pointLineDistance(const QPointF\& A, const QPointF\& B, const QPointF\& P)} – Vypočte vzdálenost bodu od přímky.
 \item \texttt{short findSide(const QPointF\& a, const QPointF\& b, const QPointF\& p)} – Vrátí informaci o pozici bodu \texttt{p1} vůči přímce tvořenou body \texttt{a} a \texttt{b}
+\item \texttt{double getMainDirection(const QPolygonF \&rect)} – Určí hlavní směr polygonu.
+\item \texttt{std::vector<double> segmentAngleDeviations(const QPolygonF \&polygon, double main\_dir)} – Vrátí seznam úhlových odchylek segmentů od hlavního směru polygonu.
 \end{itemize}
 
 \subsection{Třída sortPointsByX}
@@ -93,4 +96,5 @@ Hlavní uživatelské rozhraní aplikace.
 \item \texttt{void on\_actionExport\_CH\_triggered()} – Exportuje konvexní obálky do souboru.
 \item \texttt{void on\_actionFill\_triggered()} – Změní viditelnost výplně konvexní obálky.
 \item \texttt{void on\_actionOutline\_triggered()} – Změní viditelnost obrysu konvexní obálky.
+\item \texttt{void on\_actionShow\_Accuracy\_triggered()} – Zobrazí přesnost generalizace budov.
 \end{itemize}
