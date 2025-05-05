@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "qpoint3df.h"
 #include "edge.h"
+#include "traingle.h"
 
 class Draw : public QWidget
 {
@@ -13,6 +14,7 @@ private:
     std::vector<QPoint3DF> points;
     std::vector<Edge> dt;
     std::vector<Edge> contour_lines;
+    std::vector<Traingle> triangles;
 
 
 public:

@@ -8,6 +8,7 @@ MainForm::MainForm(QWidget *parent)
     , ui(new Ui::MainForm)
 {
     ui->setupUi(this);
+
 }
 
 MainForm::~MainForm()
@@ -39,14 +40,26 @@ void MainForm::on_actionCreate_Contour_lines_triggered()
     //Generate contour lines
     std::vector<Edge> dt = ui -> Canvas -> getDT();
 
+    // Get parameters of contoru lines
+    double z_min = settings.getZMin();
+    double z_max = settings.getZMax();
+    double dz = settings.getDz();
+
     //Generate contour lines
     Algorithms a;
-    std::vector<Edge> cl = a.createContourLines(dt,1, 1000, 10);
+    std::vector<Edge> cl = a.createContourLines(dt,z_min, z_max, dz);
 
     //Set results
     ui -> Canvas -> setCL(cl);
 
     //Repaint
     repaint();
+}
+
+
+void MainForm::on_actionParameters_triggered()
+{
+    // Show window
+    settings.exec();
 }
 

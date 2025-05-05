@@ -49,7 +49,11 @@ void Draw::paintEvent(QPaintEvent *event)
     //Create object for drawing
     painter.begin(this);
 
+    // Draw slope
+    for (auto t: triangles)
+    {
 
+    }
     //Set graphic attributes, point
     painter.setPen(Qt::GlobalColor::black);
     painter.setBrush(Qt::GlobalColor::blue);

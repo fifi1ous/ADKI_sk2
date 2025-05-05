@@ -17,7 +17,8 @@ SOURCES += \
     qpoint3df.cpp \
     settings2.cpp \
     sortpointsbyx.cpp \
-    sortpointsbyy.cpp
+    sortpointsbyy.cpp \
+    traingle.cpp
 
 HEADERS += \
     algorithms.h \
@@ -27,7 +28,8 @@ HEADERS += \
     qpoint3df.h \
     settings2.h \
     sortpointsbyx.h \
-    sortpointsbyy.h
+    sortpointsbyy.h \
+    traingle.h
 
 FORMS += \
     mainform.ui \

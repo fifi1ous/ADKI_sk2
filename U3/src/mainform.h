@@ -2,6 +2,7 @@
 #define MAINFORM_H
 
 #include <QMainWindow>
+#include "settings2.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -16,11 +17,14 @@ class MainForm : public QMainWindow
 public:
     MainForm(QWidget *parent = nullptr);
     ~MainForm();
+    Settings2 settings;
 
 private slots:
     void on_actionCreate_DT_triggered();
 
     void on_actionCreate_Contour_lines_triggered();
+
+    void on_actionParameters_triggered();
 
 private:
     Ui::MainForm *ui;
