@@ -26,6 +26,8 @@ private slots:
 
     void on_actionParameters_triggered();
 
+    void on_actionAnalyze_slope_triggered();
+
 private:
     Ui::MainForm *ui;
 };

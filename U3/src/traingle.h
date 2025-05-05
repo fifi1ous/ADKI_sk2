@@ -19,6 +19,13 @@ public:
         slope = slope_;
         aspect = aspect_;
     }
+
+    inline QPoint3DF getP1(){return p1;}
+    inline QPoint3DF getP2(){return p2;}
+    inline QPoint3DF getP3(){return p3;}
+
+    inline double getSlope(){return slope;}
+    inline double getAspect(){return aspect;}
 };
 
 #endif // TRAINGLE_H
