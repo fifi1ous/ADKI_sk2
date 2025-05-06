@@ -26,7 +26,7 @@ public:
     std::vector<Edge> getDT()const {return dt;}
     void setDT(const std::vector<Edge> &dt_){dt = dt_;}
     void setCL(const std::vector<Edge> &contour_lines_){contour_lines = contour_lines_;}
-    void setSL(const std::vector<Traingle> &triangles_){triangles = triangles_;}
+    void setTR(const std::vector<Traingle> &triangles_){triangles = triangles_;}
 
 
 signals:

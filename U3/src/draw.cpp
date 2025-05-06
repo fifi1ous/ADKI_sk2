@@ -1,7 +1,6 @@
 #include "draw.h"
 #include <QtGui>
 #include <time.h>
-#include <QDebug>
 
 Draw::Draw(QWidget *parent)
     : QWidget{parent}
@@ -61,18 +60,15 @@ void Draw::paintEvent(QPaintEvent *event)
         QPointF p2_(p2.x(),p2.y());
         QPointF p3_(p3.x(),p3.y());
 
-        QPolygonF t_ {p1_,p2_,p3_};
+        QPolygonF vertices {p1_,p2_,p3_};
 
         double slope = t.getSlope();
 
-        double normalizedSlope = slope / (M_PI / 2.0);
-        // Clamp to [0,1]
-        int gray = static_cast<int>(normalizedSlope * 255);
-        QColor grayColor(gray, gray, gray);
+        int color = 255 - 255/M_PI * slope;
 
-        painter.setBrush(QBrush(grayColor));
+        painter.setBrush(QColor(color,color,color));
         painter.setPen(Qt::transparent);
-        painter.drawPolygon(t_);
+        painter.drawPolygon(vertices);
     }
 
     //Set graphic attributes, point

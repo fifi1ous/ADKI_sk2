@@ -3,8 +3,6 @@
 #include "qpoint3df.h"
 #include "algorithms.h"
 
-
-
 MainForm::MainForm(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainForm)
@@ -69,6 +67,8 @@ void MainForm::on_actionParameters_triggered()
 void MainForm::on_actionAnalyze_slope_triggered()
 {
     // calculate slope
+
+    // Get Delaunay triangulation
     std::vector<Edge> dt = ui -> Canvas -> getDT();
 
     //Perform DT
@@ -93,10 +93,9 @@ void MainForm::on_actionAnalyze_slope_triggered()
     std::vector<Traingle> tr = a.analyzeSlope(dt);
 
     //Set results
-    ui -> Canvas -> setSL(tr);
+    ui -> Canvas -> setTR(tr);
 
     //Repaint
     repaint();
 }
-
 
