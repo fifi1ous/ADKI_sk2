@@ -14,6 +14,9 @@ class MainForm : public QMainWindow
 {
     Q_OBJECT
 
+private:
+    bool view_points, view_dt, view_contour_lines, view_aspect, view_slope;
+
 public:
     MainForm(QWidget *parent = nullptr);
     ~MainForm();
@@ -29,6 +32,16 @@ private slots:
     void on_actionAnalyze_slope_triggered();
 
     void on_actionClear_Results_triggered();
+
+    void on_actionPoints_changed();
+
+    void on_actionDT_changed();
+
+    void on_actionContour_Lines_changed();
+
+    void on_actionSlope_changed();
+
+    void on_actionExposition_changed();
 
 private:
     Ui::MainForm *ui;

@@ -22,7 +22,11 @@ public:
     QPoint3DF countourLinePoint(const QPoint3DF &p1,const QPoint3DF &p2, double z);
     std::vector<Edge> createContourLines(const std::vector<Edge> &dt, const double zmin, const double zmax, const double dz);
     double computeSlope(const QPoint3DF &p1, const QPoint3DF &p2,const QPoint3DF &p3);
-    std::vector<Traingle> analyzeSlope (const std::vector<Edge> &DT);
+    void analyzeSlope (const std::vector<Edge> &dt, std::vector<Traingle> &triangles);
+    double computeAspect(const QPoint3DF &p1, const QPoint3DF &p2,const QPoint3DF &p3);
+    void analyzeAspect(const std::vector<Edge> &dt, std::vector<Traingle> &triangles);
+
+    void edgesToTriangle(const std::vector<Edge> &dt, std::vector<Traingle> &triangles);
 };
 
 #endif // ALGORITHMS_H

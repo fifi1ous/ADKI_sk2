@@ -9,6 +9,19 @@ MainForm::MainForm(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // inicialize variables
+    view_points = true;
+    view_dt = true;
+    view_contour_lines = true;
+    view_aspect = true;
+    view_slope = true;
+
+    //check/uncheck menu items
+    ui -> actionPoints -> setChecked(view_points);
+    ui -> actionDT -> setChecked(view_dt);
+    ui -> actionContour_Lines -> setChecked(view_contour_lines);
+    ui -> actionExposition -> setChecked(view_aspect);
+    ui -> actionSlope -> setChecked(view_slope);
 }
 
 MainForm::~MainForm()
@@ -103,6 +116,56 @@ void MainForm::on_actionAnalyze_slope_triggered()
 void MainForm::on_actionClear_Results_triggered()
 {
     ui -> Canvas ->clearResults();
+
+    repaint();
+}
+
+
+void MainForm::on_actionPoints_changed()
+{
+    view_points = ui -> actionPoints -> isChecked();
+
+    ui -> Canvas ->setViewPoints(view_points);
+
+    repaint();
+}
+
+
+void MainForm::on_actionDT_changed()
+{
+    view_dt = ui -> actionDT -> isChecked();
+
+    ui -> Canvas ->setViewDT(view_dt);
+
+    repaint();
+}
+
+
+void MainForm::on_actionContour_Lines_changed()
+{
+    view_contour_lines = ui -> actionContour_Lines -> isChecked();
+
+    ui -> Canvas ->setViewContourLines(view_contour_lines);
+
+    repaint();
+}
+
+
+void MainForm::on_actionSlope_changed()
+{
+    view_slope = ui -> actionSlope -> isChecked();
+
+    ui -> Canvas ->setViewSlope(view_slope);
+
+    repaint();
+}
+
+
+void MainForm::on_actionExposition_changed()
+{
+    view_aspect = ui -> actionExposition -> isChecked();
+
+    ui -> Canvas ->setViewAspect(view_aspect);
 
     repaint();
 }

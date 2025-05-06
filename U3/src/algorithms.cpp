@@ -296,9 +296,11 @@ double Algorithms::computeSlope(const QPoint3DF &p1, const QPoint3DF &p2,const Q
     return acos(nz/n);
 }
 
-std::vector<Traingle> Algorithms::analyzeSlope(const std::vector<Edge> &dt){
+void Algorithms::analyzeSlope(const std::vector<Edge> &dt, std::vector<Traingle> &triangles)
+{
     //Analyze DTM slope
-    std::vector<Traingle> triangles;
+    if (triangles.size()==0)
+        edgesToTriangle(dt,triangles);
 
     //Browse DTM by triangles
     for (int i = 0; i<dt.size(); i+=3)
@@ -308,19 +310,83 @@ std::vector<Traingle> Algorithms::analyzeSlope(const std::vector<Edge> &dt){
         QPoint3DF p2 = dt[i+1].getStart();
         QPoint3DF p3 = dt[i+2].getStart();
 
-
-        // Compute slope
+        //Compute slope
         double slope = computeSlope(p1, p2, p3);
 
-        // Create new triangle
-        Traingle t(p1,p2,p3,0,slope);
-        triangles.push_back(t);
+        //Create new triangle
+        triangles[i].setSlope(slope);
+
+        //Add triangle to the list
     }
-    return triangles;
+}
+
+double Algorithms::computeAspect(const QPoint3DF &p1, const QPoint3DF &p2,const QPoint3DF &p3)
+{
+    // Compute slope of the triangle
+    double ux = p3.x() - p2.x();
+    double uy = p3.y() - p2.y();
+    double uz = p3.getZ() - p2.getZ();
+
+    double vx = p1.x() - p2.x();
+    double vy = p1.y() - p2.y();
+    double vz = p1.getZ() - p2.getZ();
+
+
+    //Normal vector
+    double nx = uy*vz - uz*vy;
+    double ny = -(ux*vz - uz*vx);
+    double nz = ux*vy - uy*vx;
+
+    //Norm
+    double n = sqrt(nx*nx + ny*ny + nz*nz);
+
+    return atan2(ny,nx);
 }
 
 
+void Algorithms::analyzeAspect(const std::vector<Edge> &dt, std::vector<Traingle> &triangles)
+{
+    //Analyze DTM Aspect
+    if (triangles.size()==0)
+        edgesToTriangle(dt,triangles);
 
+    //Browse DTM by triangles
+    for (int i = 0; i<dt.size(); i+=3)
+    {
+        //Get vertices
+        QPoint3DF p1 = dt[i].getStart();
+        QPoint3DF p2 = dt[i+1].getStart();
+        QPoint3DF p3 = dt[i+2].getStart();
+
+        //Compute slope
+        double aspect = computeAspect(p1, p2, p3);
+
+        //Create new triangle
+        triangles[i].setAspect(aspect);
+
+        //Add triangle to the list
+    }
+
+}
+
+void Algorithms:: edgesToTriangle(const std::vector<Edge> &dt, std::vector<Traingle> &triangles)
+{
+    //Browse DTM by triangles
+    for (int i = 0; i<dt.size(); i+=3)
+    {
+        //Get vertices
+        QPoint3DF p1 = dt[i].getStart();
+        QPoint3DF p2 = dt[i+1].getStart();
+        QPoint3DF p3 = dt[i+2].getStart();
+
+
+        //Create new triangle
+        Traingle t(p1, p2, p3);
+
+        //Add triangle to the list
+        triangles.push_back(t);
+    }
+}
 
 
 
