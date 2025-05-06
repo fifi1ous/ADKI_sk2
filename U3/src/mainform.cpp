@@ -99,3 +99,11 @@ void MainForm::on_actionAnalyze_slope_triggered()
     repaint();
 }
 
+
+void MainForm::on_actionClear_Results_triggered()
+{
+    ui -> Canvas ->clearResults();
+
+    repaint();
+}
+

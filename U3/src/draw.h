@@ -28,6 +28,8 @@ public:
     void setCL(const std::vector<Edge> &contour_lines_){contour_lines = contour_lines_;}
     void setTR(const std::vector<Traingle> &triangles_){triangles = triangles_;}
 
+    void clearResults(){dt.clear(); triangles.clear(),contour_lines.clear();}
+
 
 signals:
 };

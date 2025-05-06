@@ -28,6 +28,8 @@ private slots:
 
     void on_actionAnalyze_slope_triggered();
 
+    void on_actionClear_Results_triggered();
+
 private:
     Ui::MainForm *ui;
 };
