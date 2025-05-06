@@ -103,7 +103,8 @@ void MainForm::on_actionAnalyze_slope_triggered()
     }
 
 
-    std::vector<Traingle> tr = a.analyzeSlope(dt);
+    std::vector<Traingle> tr;
+    a.analyzeSlope(dt,tr);
 
     //Set results
     ui -> Canvas -> setTR(tr);
