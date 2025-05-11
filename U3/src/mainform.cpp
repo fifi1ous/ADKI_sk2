@@ -103,7 +103,7 @@ void MainForm::on_actionAnalyze_slope_triggered()
     }
 
 
-    std::vector<Traingle> tr;
+    std::vector<Triangle> tr;
     a.analyzeSlope(dt,tr);
 
     //Set results

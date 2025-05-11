@@ -18,7 +18,7 @@ SOURCES += \
     settings2.cpp \
     sortpointsbyx.cpp \
     sortpointsbyy.cpp \
-    traingle.cpp
+    triangle.cpp
 
 HEADERS += \
     algorithms.h \
@@ -29,7 +29,7 @@ HEADERS += \
     settings2.h \
     sortpointsbyx.h \
     sortpointsbyy.h \
-    traingle.h
+    triangle.h
 
 FORMS += \
     mainform.ui \

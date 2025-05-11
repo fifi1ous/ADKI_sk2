@@ -296,7 +296,7 @@ double Algorithms::computeSlope(const QPoint3DF &p1, const QPoint3DF &p2,const Q
     return acos(nz/n);
 }
 
-void Algorithms::analyzeSlope(const std::vector<Edge> &dt, std::vector<Traingle> &triangles)
+void Algorithms::analyzeSlope(const std::vector<Edge> &dt, std::vector<Triangle> &triangles)
 {
     //Analyze DTM slope
     if (triangles.size()==0)
@@ -344,7 +344,7 @@ double Algorithms::computeAspect(const QPoint3DF &p1, const QPoint3DF &p2,const 
 }
 
 
-void Algorithms::analyzeAspect(const std::vector<Edge> &dt, std::vector<Traingle> &triangles)
+void Algorithms::analyzeAspect(const std::vector<Edge> &dt, std::vector<Triangle> &triangles)
 {
     //Analyze DTM Aspect
     if (triangles.size()==0)
@@ -369,7 +369,7 @@ void Algorithms::analyzeAspect(const std::vector<Edge> &dt, std::vector<Traingle
 
 }
 
-void Algorithms:: edgesToTriangle(const std::vector<Edge> &dt, std::vector<Traingle> &triangles)
+void Algorithms:: edgesToTriangle(const std::vector<Edge> &dt, std::vector<Triangle> &triangles)
 {
     //Browse DTM by triangles
     for (int i = 0; i<dt.size(); i+=3)
@@ -381,7 +381,7 @@ void Algorithms:: edgesToTriangle(const std::vector<Edge> &dt, std::vector<Train
 
 
         //Create new triangle
-        Traingle t(p1, p2, p3);
+        Triangle t(p1, p2, p3);
 
         //Add triangle to the list
         triangles.push_back(t);

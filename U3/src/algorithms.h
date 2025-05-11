@@ -5,7 +5,7 @@
 #include "qpoint3df.h"
 #include "edge.h"
 #include "sortpointsbyx.h"
-#include "traingle.h"
+#include "triangle.h"
 
 
 class Algorithms
@@ -22,11 +22,11 @@ public:
     QPoint3DF countourLinePoint(const QPoint3DF &p1,const QPoint3DF &p2, double z);
     std::vector<Edge> createContourLines(const std::vector<Edge> &dt, const double zmin, const double zmax, const double dz);
     double computeSlope(const QPoint3DF &p1, const QPoint3DF &p2,const QPoint3DF &p3);
-    void analyzeSlope (const std::vector<Edge> &dt, std::vector<Traingle> &triangles);
+    void analyzeSlope (const std::vector<Edge> &dt, std::vector<Triangle> &triangles);
     double computeAspect(const QPoint3DF &p1, const QPoint3DF &p2,const QPoint3DF &p3);
-    void analyzeAspect(const std::vector<Edge> &dt, std::vector<Traingle> &triangles);
+    void analyzeAspect(const std::vector<Edge> &dt, std::vector<Triangle> &triangles);
 
-    void edgesToTriangle(const std::vector<Edge> &dt, std::vector<Traingle> &triangles);
+    void edgesToTriangle(const std::vector<Edge> &dt, std::vector<Triangle> &triangles);
 };
 
 #endif // ALGORITHMS_H
