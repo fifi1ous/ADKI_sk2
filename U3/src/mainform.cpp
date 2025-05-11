@@ -59,7 +59,8 @@ void MainForm::on_actionCreate_Contour_lines_triggered()
     //Perform DT
     Algorithms a;
 
-    if (dt.empty())
+    bool click = ui -> Canvas ->getClicked();
+    if (dt.empty() || click)
     {
         //Get data
         std::vector<QPoint3DF> points = ui -> Canvas -> getPoints();
@@ -107,7 +108,8 @@ void MainForm::on_actionAnalyze_slope_triggered()
     //Perform DT
     Algorithms a;
 
-    if (dt.empty())
+    bool click = ui -> Canvas ->getClicked();
+    if (dt.empty() || click)
     {
         //Get data
         std::vector<QPoint3DF> points = ui -> Canvas -> getPoints();

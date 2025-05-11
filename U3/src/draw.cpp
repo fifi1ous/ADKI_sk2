@@ -1,7 +1,6 @@
 #include "draw.h"
 #include <QtGui>
 #include <time.h>
-#include "QDebug"
 
 Draw::Draw(QWidget *parent)
     : QWidget{parent}
@@ -69,8 +68,6 @@ void Draw::paintEvent(QPaintEvent *event)
             QPolygonF vertices {p1_,p2_,p3_};
 
             double slope = t.getSlope();
-
-            qDebug() << slope;
 
             int color = 255 - 255/M_PI * slope;
 
