@@ -12,6 +12,7 @@ class Draw : public QWidget
 
 private:
     bool view_points, view_dt, view_contour_lines, view_aspect, view_slope;
+    static bool clicked;
 
     std::vector<QPoint3DF> points;
     std::vector<Edge> dt;
@@ -24,16 +25,18 @@ public:
     void mousePressEvent(QMouseEvent *e);
     void paintEvent(QPaintEvent *event);
 
-    std::vector<QPoint3DF> getPoints()const {return points;}
-    std::vector<Edge> getDT()const {return dt;}
-    void setDT(const std::vector<Edge> &dt_){dt = dt_;}
-    void setCL(const std::vector<Edge> &contour_lines_){contour_lines = contour_lines_;}
-    void setTR(const std::vector<Triangle> &triangles_){triangles = triangles_;}
-    void setViewPoints (const bool &view_points_){view_points = view_points_;}
-    void setViewDT (const bool &view_dt_){view_dt = view_dt_;}
-    void setViewContourLines (const bool &view_contour_lines_){view_contour_lines = view_contour_lines_;}
-    void setViewSlope(const bool &view_slope_){view_slope=view_slope_;}
-    void setViewAspect(const bool &view_aspect_){view_aspect=view_aspect_;}
+    inline std::vector<QPoint3DF> getPoints()const {return points;}
+    inline std::vector<Edge> getDT()const {return dt;}
+    inline void setDT(const std::vector<Edge> &dt_){dt = dt_;}
+    inline void setCL(const std::vector<Edge> &contour_lines_){contour_lines = contour_lines_;}
+    inline void setTR(const std::vector<Triangle> &triangles_){triangles = triangles_;}
+    inline void setViewPoints (const bool &view_points_){view_points = view_points_;}
+    inline void setViewDT (const bool &view_dt_){view_dt = view_dt_;}
+    inline void setViewContourLines (const bool &view_contour_lines_){view_contour_lines = view_contour_lines_;}
+    inline void setViewSlope(const bool &view_slope_){view_slope=view_slope_;}
+    inline void setViewAspect(const bool &view_aspect_){view_aspect=view_aspect_;}
+    inline void setClicked(const bool &clicked_){clicked=clicked_;}
+    inline static bool getClicked(){return clicked;}
 
     inline void clearResults(){dt.clear(); triangles.clear(),contour_lines.clear();}
     inline void clearAll(){points.clear(); dt.clear(); triangles.clear(),contour_lines.clear();}

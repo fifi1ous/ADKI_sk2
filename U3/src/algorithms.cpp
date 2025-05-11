@@ -1,5 +1,6 @@
 #include "algorithms.h"
 #include <cmath>
+#include "QDebug"
 
 Algorithms::Algorithms() {}
 
@@ -298,8 +299,10 @@ double Algorithms::computeSlope(const QPoint3DF &p1, const QPoint3DF &p2,const Q
 
 void Algorithms::analyzeSlope(const std::vector<Edge> &dt, std::vector<Triangle> &triangles)
 {
+    qDebug() << Draw::getClicked();
+
     //Analyze DTM slope
-    if (triangles.size()==0)
+    if (triangles.size()==0 || Draw::getClicked() )
         edgesToTriangle(dt,triangles);
 
     //Browse DTM by triangles
@@ -347,7 +350,7 @@ double Algorithms::computeAspect(const QPoint3DF &p1, const QPoint3DF &p2,const 
 void Algorithms::analyzeAspect(const std::vector<Edge> &dt, std::vector<Triangle> &triangles)
 {
     //Analyze DTM Aspect
-    if (triangles.size()==0)
+    if (triangles.size()==0 || Draw::getClicked())
         edgesToTriangle(dt,triangles);
 
     //Browse DTM by triangles

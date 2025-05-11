@@ -45,6 +45,9 @@ void MainForm::on_actionCreate_DT_triggered()
 
     //Repaint
     repaint();
+
+    // change clicked
+    ui ->Canvas -> setClicked(false);
 }
 
 
@@ -53,17 +56,34 @@ void MainForm::on_actionCreate_Contour_lines_triggered()
     //Generate contour lines
     std::vector<Edge> dt = ui -> Canvas -> getDT();
 
+    //Perform DT
+    Algorithms a;
+
+    if (dt.empty())
+    {
+        //Get data
+        std::vector<QPoint3DF> points = ui -> Canvas -> getPoints();
+
+        //Perform DT
+        dt = a.DT(points);
+
+        //Set results
+        ui -> Canvas -> setDT(dt);
+    }
+
     // Get parameters of contoru lines
     double z_min = settings.getZMin();
     double z_max = settings.getZMax();
     double dz = settings.getDz();
 
     //Generate contour lines
-    Algorithms a;
     std::vector<Edge> cl = a.createContourLines(dt,z_min, z_max, dz);
 
     //Set results
     ui -> Canvas -> setCL(cl);
+
+    // Change clicked
+    ui ->Canvas -> setClicked(false);
 
     //Repaint
     repaint();
@@ -97,9 +117,6 @@ void MainForm::on_actionAnalyze_slope_triggered()
 
         //Set results
         ui -> Canvas -> setDT(dt);
-
-        //Repaint
-        repaint();
     }
 
 
@@ -111,6 +128,9 @@ void MainForm::on_actionAnalyze_slope_triggered()
 
     //Repaint
     repaint();
+
+    // Change clicked
+    ui ->Canvas -> setClicked(false);
 }
 
 

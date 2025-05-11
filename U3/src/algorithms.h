@@ -6,6 +6,7 @@
 #include "edge.h"
 #include "sortpointsbyx.h"
 #include "triangle.h"
+#include "draw.h"
 
 
 class Algorithms

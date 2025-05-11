@@ -17,6 +17,8 @@ Draw::Draw(QWidget *parent)
     srand(time(NULL));
 }
 
+bool Draw::clicked = true;
+
 
 void Draw::mousePressEvent(QMouseEvent *e)
 {
@@ -35,6 +37,9 @@ void Draw::mousePressEvent(QMouseEvent *e)
 
     //Repaint screen
     repaint();
+
+    // Change clicked
+    clicked = true;
 }
 
 
