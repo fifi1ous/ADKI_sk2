@@ -35,7 +35,8 @@ public:
     void setViewSlope(const bool &view_slope_){view_slope=view_slope_;}
     void setViewAspect(const bool &view_aspect_){view_aspect=view_aspect_;}
 
-    void clearResults(){dt.clear(); triangles.clear(),contour_lines.clear();}
+    inline void clearResults(){dt.clear(); triangles.clear(),contour_lines.clear();}
+    inline void clearAll(){points.clear(); dt.clear(); triangles.clear(),contour_lines.clear();}
 
 
 

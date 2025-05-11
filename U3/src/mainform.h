@@ -43,6 +43,8 @@ private slots:
 
     void on_actionExposition_changed();
 
+    void on_actionClear_All_triggered();
+
 private:
     Ui::MainForm *ui;
 };

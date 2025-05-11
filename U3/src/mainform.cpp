@@ -171,3 +171,11 @@ void MainForm::on_actionExposition_changed()
     repaint();
 }
 
+
+void MainForm::on_actionClear_All_triggered()
+{
+    ui -> Canvas ->clearAll();
+
+    repaint();
+}
+
