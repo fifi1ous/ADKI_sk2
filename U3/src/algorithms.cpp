@@ -306,12 +306,12 @@ void Algorithms::analyzeSlope(const std::vector<Edge> &dt, std::vector<Triangle>
         edgesToTriangle(dt,triangles);
 
     //Browse DTM by triangles
-    for (int i = 0; i<dt.size(); i+=3)
+    for (int i = 0; i<triangles.size(); i++)
     {
         //Get vertices
-        QPoint3DF p1 = dt[i].getStart();
-        QPoint3DF p2 = dt[i+1].getStart();
-        QPoint3DF p3 = dt[i+2].getStart();
+        QPoint3DF p1 = triangles[i].getP1();
+        QPoint3DF p2 = triangles[i].getP2();
+        QPoint3DF p3 = triangles[i].getP3();
 
         //Compute slope
         double slope = computeSlope(p1, p2, p3);
@@ -354,12 +354,12 @@ void Algorithms::analyzeAspect(const std::vector<Edge> &dt, std::vector<Triangle
         edgesToTriangle(dt,triangles);
 
     //Browse DTM by triangles
-    for (int i = 0; i<dt.size(); i+=3)
+    for (int i = 0; i<triangles.size(); i++)
     {
         //Get vertices
-        QPoint3DF p1 = dt[i].getStart();
-        QPoint3DF p2 = dt[i+1].getStart();
-        QPoint3DF p3 = dt[i+2].getStart();
+        QPoint3DF p1 = triangles[i].getP1();
+        QPoint3DF p2 = triangles[i].getP2();
+        QPoint3DF p3 = triangles[i].getP3();
 
         //Compute slope
         double aspect = computeAspect(p1, p2, p3);
@@ -369,7 +369,6 @@ void Algorithms::analyzeAspect(const std::vector<Edge> &dt, std::vector<Triangle
 
         //Add triangle to the list
     }
-
 }
 
 void Algorithms:: edgesToTriangle(const std::vector<Edge> &dt, std::vector<Triangle> &triangles)
