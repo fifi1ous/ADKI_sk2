@@ -1,0 +1,45 @@
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Metoda \texttt{Wall Average}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} polygon $P$
+        \STATE \textbf{Výstup:} obdélník představující generalizaci polygonu
+        
+        \STATE $n \gets \text{size}(P)$
+        \STATE $\sigma \gets 0$
+        \STATE $S_i\_sum \gets 0$
+        
+        \STATE $dx \gets x_1 - x_0$
+        \STATE $dy \gets y_1 - y_0$
+        \STATE $\sigma_{12} \gets \arctan2(dy, dx)$
+        
+        \FOR{$i \gets 0$ \TO $n-1$}
+            \STATE $dx1 \gets x_{i-1} - x_i$
+            \STATE $dy1 \gets y_{i-1} - y_i$
+            \STATE $\sigma_i \gets \arctan2(dy1, dx1)$
+            
+            \STATE $dx2 \gets x_{i+1} - x_i$
+            \STATE $dy2 \gets y_{i+1} - y_i$
+            \STATE $\sigma_{i+1} \gets \arctan2(dy2, dx2)$
+            \STATE $S_i \gets \sqrt{dx2^2 + dy2^2}$
+            
+            \STATE $\omega_i \gets |\sigma_i - \sigma_{i+1}|$
+            \STATE $k_i \gets \frac{2 \omega_i}{\pi}$
+            \STATE $r_i \gets (k_i - \lfloor k_i \rfloor) \frac{\pi}{2}$
+            
+            \IF{$\omega_i \mod \pi/2 > \pi/4$}
+                \STATE $r_i \gets \frac{\pi}{2} - r_i$
+            \ENDIF
+            
+            \STATE $\sigma \gets \sigma + r_i S_i$
+            \STATE $S_i\_sum \gets S_i\_sum + S_i$
+        \ENDFOR
+        
+        \STATE $\sigma \gets \sigma_{12} + \frac{\sigma}{S_i\_sum}$
+        \STATE $P_{\text{rot}} \gets \text{rotate}(P, -\sigma)$
+        \STATE $\text{mmbox}, \text{area} \gets \text{minMaxBox}(P_{\text{rot}})$
+        
+        \STATE $\text{mmbox\_min\_res} \gets \text{resize}(P, \text{mmbox})$
+        \STATE \textbf{return} \text{rotate}($\text{mmbox\_min\_res}, \sigma$)
+    \end{algorithmic}
+\end{algorithm}

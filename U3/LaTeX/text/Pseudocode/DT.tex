@@ -1,0 +1,180 @@
+\begin{algorithm}
+    \setstretch{0.8}
+    \caption{Metoda \texttt{DT} -- Delaunayova triangulace (inkrementálně)}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} množina bodů $P$
+        \STATE \textbf{Výstup:} množina hran Delaunayovy triangulace $\text{DT}$
+
+        \STATE $\text{DT} \gets \emptyset$ \COMMENT{výsledná triangulace}
+        \STATE $\text{AEL} \gets \emptyset$ \COMMENT{aktivní hrany (Active Edge List)}
+
+        \STATE $p_1 \gets \text{nejlevější bod z } P$ \COMMENT{pivot podle $x$-ové souřadnice}
+        \STATE $p_2 \gets \text{nejbližší bod k } p_1 \text{ z } P$
+
+        \STATE $e_1 \gets (p_1, p_2)$
+        \STATE $e_2 \gets (p_2, p_1)$
+
+        \STATE přidej $e_1$, $e_2$ do $\text{AEL}$
+
+        \WHILE{$\text{AEL} \neq \emptyset$}
+            \STATE $e \gets$ poslední prvek z $\text{AEL}$
+            \STATE odstraň $e$ z $\text{AEL}$
+
+            \STATE $e_s \gets$ změň orientaci hrany $e$
+
+            \STATE $p_d \gets \text{findDelaunayPoint}(e_s.\text{start}, e_s.\text{end}, P)$
+
+            \IF{$p_d \neq \texttt{null}$}
+                \STATE $e_2s \gets (e_s.\text{end}, p_d)$
+                \STATE $e_3s \gets (p_d, e_s.\text{start})$
+
+                \STATE přidej $e_s$, $e_2s$, $e_3s$ do $\text{DT}$
+
+                \STATE \text{updateAEL}$(e_2s, \text{AEL})$
+                \STATE \text{updateAEL}$(e_3s, \text{AEL})$
+            \ENDIF
+        \ENDWHILE
+
+        \STATE \textbf{return} $\text{DT}$
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+    \setstretch{0.8}
+    \caption{Metoda \texttt{getPointAndLinePosition}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} bod $p$, počáteční bod $p_1$, koncový bod $p_2$
+        \STATE \textbf{Výstup:} pozice bodu $p$ vůči orientované přímce $(p_1, p_2)$
+        \STATE \textbf{Návratové hodnoty:} 
+        \begin{itemize}
+            \item $1$ pokud je bod $p$ vlevo od přímky
+            \item $0$ pokud je bod $p$ vpravo od přímky
+            \item $-1$ pokud leží na přímce
+        \end{itemize}
+
+        \STATE $\varepsilon \gets 10^{-6}$
+
+        \STATE $u_x \gets p_2.x - p_1.x$
+        \STATE $u_y \gets p_2.y - p_1.y$
+
+        \STATE $v_x \gets p.x - p_1.x$
+        \STATE $v_y \gets p.y - p_1.y$
+
+        \STATE $t \gets u_x \cdot v_y - u_y \cdot v_x$ \COMMENT{determinant pro orientaci}
+
+        \IF{$t > \varepsilon$}
+            \STATE \textbf{return} $1$
+        \ELSIF{$t < -\varepsilon$}
+            \STATE \textbf{return} $0$
+        \ELSE
+            \STATE \textbf{return} $-1$
+        \ENDIF
+    \end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}
+    \setstretch{0.8}
+    \caption{Metoda \texttt{get2LinesAngle}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} body $p_1$, $p_2$ definující první přímku a $p_3$, $p_4$ definující druhou přímku
+        \STATE \textbf{Výstup:} úhel mezi přímkami v radiánech
+
+        \STATE $u_x \gets p_2.x - p_1.x$
+        \STATE $u_y \gets p_2.y - p_1.y$
+        \STATE $v_x \gets p_4.x - p_3.x$
+        \STATE $v_y \gets p_4.y - p_3.y$
+
+        \STATE $\text{skalární součin } \gets u_x \cdot v_x + u_y \cdot v_y$
+
+        \STATE $n_u \gets \sqrt{u_x^2 + u_y^2}$ \COMMENT{norma vektoru $u$}
+        \STATE $n_v \gets \sqrt{v_x^2 + v_y^2}$ \COMMENT{norma vektoru $v$}
+
+        \STATE \textbf{return} $\arccos\left(\dfrac{\text{skalární součin}}{n_u \cdot n_v}\right)$
+    \end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}
+    \setstretch{0.8}
+    \caption{Metoda \texttt{findDelaunayPoint}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} body $p_1$, $p_2$, množina bodů $P$
+        \STATE \textbf{Výstup:} index bodu $p_d \in P$, který tvoří největší úhel $\angle p_1 p_d p_2$ a leží vlevo od přímky $(p_1, p_2)$
+
+        \STATE $i_{\max} \gets -1$ \COMMENT{žádný bod zatím nebyl nalezen}
+        \STATE $\omega_{\max} \gets 0$
+
+        \FOR{$i \gets 0$ \TO $\text{size}(P) - 1$}
+            \IF{\texttt{getPointAndLinePosition}$(P[i], p_1, p_2) = 1$}
+                \STATE $\omega \gets$ \texttt{get2LinesAngle}$(P[i], p_1, P[i], p_2)$
+                \IF{$\omega > \omega_{\max}$}
+                    \STATE $\omega_{\max} \gets \omega$
+                    \STATE $i_{\max} \gets i$
+                \ENDIF
+            \ENDIF
+        \ENDFOR
+
+        \STATE \textbf{return} $i_{\max}$
+    \end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}
+    \setstretch{0.8}
+    \caption{Metoda \texttt{get2DDistance}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} body $p_1$, $p_2$
+        \STATE \textbf{Výstup:} 2D eukleidovská vzdálenost mezi body $p_1$ a $p_2$
+
+        \STATE $dx \gets p_1.x - p_2.x$
+        \STATE $dy \gets p_1.y - p_2.y$
+
+        \STATE \textbf{return} $\sqrt{dx^2 + dy^2}$
+    \end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}
+    \setstretch{0.8}
+    \caption{Metoda \texttt{findNearestPoint}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} bod $p$, množina bodů $P$
+        \STATE \textbf{Výstup:} index bodu $p_{\min} \in P$, který je nejblíže bodu $p$
+
+        \STATE $i_{\min} \gets -1$
+        \STATE $\varepsilon \gets 10^{-16}$ \COMMENT{tolerance pro porovnání}
+        \STATE $d_{\min} \gets 10^{16}$ \COMMENT{počáteční nekonečná vzdálenost}
+
+        \FOR{$i \gets 0$ \TO $\text{size}(P) - 1$}
+            \IF{$p \neq P[i]$}
+                \STATE $d \gets$ \texttt{get2DDistance}$(p, P[i])$
+                \IF{$d < d_{\min}$}
+                    \STATE $d_{\min} \gets d$
+                    \STATE $i_{\min} \gets i$
+                \ENDIF
+            \ENDIF
+        \ENDFOR
+
+        \STATE \textbf{return} $i_{\min}$
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+    \setstretch{0.8}
+    \caption{Metoda \texttt{updateAEL}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} hrana $e$, seznam aktivních hran \texttt{AEL}
+        \STATE \textbf{Výstup:} aktualizovaný seznam \texttt{AEL}
+
+        \STATE $e_s \gets$ \texttt{changeOrientation}$(e)$ \COMMENT{změní orientaci hrany}
+
+        \STATE $i_e \gets$ index hrany $e_s$ v \texttt{AEL} \COMMENT{vyhledání opačné hrany}
+
+        \IF{$e_s$ \textbf{není nalezena} v \texttt{AEL}}
+            \STATE přidej $e$ do \texttt{AEL} \COMMENT{hrana je nová, trojúhelník vzniká poprvé}
+        \ELSE
+            \STATE odstraň $e_s$ z \texttt{AEL} \COMMENT{opačná hrana už existuje, trojúhelník je kompletní}
+        \ENDIF
+    \end{algorithmic}
+\end{algorithm}

@@ -1,0 +1,61 @@
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Metoda \texttt{edgesToTriangle}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} seznam hran triangulace \texttt{dt}
+        \STATE \textbf{Výstup:} seznam trojúhelníků \texttt{triangles}
+
+        \FOR{$i \gets 0$ \TO $\text{size}(dt) - 1$ po třech}
+            \STATE $p_1 \gets \text{start}(dt[i])$
+            \STATE $p_2 \gets \text{start}(dt[i+1])$
+            \STATE $p_3 \gets \text{start}(dt[i+2])$
+
+            \STATE $t \gets \text{nový trojúhelník}(p_1, p_2, p_3)$
+
+            \STATE přidej $t$ do \texttt{triangles}
+        \ENDFOR
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Metoda \texttt{analyzeSlope}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} triangulace \texttt{dt}, seznam trojúhelníků \texttt{triangles}, boolean \texttt{click}
+        \STATE \textbf{Výstup:} aktualizovaný seznam \texttt{triangles} s hodnotami sklonu
+
+        \IF{$\text{size}(triangles) = 0$ \OR click}
+            \STATE \text{edgesToTriangle}(dt, triangles)
+        \ENDIF
+
+        \FOR{$i \gets 0$ \TO $\text{size}(triangles) - 1$}
+            \STATE $p_1 \gets \text{triangles}[i].\text{getP1()}$
+            \STATE $p_2 \gets \text{triangles}[i].\text{getP2()}$
+            \STATE $p_3 \gets \text{triangles}[i].\text{getP3()}$
+
+            \STATE $s \gets \text{computeSlope}(p_1, p_2, p_3)$
+
+            \STATE \text{triangles}[i].\text{setSlope}$(s)$
+        \ENDFOR
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Metoda \texttt{computeSlope}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} body $p_1$, $p_2$, $p_3$
+        \STATE \textbf{Výstup:} sklon trojúhelníku v radiánech
+
+        \STATE $u \gets \vec{p_2p_3} = (u_x, u_y, u_z) = (p_3.x - p_2.x,\ p_3.y - p_2.y,\ p_3.z - p_2.z)$
+        \STATE $v \gets \vec{p_2p_1} = (v_x, v_y, v_z) = (p_1.x - p_2.x,\ p_1.y - p_2.y,\ p_1.z - p_2.z)$
+
+        \STATE $n_x \gets u_y \cdot v_z - u_z \cdot v_y$
+        \STATE $n_y \gets -(u_x \cdot v_z - u_z \cdot v_x)$
+        \STATE $n_z \gets u_x \cdot v_y - u_y \cdot v_x$
+
+        \STATE $n \gets \sqrt{n_x^2 + n_y^2 + n_z^2}$ \COMMENT{velikost normálového vektoru}
+
+        \STATE \textbf{return} $\arccos \left(\dfrac{n_z}{n}\right)$
+    \end{algorithmic}
+\end{algorithm}

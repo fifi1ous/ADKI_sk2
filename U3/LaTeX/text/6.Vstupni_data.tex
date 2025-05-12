@@ -1,0 +1,28 @@
+\section{Vstupní data}
+
+Vstupní data pro tvorbu digitálního modelu terénu mohou být do aplikace zadána několika způsoby, což umožňuje flexibilní testování i realistické modelování různých terénních situací:
+
+\begin{itemize}
+    \item \textbf{Ručně uživatelem} – body lze vkládat interaktivně kliknutím do grafického rozhraní. Souřadnice $x$ a $y$ odpovídají poloze kurzoru, výška $z$ je generována náhodně.
+
+    \item \textbf{Generování syntetických dat} – aplikace umožňuje automaticky vygenerovat reprezentativní morfologické tvary terénu:
+    \begin{itemize}
+        \item \emph{Kupa}
+        \item \emph{Údolí}
+        \item \emph{Hřbet}
+        \item \emph{Spočinek}
+        \item \emph{Sedlo}
+    \end{itemize}
+
+    \item \textbf{Načtení ze souboru} – aplikace podporuje import bodových dat ze souborů ve formátu \texttt{.txt} nebo \texttt{.xyz}. Každý řádek obsahuje trojici hodnot: $x$, $y$, $z$, přičemž hodnoty mohou být odděleny mezerou nebo čárkou. Jako oddělovač desetinných míst se používá tečka. Ukázka vstupního souboru:
+
+    \begin{verbatim}
+120.0,280.0,320.0
+160.0,670.0,370.0
+260.0,310.0,410.0
+...
+    \end{verbatim}
+
+Vzorková data použitá v této úloze pocházejí z digitálního modelu reliéfu České republiky – DMR 5G. Zdroj: \textbf{Český úřad zeměměřický a katastrální (ČÚZK)} – dostupné online na: Zdroj dat: \href{https://geoportal.cuzk.cz/}{Český úřad zeměměřický a katastrální (ČÚZK)}~\cite{cuzk}.
+
+\end{itemize}

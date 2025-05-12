@@ -1,0 +1,22 @@
+\section{Závěr}
+V rámci této úlohy byla vytvořena aplikace, která umožňuje analýzu terénu. Aplikace dokáže analyzovat data ručně zadaná do aplikace, automaticky generovaná aplikací, nebo načítáním dat z formátu \texttt{.txt} nebo \texttt{.xyz}.Výsledky jsou reprezentovány ve 2D pomocí TIN, vrstevnic, sklonu a orientace terénu. Body terénu mohou být zobrazeny ve 3D prohlížeči.
+Vzhledem k časovému vytížení v rámci jiných předmětů, zejména projektu z kartografie, jsme nestihli zpracovat všechny bonusové úlohy, které bychom si jinak rádi splnili.
+
+\subsection{Další Možné Neřešené Problémy a Náměty na Vylepšení}
+
+\begin{itemize} 
+    \item \textbf{Podpora dalších formátů pro vstup:} V současné verzi aplikace je možné načítat bodová data pouze z formátů TXT a XYZ, přičemž jako oddělovač slouží čárka nebo mezera. Do budoucna by bylo vhodné rozšířit možnosti importu o podporu volitelného nastavení formátu (včetně výběru oddělovače, hlaviček apod.) a přidat podporu běžně používaných formátů pro práci s mračny bodů, jako jsou LAS a LAZ.
+    
+    \item \textbf{Možnost exportu dat:} Aplikace aktuálně neumožňuje export výsledků. Do budoucna by bylo vhodné implementovat podporu pro ukládání výsledků do běžně používaných GIS formátů, jako je SHP nebo GeoPackage, a zároveň umožnit export vizualizací do rastrových (např. TIFF) nebo vektorových (např. SVG) formátů.
+    
+    \item \textbf{Dávkové zpracování:} Dalším vylepšením by mohlo být aplikaci kromě zpracování v GUI umožnit i dávkové zpracování mračen bodů v příkazové řádce, které by mohlo vypadat například takto:\\ \texttt{DMT.exe -TIN mracno.txt > tin.shp}\\ \texttt{DMT.exe -contourLines mracno.xyz > vrstevnice.shp}.
+    
+    \item \textbf{Zoomování a posouvání mapy:} Aplikace v současnosti nepodporuje přibližování a pohyb v mapovém okně.
+
+    \item \textbf{Povinné hrany} Možnost nastavení povinných hran.
+
+    \item \textbf{Nastavení:} Přidat další možnosti nastavená, kde se budou moc nastavit vlastní parametry barevného zobrazení sklonu a orientace terénu.
+
+    \item \textbf{Vizuál aplikace:} Zlepšit vizuální stránku aplikace.
+
+\end{itemize}

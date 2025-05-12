@@ -1,0 +1,155 @@
+\section{Popis algoritmů}
+
+\subsection{2D Delaunay triangulace}
+Delaunayho triangulace je algoritmus používaný k vytvoření trojúhelníkové sítě (triangulace) z množiny bodů v rovině tak, aby žádný bod neležel uvnitř kružnice opsané žádnému z trojúhelníků. Výsledná triangulace má vlastnost, že maximalizuje minimální úhel všech trojúhelníků, čímž se minimalizuje výskyt trojúhelníků s ostrými úhly.\\
+
+\hspace{-1.15cm}
+Nejprve je nalezen bod $p_1$ který má minimální $x$ souřadnici: 
+\begin{equation}
+    p_1 = \text{min}(x_i)
+\end{equation}
+Následně je vybrán bod $p_2$ který se nachází nejblíže bodu $p_2$:
+\begin{equation}
+    p_2 = \text{min}(s_{p_1,p_2})
+\end{equation}
+Následně byla vytvořena hrana $e_1$, která je tvořena body $p_1,p_2$ a hrana $e_2$ kterou tvoří stejné body, ale s opačnou orientací tudíž $p_2,p_1$
+Hrany jsou přidány do pomocné konstrukce $AEL$
+\begin{equation}
+    AEL.\text{push\_back}(e_1,e_2)
+\end{equation}
+Prochází se proměnou $AEL$ dokud není prázdná. Vezme se první hrana a změní se její orientace. Prochází se pouze body, které leží vpravo od hrany. Dále se najde bod, který s počátečním a koncovým bodem hrany svírá největší úhel. Takovému bodu se říká Delauayovský bod:
+\begin{equation}
+    p_{d} = \text{max} \angle( p_{d},p_{\text{end}},p_d,p_{\text{start}})
+\end{equation}
+Pokud se takový bod najde, všechny hrany jsou přidány do $DT$:
+\begin{equation}
+    dt.\text{push\_back}(e_{1},e_{p_1,d},e_{p_2,d})
+\end{equation}
+Nakonec je zkontrolováno zda se hrana s opačnou orientací nenachází v $AEL$. Pokud ano hrana s opačnou orientací je odstraněna z $AEL$, pokud ne hrana je přidána do $AEL$ 
+
+\input{text/Pseudocode/DT}
+
+\newpage
+\subsection{Tvorba vrstevnic}
+Je algoritmus, který za použití lineární interpolace vytváří vrstevnice z Delaunayova triangulace.\\
+
+\hspace{-1.15cm}
+\begin{equation}
+    x_a = \frac{x_3-x_1}{z_3-z_1}(z-z_1)+x_1;~
+    y_a = \frac{y_3-y_1}{z_3-z_1}(z-z_1)+y_1
+\end{equation}
+Vrstevnice jsou reprezentovány pomocí vektoru hran. Při výpočtu se pracuje na intervalu od $z_{min}$ do $z_{max}$ s krokem $\delta_z$. V prvním kroku se vybere první trojúhelník vytvořený Delaunayovou triangulací:
+\begin{equation}
+    p_1 = dt{i};~
+    p_2 = dt_{i+1};~
+    p_3 = dt_{i+3}
+\end{equation}
+Od aktuální hodnoty z jsou odečteny hodnoty jednotlivých bodů:
+\begin{equation}
+    \delta_{z_1} = z-p_{1z};~
+    \delta_{z_2} = z-p_{2z};~
+    \delta_{z_3} = z-p_{3z}
+\end{equation}
+Před výpočtem souřadnic $x$ a $y$ je nutné ověřit, jak je umístěn trojúhelník v prostoru vůči rovině tvořenou souřadnicí z. Pokud $\delta_{z_1}$, $\delta_{z_2}$ a $\delta_{z_3}$ jsou všechny rovny nule trojúhelník je koplanární proto ho není potřeba řešit. Pokud dvojice rozdílů je rovna 0, hrana tvoří vrstevnici. V ostatních případech násobky rozdílů:
+\begin{equation}
+    \delta_{z_1}\delta_{z_2};~
+    \delta_{z_1}\delta_{z_3};~
+    \delta_{z_2}\delta_{z_3}
+\end{equation}
+Pomocí lineární interpolace se vypočítají souřadnice průsečíku pouze v případě, že násobek je $< 0$. V ostatních případech výpočet nemá smysl.
+\input{text/Pseudocode/CL}
+
+\newpage
+
+\subsection{Analýza sklonu}
+Pro jednotlivé trojúhelníky je vypočítán sklon daného trojúhelníku.\\
+
+\hspace{-1.15cm}
+Pokud je vektor trojúhelníků prázdný, nebo byly přidány nové body, je přepočítán vektor trojúhelníků. Z třech bodů trojúhelníku  $p_1 = (x_1, y_1, z_1)$, $p_2 = (x_2, y_2, z_2)$ a $p_3 = (x_3, y_3, z_3)$.
+
+\begin{equation}
+\vec{u} = (x_3 - x_2,\, y_3 - y_2,\, z_3 - z_2)
+\end{equation}
+
+\begin{equation}
+\vec{v} = (x_1 - x_2,\, y_1 - y_2,\, z_1 - z_2)
+\end{equation}
+
+Normálový vektor $\vec{n}$ je určen jako vektorový součin $\vec{u} \times \vec{v}$:
+
+\begin{equation}
+n_x = (y_3 - y_2)(z_1 - z_2) - (z_3 - z_2)(y_1 - y_2)
+\end{equation}
+
+\begin{equation}
+n_y = -\left[(x_3 - x_2)(z_1 - z_2) - (z_3 - z_2)(x_1 - x_2)\right]
+\end{equation}
+
+\begin{equation}
+n_z = (x_3 - x_2)(y_1 - y_2) - (y_3 - y_2)(x_1 - x_2)
+\end{equation}
+
+Velikost normálového vektoru:
+
+\begin{equation}
+\|\vec{n}\| = \sqrt{n_x^2 + n_y^2 + n_z^2}
+\end{equation}
+
+Sklon trojúhelníka vůči rovině XY (v radiánech):
+
+\begin{equation}
+\theta = \arccos\left( \frac{n_z}{\|\vec{n}\|} \right)
+\end{equation}
+
+Pro zobrazení sklonu svahu byla použita barevná stupnice v odstínech šedi. Kdy nejmenší sklon zobrazuje bílá barva a největší sklon černá barva.
+\input{text/Pseudocode/Slope}
+
+\subsection{Orientace svahu}
+Pro jednotlivé trojúhelníky je vypočítána orientace daného trojúhelníku.\\
+
+\hspace{-1.15cm}
+Pokud je vektor trojúhelníků prázdný, nebo byly přidány nové body, je přepočítán vektor trojúhelníků. Z třech bodů trojúhelníku  $p_1 = (x_1, y_1, z_1)$, $p_2 = (x_2, y_2, z_2)$ a $p_3 = (x_3, y_3, z_3)$.
+
+\begin{equation}
+\vec{u} = (x_3 - x_2,\, y_3 - y_2,\, z_3 - z_2)
+\end{equation}
+
+\begin{equation}
+\vec{v} = (x_1 - x_2,\, y_1 - y_2,\, z_1 - z_2)
+\end{equation}
+
+Normálový vektor $\vec{n}$ je určen jako vektorový součin $\vec{u} \times \vec{v}$:
+
+\begin{equation}
+n_x = (y_3 - y_2)(z_1 - z_2) - (z_3 - z_2)(y_1 - y_2)
+\end{equation}
+
+\begin{equation}
+n_y = -\left[(x_3 - x_2)(z_1 - z_2) - (z_3 - z_2)(x_1 - x_2)\right]
+\end{equation}
+
+\begin{equation}
+n_z = (x_3 - x_2)(y_1 - y_2) - (y_3 - y_2)(x_1 - x_2)
+\end{equation}
+
+Velikost normálového vektoru:
+
+\begin{equation}
+\|\vec{n}\| = \sqrt{n_x^2 + n_y^2 + n_z^2}
+\end{equation}
+
+Orientace trojúhelníka vůči rovině XY (v radiánech):
+
+\begin{equation}
+\theta = \arctan2\left( \frac{n_z}{\|\vec{n}\|} \right)
+\end{equation}
+
+
+Pro zobrazení orientace trojúhelníku byla využita tato barevná stupnice: \\
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.3\textwidth]{images/Colorwheel.png}
+  \caption{Barevná stupnice}
+\end{figure}
+
+\input{text/Pseudocode/Aspect}

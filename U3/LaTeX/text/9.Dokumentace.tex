@@ -1,0 +1,176 @@
+\section{Dokumentace}
+
+\subsection{Použité knihovny}
+Kód využívá následující knihovny:
+\begin{itemize}
+\item \texttt{\href{https://www.qt.io/}{Qt}} – Knihovna která slouží jak pro tvorbu grafického rozhraní, tak pro vlastní vizualizaci dat. Využívány jsou zejména třídy pro 2D grafiku (\texttt{QPainter}, \texttt{QPointF}, \texttt{QPolygonF}), správu událostí a widgetů (\texttt{QWidget}, \texttt{QDialog}, \texttt{QMouseEvent}) a základní kontejnery a typy (\texttt{QVector}, \texttt{QString}).
+\end{itemize}
+
+\subsection{Třída Algorithms}
+Třída metody pro vytvoření 2D Delaunay triangulace, výpočet vrstevnic, analýzu sklonu a orientace trojúhelníků a generování syntetických terénních tvarů (např. kupa, údolí, hřbet, spočinek, sedlo).
+
+\textbf{Veřejné metody:}
+\begin{itemize}
+\item \texttt{short getPointAndLinePosition(const QPoint3DF \&p, const QPoint3DF \&p1, const QPoint3DF \&p2)} – Určuje polohu bodu vůči přímce ve 3D prostoru.
+\item \texttt{double get2LinesAngle(const QPoint3DF \&p1, const QPoint3DF \&p2, const QPoint3DF \&p3, const QPoint3DF \&p4)} – Vypočítá úhel mezi dvěma přímkami definovanými dvojicemi bodů.
+\item \texttt{int findDelaunayPoint(const QPoint3DF \&p1, const QPoint3DF \&p2, const std::vector<QPoint3DF> \&points)} – Vrací index bodu, který tvoří s danou hranou Delaunay trojúhelník.
+\item \texttt{int findNearestPoint(const QPoint3DF \&p, const std::vector<QPoint3DF> \&points)} – Najde nejbližší bod k zadanému bodu ze seznamu bodů.
+\item \texttt{double get2DDistance(const QPoint3DF \&p1, const QPoint3DF \&p2)} – Vypočítá vzdálenost mezi dvěma body v rovině XY.
+\item \texttt{std::vector<Edge> DT(const std::vector<QPoint3DF> \&points)} – Vytvoří Delaunay triangulaci ze vstupních bodů.
+\item \texttt{void updateAEL(const Edge \&e, std::list<Edge> \&ael)} – Aktualizuje aktivní seznam hran při triangulaci.
+\item \texttt{QPoint3DF countourLinePoint(const QPoint3DF \&p1, const QPoint3DF \&p2, double z)} – Vypočítá průsečík vrstevnice se zadanou hranou.
+\item \texttt{std::vector<Edge> createContourLines(const std::vector<Edge> \&dt, const double zmin, const double zmax, const double dz)} – Generuje vrstevnice z Delaunay triangulace pro daný výškový rozsah a interval.
+\item \texttt{double computeSlope(const QPoint3DF \&p1, const QPoint3DF \&p2, const QPoint3DF \&p3)} – Spočítá sklon trojúhelníka definovaného třemi body.
+\item \texttt{void analyzeSlope(const std::vector<Edge> \&dt, std::vector<Triangle> \&triangles, const bool \&click)} – Analyzuje sklony trojúhelníků na základě triangulace.
+\item \texttt{double computeAspect(const QPoint3DF \&p1, const QPoint3DF \&p2, const QPoint3DF \&p3)} – Vypočítá orientaci trojúhelníku.
+\item \texttt{void analyzeAspect(const std::vector<Edge> \&dt, std::vector<Triangle> \&triangles, const bool \&click)} – Analyzuje orientaci trojúhelníků na základě triangulace.
+\item \texttt{void edgesToTriangle(const std::vector<Edge> \&dt, std::vector<Triangle> \&triangles)} – Převádí hrany triangulace na trojúhelníky.
+\item \texttt{static std::vector<QPoint3DF> generateHill(int n, int width, int height, int cx, int cy, int rx, int ry, int maxZ)} – Vygeneruje soubor bodů simulujících tvar kopce (kupy), jehož výška kvadraticky klesá od středu eliptické základny směrem k okraji.
+\item \texttt{static std::vector<QPoint3DF> generateValley(int n, int width, int height, int cx, int cy, int rx, int ry, int depth)} – Vygeneruje údolí, jehož dno leží uprostřed elipsy a výška roste směrem k okrajům, čímž vzniká konkávní terénní tvar.
+\item \texttt{static std::vector<QPoint3DF> generateRidge(int n, int width, int height, int x1, int y1, int x2, int y2, int maxZ)} – Vytvoří hřbet (ridge) s výškou klesající od centrální osy – čím blíže k ní, tím vyšší hodnota Z.
+\item \texttt{static std::vector<QPoint3DF> generateBench(int n, int width, int height, int stepStartX, int stepEndX, int depthZ)} – Generuje spočinek jako mírný terasovitý pokles výšky v zadaném vodorovném pásmu.
+\item \texttt{static std::vector<QPoint3DF> generateSaddle(int n, int width, int height, int cx, int cy, int scaleX, int scaleY)} – Vytváří tvar sedla (hyperbolický paraboloid) – v ose X roste výška, v ose Y klesá.
+
+\end{itemize}
+
+\subsection{Třída sortPointsByX}
+Třída pro seřazení bodů podle souřadnice \texttt{x}.
+\begin{itemize}
+    \item \texttt{bool  operator()(const QPointF \&p1, const QPointF \&p2)} – Vratí \texttt{True}, pokud \texttt{x.p1} je menší než \texttt{x.p2}.
+\end{itemize}
+
+\subsection{Třída sortPointsByY}
+Třída pro seřazení bodů podle souřadnice \texttt{y}.
+\begin{itemize}
+    \item \texttt{bool  operator()(const QPointF \&p1, const QPointF \&p2)} – Vratí \texttt{True}, pokud \texttt{y.p1} je menší než \texttt{y.p2}.
+\end{itemize}
+
+\subsection{Třída Draw}
+Třída zajišťuje vizualizaci dat (body, triangulace, vrstevnice, sklon, aspekt) a interakci uživatele s vykreslenou scénou.
+
+\textbf{Veřejné metody:}
+\begin{itemize}
+\item \texttt{explicit Draw(QWidget *parent = nullptr)} – Konstruktor inicializující widget.
+\item \texttt{void mousePressEvent(QMouseEvent *e)} – Obsluhuje kliknutí myší pro interakci s plátnem.
+\item \texttt{void paintEvent(QPaintEvent *event)} – Metoda pro vykreslení obsahu widgetu (body, hrany, vrstevnice apod.).
+\item \texttt{std::vector<QPoint3DF> getPoints() const} – Vrací aktuálně zobrazené body.
+\item \texttt{std::vector<Edge> getDT() const} – Vrací aktuální triangulaci.
+\item \texttt{void setDT(const std::vector<Edge> \&dt)} – Nastaví hrany triangulace.
+\item \texttt{void setCL(const std::vector<Edge> \&contour\_lines)} – Nastaví seznam vrstevnic.
+\item \texttt{void setTR(const std::vector<Triangle> \&triangles)} – Nastaví trojúhelníky pro analýzu sklonu/aspektu.
+\item \texttt{void setViewPoints(const bool \&view\_points)} – Zapne/vypne zobrazení bodů.
+\item \texttt{void setViewDT(const bool \&view\_dt)} – Zapne/vypne zobrazení triangulace.
+\item \texttt{void setViewContourLines(const bool \&view\_contour\_lines)} – Zapne/vypne zobrazení vrstevnic.
+\item \texttt{void setViewSlope(const bool \&view\_slope)} – Zapne/vypne zobrazení sklonu.
+\item \texttt{void setViewAspect(const bool \&view\_aspect)} – Zapne/vypne zobrazení aspektu.
+\item \texttt{void setClicked(const bool \&clicked)} – Nastaví příznak kliknutí.
+\item \texttt{bool getClicked()} – Vrací příznak, zda bylo kliknuto.
+\item \texttt{void clearResults()} – Vymaže triangulaci, trojúhelníky a vrstevnice.
+\item \texttt{void clearAll()} – Vymaže všechna data včetně bodů.
+\item \texttt{void loadPointsFromTextfile(const QString \&fileName)} – Načte body ze souboru ve formátu TXT s oddělovači (mezery, čárky). Automaticky provede převod souřadnic do velikosti okna.
+\item \texttt{void setPoints(const std::vector<QPoint3DF> \&newPoints)} – Umožňuje hromadně nastavit novou množinu bodů, která bude následně zobrazena.
+
+\end{itemize}
+
+
+\subsection{Třída MainForm}
+Třída představuje hlavní okno aplikace a zajišťuje propojení uživatelského rozhraní s funkcionalitou výpočtů a vizualizace.
+
+\textbf{Privátní metody:}
+\begin{itemize}
+\item \texttt{void on\_actionCreate\_DT\_triggered()} – Spustí vytvoření Delaunay triangulace.
+\item \texttt{void on\_actionCreate\_Contour\_lines\_triggered()} – Spustí generování vrstevnic.
+\item \texttt{void on\_actionParameters\_triggered()} – Otevře dialogové okno s parametry.
+\item \texttt{void on\_actionAnalyze\_slope\_triggered()} – Spustí analýzu sklonu terénu.
+\item \texttt{void on\_actionClear\_Results\_triggered()} – Vymaže výpočetní výsledky (trojúhelníky, vrstevnice, atd.).
+\item \texttt{void on\_actionPoints\_changed()} – Změna v zobrazení bodů.
+\item \texttt{void on\_actionDT\_changed()} – Změna v zobrazení triangulace.
+\item \texttt{void on\_actionContour\_Lines\_changed()} – Změna v zobrazení vrstevnic.
+\item \texttt{void on\_actionSlope\_changed()} – Změna v zobrazení sklonu.
+\item \texttt{void on\_actionExposition\_changed()} – Změna v zobrazení expozice (aspektu).
+\item \texttt{void on\_actionClear\_All\_triggered()} – Vymaže všechna data (body i výsledky).
+\item \texttt{void on\_actionAnalyze\_exposition\_triggered()} – Spustí analýzu orientace.
+\item \texttt{void on\_actionOpen\_triggered()} – Otevře dialog pro načtení vstupního souboru s body (např. ve formátu TXT).
+\item \texttt{void on\_actionExit\_triggered()} – Ukončí aplikaci.
+\item \texttt{void on\_actionHill\_triggered()} – Vygeneruje syntetická data reprezentující kopec (kupu).
+\item \texttt{void on\_actionValley\_triggered()} – Vygeneruje syntetická data reprezentující údolí.
+\item \texttt{void on\_actionRidge\_triggered()} – Vygeneruje syntetická data reprezentující hřbet.
+\item \texttt{void on\_actionBench\_triggered()} – Vygeneruje syntetická data pro spočinek.
+\item \texttt{void on\_actionSaddle\_triggered()} – Vygeneruje syntetická data pro sedlo.
+\item \texttt{void on\_action3D\_Viewer\_triggered()} – Spustí 3D vizulizaci bodů s možností otáčení a zoomu.
+
+\end{itemize}
+
+\subsection{Třída QPoint3DF}
+Třída představuje rozšířený dvourozměrný bod o třetí souřadnici $z$. Dědí ze třídy \texttt{QPointF} a přidává výškovou hodnotu.
+
+\textbf{Veřejné metody:}
+\begin{itemize}
+\item \texttt{QPoint3DF()} – Výchozí konstruktor, inicializuje bod $(0,0,0)$.
+\item \texttt{QPoint3DF(double x, double y)} – Konstruktor pro dvourozměrný bod se souřadnicemi $(x,y)$ a $z = 0$.
+\item \texttt{QPoint3DF(double x, double y, double z)} – Konstruktor pro trojrozměrný bod se souřadnicemi $(x,y,z)$.
+\item \texttt{void setZ(double z)} – Nastaví hodnotu výšky $z$.
+\item \texttt{double getZ() const} – Vrátí hodnotu výšky $z$.
+\end{itemize}
+
+\subsection{Třída Edge}
+Třída reprezentuje hranu mezi dvěma trojrozměrnými body typu \texttt{QPoint3DF}.
+
+\textbf{Veřejné metody:}
+\begin{itemize}
+\item \texttt{Edge(const QPoint3DF \&start, const QPoint3DF \&end)} – Konstruktor hrany definované počátečním a koncovým bodem.
+\item \texttt{QPoint3DF getStart() const} – Vrátí počáteční bod hrany.
+\item \texttt{QPoint3DF getEnd() const} – Vrátí koncový bod hrany.
+\item \texttt{Edge changeOrientation() const} – Vrátí novou hranu s opačnou orientací.
+\item \texttt{bool operator== (const Edge \&e)} – Porovná dvě hrany podle jejich počátečního a koncového bodu.
+\end{itemize}
+
+\subsection{Třída Triangle}
+Třída reprezentuje trojúhelník definovaný třemi vrcholy v prostoru. Obsahuje navíc informace o sklonu a orientaci.
+
+\textbf{Veřejné metody:}
+\begin{itemize}
+\item \texttt{Triangle()} – Výchozí konstruktor, inicializuje trojúhelník s nulovým sklonem a aspektem.
+\item \texttt{Triangle(QPoint3DF p1, QPoint3DF p2, QPoint3DF p3)} – Vytvoří trojúhelník bez specifikovaného sklonu a aspektu.
+\item \texttt{Triangle(QPoint3DF p1, QPoint3DF p2, QPoint3DF p3, double aspect, double slope)} – Vytvoří trojúhelník se zadanými hodnotami sklonu a expozice.
+\item \texttt{QPoint3DF getP1()} – Vrátí první bod trojúhelníku.
+\item \texttt{QPoint3DF getP2()} – Vrátí druhý bod trojúhelníku.
+\item \texttt{QPoint3DF getP3()} – Vrátí třetí bod trojúhelníku.
+\item \texttt{double getSlope()} – Vrátí hodnotu sklonu trojúhelníku.
+\item \texttt{double getAspect()} – Vrátí hodnotu expozice (aspektu) trojúhelníku.
+\item \texttt{void setSlope(const double \&slope)} – Nastaví hodnotu sklonu trojúhelníku.
+\item \texttt{void setAspect(const double \&aspect)} – Nastaví hodnotu orientace trojúhelníku.
+\end{itemize}
+
+\subsection{Třída Terrain3DForm}
+Třída představuje dialogové okno pro zobrazení 3D modelu terénu. Používá \texttt{Terrain3DCanvas}, která vykresluje výškové body pomocí ortogonální projekce. Je součástí samostatného 3D zobrazení a slouží jako orientační přehled výškového rozložení.
+
+\textbf{Veřejné metody:}
+\begin{itemize}
+    \item \texttt{explicit Terrain3DForm(QWidget *parent = nullptr)} – Konstruktor okna. Inicializuje GUI a vytvoří instanci 3D plátna.
+    \item \texttt{~Terrain3DForm()} – Destruktor okna, zajišťuje uvolnění prostředků.
+    \item \texttt{void setPoints(const std::vector<QPoint3DF> \&points)} – Předá množinu bodů do interní komponenty \texttt{Terrain3DCanvas}, kde dojde k jejich vykreslení.
+\end{itemize}
+
+
+\subsection{Třída Terrain3DCanvas}
+Třída zajišťuje základní 3D vizualizaci digitálního modelu terénu formou ortogonální projekce. Umožňuje zobrazení bodů v prostoru a interaktivní manipulaci pomocí myši (otáčení) a kolečka (zoom).
+
+\textbf{Veřejné metody:}
+\begin{itemize}
+    \item \texttt{explicit Terrain3DCanvas(QWidget *parent = nullptr)} – Konstruktor třídy, nastavuje výchozí úhel rotace a měřítko vizualizace.
+    \item \texttt{void setPoints(const std::vector<QPoint3DF> \&points)} – Předává objektu množinu 3D bodů, které budou zobrazeny na plátně.
+\end{itemize}
+
+\textbf{Překryté události:}
+\begin{itemize}
+    \item \texttt{void paintEvent(QPaintEvent *event)} – Vykreslí všechny body na základě aktuální rotace a přiblížení. Používá 2D projekci s otočením podle hodnot \texttt{angleX} a \texttt{angleY}.
+    \item \texttt{void mousePressEvent(QMouseEvent *event)} – Ukládá pozici myši při stisknutí tlačítka – používá se pro výpočet posunu při rotaci scény.
+    \item \texttt{void mouseMoveEvent(QMouseEvent *event)} – Zajišťuje interaktivní otáčení terénu podle pohybu myši.
+    \item \texttt{void wheelEvent(QWheelEvent *event)} – Umožňuje přiblížení nebo oddálení scény pomocí kolečka myši.
+\end{itemize}
+
+\textbf{Privátní metoda:}
+\begin{itemize}
+    \item \texttt{QPoint projectPoint(const QPoint3DF \&p) const} – Provádí převod 3D souřadnice do 2D roviny obrazovky pomocí jednoduché ortogonální projekce a aktuálních transformačních parametrů.
+\end{itemize}

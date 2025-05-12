@@ -1,0 +1,31 @@
+\begin{algorithm}
+    \setstretch{0.9}
+    \caption{Metoda \texttt{Longest Edge}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} polygon $P$
+        \STATE \textbf{Výstup:} obdélník obsahující všechny body polygonu $P$ pomocí nejdelší hrany
+        
+        \STATE $\text{maxLength} \gets 0$
+        \STATE $dx \gets 0$, $dy \gets 0$
+        \STATE $n \gets \text{size}(P)$
+        
+        \FOR{$i \gets 0$ \TO $n-1$}
+            \STATE $dx_i \gets x_{i+1} - x_i$
+            \STATE $dy_i \gets y_{i+1} - y_i$
+            \STATE $\text{length} \gets \sqrt{dx_i^2 + dy_i^2}$
+            
+            \IF{$\text{length} > \text{maxLength}$}
+                \STATE $\text{maxLength} \gets \text{length}$
+                \STATE $dx \gets dx_i$
+                \STATE $dy \gets dy_i$
+            \ENDIF
+        \ENDFOR
+        
+        \STATE $\sigma \gets \arctan2(dy, dx)$
+        \STATE $P_{\text{rot}} \gets \text{rotate}(P, -\sigma)$
+        \STATE $\text{mmbox}, \text{area} \gets \text{minMaxBox}(P_{\text{rot}})$
+        
+        \STATE $\text{mmbox\_min\_res} \gets \text{resize}(P, \text{mmbox})$
+        \STATE \textbf{return} \text{rotate}($\text{mmbox\_min\_res}, \sigma$)
+    \end{algorithmic}
+\end{algorithm}

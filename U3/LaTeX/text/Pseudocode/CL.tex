@@ -1,0 +1,68 @@
+\begin{algorithm}
+    \setstretch{0.8}
+    \caption{Metoda \texttt{createContourLines}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} triangulace \texttt{dt}, minimální výška $z_{\min}$, maximální výška $z_{\max}$, krok $dz$
+        \STATE \textbf{Výstup:} seznam vrstevnicových hran \texttt{contour\_lines}
+
+        \STATE \texttt{contour\_lines} $\gets \emptyset$
+
+        \FOR{$z \gets z_{\min}$ \TO $z_{\max}$ s krokem $dz$}
+            \FOR{$i \gets 0$ \TO $\text{size}(dt) - 1$ po třech}
+                \STATE $p_1 \gets \text{start}(dt[i])$
+                \STATE $p_2 \gets \text{start}(dt[i+1])$
+                \STATE $p_3 \gets \text{start}(dt[i+2])$
+
+                \STATE $dz_1 \gets z - p_1.z$
+                \STATE $dz_2 \gets z - p_2.z$
+                \STATE $dz_3 \gets z - p_3.z$
+
+                \IF{$dz_1 = 0$ \AND $dz_2 = 0$}
+                    \STATE přidej $dt[i]$ do \texttt{contour\_lines}
+                    \STATE \textbf{continue}
+                \ENDIF
+                \IF{$dz_2 = 0$ \AND $dz_3 = 0$}
+                    \STATE přidej $dt[i+1]$ do \texttt{contour\_lines}
+                    \STATE \textbf{continue}
+                \ENDIF
+                \IF{$dz_3 = 0$ \AND $dz_1 = 0$}
+                    \STATE přidej $dt[i+2]$ do \texttt{contour\_lines}
+                    \STATE \textbf{continue}
+                \ENDIF
+
+                \IF{$dz_1 \cdot dz_2 \leq 0$}
+                    \STATE $a \gets \texttt{countourLinePoint}(p_1, p_2, z)$
+                    \IF{$dz_2 \cdot dz_3 \leq 0$}
+                        \STATE $b \gets \texttt{countourLinePoint}(p_2, p_3, z)$
+                        \STATE přidej hranu $(a, b)$ do \texttt{contour\_lines}
+                    \ELSIF{$dz_3 \cdot dz_1 \leq 0$}
+                        \STATE $b \gets \texttt{countourLinePoint}(p_3, p_1, z)$
+                        \STATE přidej hranu $(a, b)$ do \texttt{contour\_lines}
+                    \ENDIF
+                \ELSIF{$dz_2 \cdot dz_3 \leq 0$}
+                    \STATE $a \gets \texttt{countourLinePoint}(p_2, p_3, z)$
+                    \IF{$dz_3 \cdot dz_1 \leq 0$}
+                        \STATE $b \gets \texttt{countourLinePoint}(p_3, p_1, z)$
+                        \STATE přidej hranu $(a, b)$ do \texttt{contour\_lines}
+                    \ENDIF
+                \ENDIF
+            \ENDFOR
+        \ENDFOR
+
+        \STATE \textbf{return} \texttt{contour\_lines}
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+    \setstretch{0.8}
+    \caption{Metoda \texttt{countourLinePoint}}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Vstup:} body $p_1$, $p_2$, výšková hodnota $z$
+        \STATE \textbf{Výstup:} bod $p$ na vrstevnici $z$ mezi $p_1$ a $p_2$
+
+        \STATE $x_b \gets \left(\dfrac{p_2.x - p_1.x}{p_2.z - p_1.z}\right) \cdot (z - p_1.z) + p_1.x$
+        \STATE $y_b \gets \left(\dfrac{p_2.y - p_1.y}{p_2.z - p_1.z}\right) \cdot (z - p_1.z) + p_1.y$
+
+        \STATE \textbf{return} bod $(x_b, y_b, z)$
+    \end{algorithmic}
+\end{algorithm}

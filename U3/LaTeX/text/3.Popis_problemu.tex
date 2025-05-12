@@ -1,0 +1,31 @@
+\section{Popis problému}
+
+Cílem úlohy je vytvořit digitální model terénu (DMT) nad množinou 3D bodů, kde výstupem bude polyedrický DMT reprezentovaný vrstevnicemi doplněný o vizualizace sklonu trojúhelníků a jejich expozice. Tento model bude vytvořen metodou inkrementální konstrukce pomocí 2D Delaunay triangulace. Součástí úkolu je také analýza terénu s využitím lineární interpolace pro generování vrstevnic, analýza sklonu a expozice jednotlivých trojúhelníků a jejich vizualizace.
+
+\subsection{Formulace problému}
+
+\paragraph{Dáno:}
+\begin{itemize}
+    \item Množina \( P = \{ p_1, p_2, \dots, p_n \} \) bodů, kde každý bod \( p_i = (x_i, y_i, z_i) \) je definován prostorovými souřadnicemi \( x_i \), \( y_i \) a výškou \( z_i \).
+\end{itemize}
+
+\paragraph{Určováno:}
+\begin{itemize}
+    \item Polyedrický digitální model terénu (DMT) nad množinou bodů \( P \), reprezentovaný triangulacemi a vrstevnicemi, spolu s vizualizacemi sklonu a expozice terénu.
+\end{itemize}
+
+\subsection{Techniky řešení problému}
+
+\begin{itemize}
+    \item \textbf{2D Delaunay triangulace:} Hlavní metodou pro konstrukci digitálního modelu terénu je vytvoření 2D Delaunay triangulace nad množinou bodů. Tento algoritmus umožňuje získat triangulaci, která minimalizuje úhly mezi trojúhelníky a zabraňuje vytvoření ostrých úhlů, což je klíčové pro správnou reprezentaci terénu\cite{Bayer2008}.
+    
+    \item \textbf{Generování vrstevnic:} Na základě triangulace se generují vrstevnice pomocí lineární interpolace. Tyto vrstevnice jsou zobrazeny v daném intervalu s příslušným krokem a zvýrazněním hlavních vrstevnic pro lepší čitelnost a analýzu terénu.
+
+    \item \textbf{Analýza sklonu:} Po vytvoření triangulace se analyzuje sklon jednotlivých trojúhelníků. K tomu se používají geometrické vlastnosti trojúhelníků, jako je úhel mezi roviny a horizontem, což umožňuje určit sklon terénu v každé oblasti.
+
+    \item \textbf{Analýza expozice:} Expozice terénu je určena na základě orientace trojúhelníků vůči světovým stranám. Tato analýza pomáhá identifikovat orientace svahů a zjistit, které oblasti terénu jsou více vystaveny slunečnímu záření, což má významné ekologické a klimatické důsledky.
+
+    \item \textbf{Triangulace nekonvexní oblasti zadané polygonem:} Pokud jsou některé části terénu definovány nekonvexními oblastmi, je nutné aplikovat algoritmus pro triangulaci těchto oblastí, aby byl model terénu správně reprezentován i v složitějších geografických formacích.
+
+    \item \textbf{Vizualizace terénu:} Terén bude vizualizován v 3D s využitím promítání a barevné hypsometrie, která zobrazuje výškové rozdíly pomocí barevného spektra. Dále budou použity barevné stupnice pro vizualizaci sklonu a expozice, což umožní intuitivní pochopení terénních tvarů.
+\end{itemize}

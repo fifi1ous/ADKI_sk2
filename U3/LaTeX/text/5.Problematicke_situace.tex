@@ -1,0 +1,41 @@
+\section{Problematické situace}
+
+\subsection{Transformace souřadnic bodů ze souboru}
+
+Při načítání souřadnicových dat ze souborů (např. \texttt{.txt} nebo \texttt{.xyz}) do aplikace je nutné body transformovat tak, aby odpovídaly souřadnicovému systému vykreslovacího okna. Data obvykle pocházejí z reálného terénu a mají velké absolutní hodnoty souřadnic. Tyto hodnoty je třeba převést (škálovat) na oblast viditelnou v aplikaci.
+
+\begin{itemize}
+    \item \textbf{Načtení bodů ze souboru} \\
+    Načítají se trojice souřadnic $(x, y, z)$, přičemž aplikace podporuje formát oddělený čárkou, mezerou nebo jejich kombinací. Před načtením se vymažou předchozí body.
+
+    \item \textbf{Zjištění rozsahu hodnot (bounding box)} \\
+    Během načítání jsou pro každý bod určeny minimální a maximální hodnoty souřadnic $x$, $y$ a $z$, které později slouží k výpočtu měřítka.
+
+    \item \textbf{Zjištění rozměrů vykreslovacího okna} \\
+    Pomocí funkcí \texttt{width()} a \texttt{height()} jsou získány rozměry okna aplikace, do kterého se mají data zobrazit.
+
+    \item \textbf{Výpočet měřítka} \\
+    Souřadnice bodů se transformují pomocí škálování. Měřítko se počítá zvlášť pro osu $x$ a $y$:
+    \begin{equation}
+        \text{scaleX} = \frac{\text{windowWidth}}{\text{maxX} - \text{minX}}, \quad
+        \text{scaleY} = \frac{\text{windowHeight}}{\text{maxY} - \text{minY}}
+    \end{equation}
+
+    \item \textbf{Výpočet posunu (offsetu)} \\
+    Aby byly body zarovnány k okraji okna, použije se posun:
+    \begin{equation}
+        \text{offsetX} = -\text{minX}, \quad \text{offsetY} = -\text{minY}
+    \end{equation}
+
+    \item \textbf{Transformace souřadnic bodů} \\
+    Každému bodu je následně vypočítána nová souřadnice takto:
+    \begin{equation}
+        \text{transformedX} = (x + \text{offsetX}) \cdot \text{scaleX}
+    \end{equation}
+    \begin{equation}
+        \text{transformedY} = (y + \text{offsetY}) \cdot \text{scaleY}
+    \end{equation}
+
+    \item \textbf{Uložení bodů a překreslení} \\
+    Po transformaci jsou nové souřadnice uloženy do vektoru a aplikace je překreslena funkcí \texttt{repaint()}.
+\end{itemize}

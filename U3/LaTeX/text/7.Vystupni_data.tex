@@ -1,0 +1,12 @@
+\section{Výstupní data}
+Výsledky jsou prezentovány formou interaktivní vizualizace přímo v aplikaci. Uživatel má možnost zobrazit vstupní body, Delaunay triangulaci, vrstevnice, sklony a orientace trojúhelníků. Jednotlivé složky lze podle potřeby zapínat nebo vypínat přímo v grafickém rozhraní. Vrstevnice jsou generovány s možností nastavení intervalu \texttt{dz}, hlavní vrstevnice jsou automaticky popisovány v souladu s kartografickými zásadami. Aplikace neumožňuje export výsledků (např. do souboru), slouží primárně k vizuální a analytické interpretaci vstupních dat a jejich geometrické struktury. Výsledky jsou tedy určeny pouze pro prohlížení v rámci samotné aplikace.
+
+\subsection*{Analytické možnosti vizualizace}
+
+Součástí vizualizace je i možnost analyzovat jednotlivé aspekty digitálního modelu terénu:
+\begin{itemize}
+    \item \textbf{Vrstevnice} – generovány lineární interpolací podle zadaného kroku a rozsahu, s podporou hlavních vrstevnic a jejich popisu.
+    \item \textbf{Sklon} – zobrazen pomocí stupnice odstínů šedi, kde tmavší barva značí strmější svah.
+    \item \textbf{Expozice (aspekt)} – vyjádřena barevnou orientací trojúhelníků podle směru jejich normály ke světovým stranám.
+    \item \textbf{3D vizualizace} – zjednodušená ortogonální projekce, kterou lze interaktivně rotovat a přibližovat.
+\end{itemize}
