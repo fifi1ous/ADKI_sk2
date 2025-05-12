@@ -36,6 +36,7 @@
     <addaction name="actionOpen"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
+    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuAnalysis">
     <property name="title">
@@ -284,6 +285,15 @@
   <action name="action3D_Viewer">
    <property name="text">
     <string>3D Viewer</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/images/icons/about.png</normaloff>:/images/icons/about.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

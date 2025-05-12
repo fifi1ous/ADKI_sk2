@@ -420,4 +420,8 @@ void MainForm::on_action3D_Viewer_triggered()
     form3D->exec();
 }
 
+void MainForm::on_actionAbout_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/fifi1ous/ADKI_sk2/tree/main/U3"));
+}
 

@@ -66,6 +66,8 @@ private slots:
 
     void on_action3D_Viewer_triggered();
 
+    void on_actionAbout_triggered();
+
 private:
     Ui::MainForm *ui;
 };

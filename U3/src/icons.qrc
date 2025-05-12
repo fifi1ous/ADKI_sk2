@@ -11,5 +11,6 @@
         <file>icons/settings.png</file>
         <file>icons/slope2.png</file>
         <file>icons/triangles2.png</file>
+	<file>icons/about.png</file>
     </qresource>
 </RCC>
