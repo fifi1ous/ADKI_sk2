@@ -21,7 +21,7 @@ public:
     QPoint3DF(double x_, double y_, double z_) : QPointF(x_,  y_), z(z_) {}
 
     void setZ(double z_){z_ = z;}
-    double getZ(){return z;}
+    double getZ() const {return z;}
 
 };
 #endif // QPOINT3DF_H

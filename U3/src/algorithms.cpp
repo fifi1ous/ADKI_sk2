@@ -1,5 +1,6 @@
 #include "algorithms.h"
 #include <cmath>
+#include "QDebug"
 
 Algorithms::Algorithms() {}
 
@@ -197,7 +198,7 @@ void Algorithms::updateAEL(const Edge &e, std::list<Edge> &ael)
 }
 
 
-QPoint3DF Algorithms::countourLinePoint(QPoint3DF p1,QPoint3DF p2, double z)
+QPoint3DF Algorithms::countourLinePoint(const QPoint3DF &p1,const QPoint3DF &p2, double z)
 {
     //Compute contour point
     double xb = ((p2.x() - p1.x())/(p2.getZ() - p1.getZ()))*(z - p1.getZ()) + p1.x();
@@ -249,7 +250,7 @@ std::vector<Edge> Algorithms::createContourLines(const std::vector<Edge> &dt, co
             // We only need to check two edges since a plane can intersect a triangle at most twice
             if(dz1 * dz2 <= 0) {  // Plane intersects edge 1-2
                 QPoint3DF a = countourLinePoint(p1, p2, z);
-                
+
                 if(dz2 * dz3 <= 0) {  // Plane intersects edge 2-3
                     QPoint3DF b = countourLinePoint(p2, p3, z);
                     contour_lines.push_back(Edge(a, b));
@@ -261,7 +262,7 @@ std::vector<Edge> Algorithms::createContourLines(const std::vector<Edge> &dt, co
             }
             else if(dz2 * dz3 <= 0) {  // Plane intersects edge 2-3
                 QPoint3DF a = countourLinePoint(p2, p3, z);
-                
+
                 if(dz3 * dz1 <= 0) {  // Plane intersects edge 3-1
                     QPoint3DF b = countourLinePoint(p3, p1, z);
                     contour_lines.push_back(Edge(a, b));
@@ -273,9 +274,121 @@ std::vector<Edge> Algorithms::createContourLines(const std::vector<Edge> &dt, co
     return contour_lines;
 }
 
+double Algorithms::computeSlope(const QPoint3DF &p1, const QPoint3DF &p2,const QPoint3DF &p3)
+{
+    // Compute slope of the triangle
+    double ux = p3.x() - p2.x();
+    double uy = p3.y() - p2.y();
+    double uz = p3.getZ() - p2.getZ();
+
+    double vx = p1.x() - p2.x();
+    double vy = p1.y() - p2.y();
+    double vz = p1.getZ() - p2.getZ();
 
 
+    //Normal vector
+    double nx = uy*vz - uz*vy;
+    double ny = -(ux*vz - uz*vx);
+    double nz = ux*vy - uy*vx;
 
+    //Norm
+    double n = sqrt(nx*nx + ny*ny + nz*nz);
+
+    return acos(nz/n);
+}
+
+void Algorithms::analyzeSlope(const std::vector<Edge> &dt, std::vector<Triangle> &triangles)
+{
+    qDebug() << Draw::getClicked();
+
+    //Analyze DTM slope
+    if (triangles.size()==0 || Draw::getClicked() )
+        edgesToTriangle(dt,triangles);
+
+    //Browse DTM by triangles
+    for (int i = 0; i<triangles.size(); i++)
+    {
+        //Get vertices
+        QPoint3DF p1 = triangles[i].getP1();
+        QPoint3DF p2 = triangles[i].getP2();
+        QPoint3DF p3 = triangles[i].getP3();
+
+        //Compute slope
+        double slope = computeSlope(p1, p2, p3);
+
+        //Create new triangle
+        triangles[i].setSlope(slope);
+
+        //Add triangle to the list
+    }
+}
+
+double Algorithms::computeAspect(const QPoint3DF &p1, const QPoint3DF &p2,const QPoint3DF &p3)
+{
+    // Compute slope of the triangle
+    double ux = p3.x() - p2.x();
+    double uy = p3.y() - p2.y();
+    double uz = p3.getZ() - p2.getZ();
+
+    double vx = p1.x() - p2.x();
+    double vy = p1.y() - p2.y();
+    double vz = p1.getZ() - p2.getZ();
+
+
+    //Normal vector
+    double nx = uy*vz - uz*vy;
+    double ny = -(ux*vz - uz*vx);
+    double nz = ux*vy - uy*vx;
+
+    //Norm
+    double n = sqrt(nx*nx + ny*ny + nz*nz);
+
+    return atan2(ny,nx);
+}
+
+
+void Algorithms::analyzeAspect(const std::vector<Edge> &dt, std::vector<Triangle> &triangles)
+{
+    //Analyze DTM Aspect
+    if (triangles.size()==0 || Draw::getClicked())
+        edgesToTriangle(dt,triangles);
+
+    //Browse DTM by triangles
+    for (int i = 0; i<triangles.size(); i++)
+    {
+        //Get vertices
+        QPoint3DF p1 = triangles[i].getP1();
+        QPoint3DF p2 = triangles[i].getP2();
+        QPoint3DF p3 = triangles[i].getP3();
+
+        //Compute slope
+        double aspect = computeAspect(p1, p2, p3);
+
+        //Create new triangle
+        triangles[i].setAspect(aspect);
+
+        //Add triangle to the list
+    }
+}
+
+void Algorithms:: edgesToTriangle(const std::vector<Edge> &dt, std::vector<Triangle> &triangles)
+{
+    //Browse DTM by triangles
+    for (int i = 0; i<dt.size(); i+=3)
+    {
+        //Get vertices
+        QPoint3DF p1 = dt[i].getStart();
+        QPoint3DF p2 = dt[i+1].getStart();
+        QPoint3DF p3 = dt[i+2].getStart();
+
+
+        //Create new triangle
+        Triangle t(p1, p2, p3);
+
+        //Add triangle to the list
+        triangles.push_back(t);
+    }
+}
 
 
 

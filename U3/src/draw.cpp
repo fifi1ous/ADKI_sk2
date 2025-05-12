@@ -6,19 +6,18 @@ Draw::Draw(QWidget *parent)
     : QWidget{parent}
 {
 
-    QPoint3DF a(50,70);
-    QPoint3DF b(150,50);
-    QPoint3DF c(150,130);
-    QPoint3DF d(50,150);
-
-    points.push_back(a);
-    points.push_back(b);
-    points.push_back(c);
-    points.push_back(d);
+    // inicialize variables
+    view_points = true;
+    view_dt = true;
+    view_contour_lines = true;
+    view_aspect = true;
+    view_slope = true;
 
     //Initalize random number generator
     srand(time(NULL));
 }
+
+bool Draw::clicked = true;
 
 
 void Draw::mousePressEvent(QMouseEvent *e)
@@ -38,6 +37,9 @@ void Draw::mousePressEvent(QMouseEvent *e)
 
     //Repaint screen
     repaint();
+
+    // Change clicked
+    clicked = true;
 }
 
 
@@ -49,30 +51,64 @@ void Draw::paintEvent(QPaintEvent *event)
     //Create object for drawing
     painter.begin(this);
 
+    // Draw slope
+    if (view_slope)
+    {
+        for (Triangle t: triangles)
+        {
 
-    //Set graphic attributes, point
-    painter.setPen(Qt::GlobalColor::black);
-    painter.setBrush(Qt::GlobalColor::blue);
+            QPoint3DF p1 = t.getP1();
+            QPoint3DF p2 = t.getP2();
+            QPoint3DF p3 = t.getP3();
+
+            QPointF p1_(p1.x(),p1.y());
+            QPointF p2_(p2.x(),p2.y());
+            QPointF p3_(p3.x(),p3.y());
+
+            QPolygonF vertices {p1_,p2_,p3_};
+
+            double slope = t.getSlope();
+
+            int color = 255 - 255/M_PI * slope;
+
+            painter.setBrush(QColor(color,color,color));
+            painter.setPen(Qt::transparent);
+            painter.drawPolygon(vertices);
+        }
+    }
 
     //Draw points
-    const int r = 5;
-    for (QPoint3DF point: points)
+    if (view_points)
     {
-       painter.drawEllipse(point.x()-r,point.y()-r, 2*r,2*r);
+        //Set graphic attributes, point
+        painter.setPen(Qt::GlobalColor::black);
+        painter.setBrush(Qt::GlobalColor::blue);
+
+        const int r = 5;
+        for (QPoint3DF point: points)
+        {
+           painter.drawEllipse(point.x()-r,point.y()-r, 2*r,2*r);
+        }
     }
 
     //Draw DT
-    painter.setPen(Qt::GlobalColor::green);
-    for (Edge e: dt)
+    if (view_dt)
     {
-        painter.drawLine(e.getStart(), e.getEnd());
+        painter.setPen(Qt::GlobalColor::green);
+        for (Edge e: dt)
+        {
+            painter.drawLine(e.getStart(), e.getEnd());
+        }
     }
 
     //Draw contour lines
-    painter.setPen(Qt::GlobalColor::darkGray);
-    for (Edge e: contour_lines)
+    if (view_contour_lines)
     {
-        painter.drawLine(e.getStart(), e.getEnd());
+        painter.setPen(Qt::GlobalColor::darkGray);
+        for (Edge e: contour_lines)
+        {
+            painter.drawLine(e.getStart(), e.getEnd());
+        }
     }
 
 

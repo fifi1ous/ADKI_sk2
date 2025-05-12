@@ -5,6 +5,8 @@
 #include "qpoint3df.h"
 #include "edge.h"
 #include "sortpointsbyx.h"
+#include "triangle.h"
+#include "draw.h"
 
 
 class Algorithms
@@ -18,8 +20,14 @@ public:
     double get2DDistance(const QPoint3DF &p1, const QPoint3DF &p2);
     std::vector<Edge> DT(const std::vector<QPoint3DF> &points);
     void updateAEL(const Edge &e, std::list<Edge> &ael);
-    QPoint3DF countourLinePoint(QPoint3DF p1,QPoint3DF p2, double z);
+    QPoint3DF countourLinePoint(const QPoint3DF &p1,const QPoint3DF &p2, double z);
     std::vector<Edge> createContourLines(const std::vector<Edge> &dt, const double zmin, const double zmax, const double dz);
+    double computeSlope(const QPoint3DF &p1, const QPoint3DF &p2,const QPoint3DF &p3);
+    void analyzeSlope (const std::vector<Edge> &dt, std::vector<Triangle> &triangles);
+    double computeAspect(const QPoint3DF &p1, const QPoint3DF &p2,const QPoint3DF &p3);
+    void analyzeAspect(const std::vector<Edge> &dt, std::vector<Triangle> &triangles);
+
+    void edgesToTriangle(const std::vector<Edge> &dt, std::vector<Triangle> &triangles);
 };
 
 #endif // ALGORITHMS_H
