@@ -17,6 +17,7 @@ private:
     std::vector<Edge> dt;
     std::vector<Edge> contour_lines;
     std::vector<Triangle> triangles;
+    int selectColor(const double &aspect);
 
 
 public:

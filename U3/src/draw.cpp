@@ -17,8 +17,24 @@ Draw::Draw(QWidget *parent)
 
     //Initalize random number generator
     srand(time(NULL));
+
 }
 
+ //Initalize colors
+const QColor COLORWHEEL[12] = {
+    QColor(255,   0,   0),    // 0°   - Red
+    QColor(255, 125,   0),   // 30°  - Orange
+    QColor(255, 255,   0),   // 60°  - Yellow
+    QColor(125, 255,   0),   // 90°  - Yellow-green
+    QColor(  0, 255,   0),   // 120° - Green
+    QColor(  0, 255, 125),   // 150° - Spring green
+    QColor(  0, 255, 255),   // 180° - Cyan
+    QColor(  0, 125, 255),   // 210° - Sky blue
+    QColor(  0,   0, 255),   // 240° - Blue
+    QColor(125,   0, 255),   // 270° - Violet
+    QColor(255,   0, 255),   // 300° - Magenta
+    QColor(255,   0, 125)    // 330° - Rose
+};
 
 void Draw::mousePressEvent(QMouseEvent *e)
 {
@@ -68,14 +84,10 @@ void Draw::paintEvent(QPaintEvent *event)
             QPolygonF vertices {p1_,p2_,p3_};
 
             double aspect = t.getAspect();
-            qDebug()<<aspect;
-            /*
-            int color = 255 - 255/M_PI * slope;
 
-            painter.setBrush(QColor(color,color,color));
+            painter.setBrush(COLORWHEEL[selectColor(aspect)]);
             painter.setPen(Qt::transparent);
             painter.drawPolygon(vertices);
-            */
         }
     }
     // Draw slope
@@ -109,7 +121,7 @@ void Draw::paintEvent(QPaintEvent *event)
     {
         //Set graphic attributes, point
         painter.setPen(Qt::GlobalColor::black);
-        painter.setBrush(Qt::GlobalColor::blue);
+        painter.setBrush(Qt::GlobalColor::black);
 
         const int r = 5;
         for (QPoint3DF point: points)
@@ -121,7 +133,7 @@ void Draw::paintEvent(QPaintEvent *event)
     //Draw DT
     if (view_dt)
     {
-        painter.setPen(Qt::GlobalColor::green);
+        painter.setPen(Qt::GlobalColor::black);
         for (Edge e: dt)
         {
             painter.drawLine(e.getStart(), e.getEnd());
@@ -141,4 +153,15 @@ void Draw::paintEvent(QPaintEvent *event)
     painter.end();
 }
 
+int Draw::selectColor(const double &aspect)
+{
+    QColor aspect_color;
+    double normalized = aspect + M_PI;
+
+    // Compute sector index: floor(normalized / sectorSize)
+    const double sectorSize = 2 * M_PI / 12.0;
+    int index = static_cast<int>(normalized / sectorSize);
+
+    return index;
+}
 

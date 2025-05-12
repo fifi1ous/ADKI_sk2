@@ -140,11 +140,23 @@ void MainForm::on_actionAnalyze_slope_triggered()
             ui -> Canvas -> setDT(dt);
         }
 
-        std::vector<Triangle> tr;
-        a.analyzeSlope(dt,tr,click);
+        a.analyzeSlope(dt,tr1,click);
 
         //Set results
-        ui -> Canvas -> setTR(tr);
+        ui -> Canvas -> setTR(tr1);
+
+        //Check visibility of slope
+        view_slope = ui -> actionSlope -> isChecked();
+        if(!view_slope)
+        {
+            // If not visible set as visible
+            ui -> Canvas ->setViewSlope(!view_slope);
+            ui -> actionSlope -> setChecked(!view_slope);
+        }
+
+        // Set slope as invisible
+        ui -> actionExposition -> setChecked(false);
+        ui -> Canvas ->setViewAspect(false);
 
         //Repaint
         repaint();
@@ -216,6 +228,7 @@ void MainForm::on_actionExposition_changed()
 void MainForm::on_actionClear_All_triggered()
 {
     ui -> Canvas ->clearAll();
+    tr1.clear();
 
     repaint();
 }
@@ -247,11 +260,23 @@ void MainForm::on_actionAnalyze_exposition_triggered()
             ui -> Canvas -> setDT(dt);
         }
 
-        std::vector<Triangle> tr;
-        a.analyzeAspect(dt,tr,click);
+        a.analyzeAspect(dt,tr1,click);
 
         //Set results
-        ui -> Canvas -> setTR(tr);
+        ui -> Canvas -> setTR(tr1);
+
+        //Check visibility of aspect
+        view_aspect = ui -> actionExposition -> isChecked();
+        if(!view_aspect)
+        {
+            // If not visible set as visible
+            ui -> Canvas ->setViewAspect(!view_aspect);
+            ui -> actionExposition -> setChecked(!view_aspect);
+        }
+
+        // Set slope as invisible
+        ui -> actionSlope -> setChecked(false);
+        ui -> Canvas ->setViewSlope(false);
 
         //Repaint
         repaint();

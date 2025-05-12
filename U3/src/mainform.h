@@ -17,11 +17,13 @@ class MainForm : public QMainWindow
 
 private:
     bool view_points, view_dt, view_contour_lines, view_aspect, view_slope;
+    std::vector<Triangle> tr1;
 
 public:
     MainForm(QWidget *parent = nullptr);
     ~MainForm();
     Settings2 settings;
+
 
 private slots:
     void on_actionCreate_DT_triggered();
