@@ -6,6 +6,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "terrain3dform.h"
+
 #include <QDesktopServices>
 #include <QUrl>
 #include <set>
@@ -411,5 +413,11 @@ void MainForm::on_actionSaddle_triggered()
     ui->Canvas->repaint();
 }
 
+void MainForm::on_action3D_Viewer_triggered()
+{
+    Terrain3DForm *form3D = new Terrain3DForm(this);
+    form3D->setPoints(ui->Canvas->getPoints());
+    form3D->exec();
+}
 
 

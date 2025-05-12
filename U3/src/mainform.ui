@@ -56,6 +56,7 @@
     <addaction name="actionContour_Lines"/>
     <addaction name="actionSlope"/>
     <addaction name="actionExposition"/>
+    <addaction name="action3D_Viewer"/>
    </widget>
    <widget class="QMenu" name="menuClear">
     <property name="title">
@@ -273,6 +274,16 @@
   <action name="actionSaddle">
    <property name="text">
     <string>Saddle</string>
+   </property>
+  </action>
+  <action name="actionview">
+   <property name="text">
+    <string>view</string>
+   </property>
+  </action>
+  <action name="action3D_Viewer">
+   <property name="text">
+    <string>3D Viewer</string>
    </property>
   </action>
  </widget>

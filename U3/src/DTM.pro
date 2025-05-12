@@ -18,6 +18,8 @@ SOURCES += \
     settings2.cpp \
     sortpointsbyx.cpp \
     sortpointsbyy.cpp \
+    terrain3dcanvas.cpp \
+    terrain3dform.cpp \
     triangle.cpp
 
 HEADERS += \
@@ -29,11 +31,14 @@ HEADERS += \
     settings2.h \
     sortpointsbyx.h \
     sortpointsbyy.h \
+    terrain3dcanvas.h \
+    terrain3dform.h \
     triangle.h
 
 FORMS += \
     mainform.ui \
-    settings2.ui
+    settings2.ui \
+    terrain3dform.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

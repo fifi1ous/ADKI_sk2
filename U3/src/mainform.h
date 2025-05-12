@@ -64,6 +64,8 @@ private slots:
 
     void on_actionSaddle_triggered();
 
+    void on_action3D_Viewer_triggered();
+
 private:
     Ui::MainForm *ui;
 };
