@@ -3,6 +3,13 @@
 #include "qpoint3df.h"
 #include "algorithms.h"
 
+#include <QFileDialog>
+#include <QMessageBox>
+
+#include <QDesktopServices>
+#include <QUrl>
+#include <set>
+
 MainForm::MainForm(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainForm)
@@ -286,3 +293,15 @@ void MainForm::on_actionAnalyze_exposition_triggered()
     }
 }
 
+void MainForm::on_actionOpen_triggered()
+{
+    // Otevření souborového dialogu pro výběr souboru
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Points File"), "", tr("Text Files (*.txt *.xyz)"));
+
+    // Pokud je soubor vybrán
+    if (!fileName.isEmpty())
+    {
+        // Zavoláme metodu pro načtení bodů
+        ui->Canvas->loadPointsFromTextfile(fileName);
+    }
+}

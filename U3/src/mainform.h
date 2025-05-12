@@ -50,6 +50,8 @@ private slots:
 
     void on_actionAnalyze_exposition_triggered();
 
+    void on_actionOpen_triggered();
+
 private:
     Ui::MainForm *ui;
 };

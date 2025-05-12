@@ -41,7 +41,7 @@ public:
     inline void clearResults(){dt.clear(); triangles.clear(),contour_lines.clear();}
     inline void clearAll(){points.clear(); dt.clear(); triangles.clear(),contour_lines.clear();}
 
-
+    void loadPointsFromTextfile(const QString &fileName);
 
 
 signals:

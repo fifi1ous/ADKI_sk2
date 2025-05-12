@@ -1,6 +1,11 @@
 #include "draw.h"
 #include <QtGui>
 #include <time.h>
+#include <QPainter>
+#include <QFile>
+#include <QTextStream>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QDebug>
 
 Draw::Draw(QWidget *parent)
@@ -165,3 +170,116 @@ int Draw::selectColor(const double &aspect)
     return index;
 }
 
+void Draw::loadPointsFromTextfile(const QString &fileName)
+{
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::warning(this, "Error", "Cannot open the file.");
+        return;
+    }
+
+    QTextStream in(&file);
+    // Clear existing points before loading new ones
+    points.clear();
+
+    // Variables to track min and max values
+    double minX = std::numeric_limits<double>::max();
+    double minY = std::numeric_limits<double>::max();
+    double minZ = std::numeric_limits<double>::max();
+    double maxX = std::numeric_limits<double>::lowest();
+    double maxY = std::numeric_limits<double>::lowest();
+    double maxZ = std::numeric_limits<double>::lowest();
+
+    // Read points from the file and calculate min/max values
+    while (!in.atEnd())
+    {
+        QString line = in.readLine().trimmed();
+        if (line.isEmpty())
+        {
+            continue; // skip empty lines
+        }
+
+        // Split the line by commas and spaces
+        QStringList coordinates = line.split(",");
+        for (int i = 0; i < coordinates.size(); ++i)
+        {
+            coordinates[i] = coordinates[i].trimmed();
+        }
+
+        QStringList finalCoordinates;
+        for (const QString &coord : coordinates)
+        {
+            if (!coord.isEmpty())
+            {
+                QStringList temp = coord.split(" ");
+                for (const QString &subCoord : temp)
+                {
+                    if (!subCoord.isEmpty())
+                    {
+                        finalCoordinates.append(subCoord);
+                    }
+                }
+            }
+        }
+
+        if (finalCoordinates.size() == 3)  // We expect 3 values per line (x, y, z)
+        {
+            bool ok1, ok2, ok3;
+            double x = finalCoordinates[0].toDouble(&ok1);
+            double y = finalCoordinates[1].toDouble(&ok2);
+            double z = finalCoordinates[2].toDouble(&ok3);
+
+            if (ok1 && ok2 && ok3) // Ensure all values are valid numbers
+            {
+                // Update min/max values for scaling
+                minX = std::min(minX, x);
+                minY = std::min(minY, y);
+                minZ = std::min(minZ, z);
+                maxX = std::max(maxX, x);
+                maxY = std::max(maxY, y);
+                maxZ = std::max(maxZ, z);
+
+                QPoint3DF point(x, y, z); // Create QPoint3DF object with x, y, and z values
+                points.push_back(point);   // Add the point to the points vector
+            }
+            else
+            {
+                QMessageBox::warning(this, "Error", "Invalid coordinates in file.");
+                continue; // Skip this line if parsing failed
+            }
+        }
+        else
+        {
+            QMessageBox::warning(this, "Error", "Each line must contain exactly 3 coordinates (x, y, z).");
+            continue;
+        }
+    }
+
+    // Calculate scaling and translation to fit the points in the window
+    if (points.empty()) return;
+
+    // Get the size of the window (or the visible area)
+    int windowWidth = width();
+    int windowHeight = height();
+
+    // Calculate the scaling factors
+    double scaleX = windowWidth / (maxX - minX);
+    double scaleY = windowHeight / (maxY - minY);
+
+    // Determine the translation to center the points on the screen
+    double offsetX = -minX;
+    double offsetY = -minY;
+
+    // Apply transformation (scale and translate) to each point
+    for (auto &point : points)
+    {
+        double newX = (point.x() + offsetX) * scaleX;
+        double newY = (point.y() + offsetY) * scaleY;
+        point.setX(newX);
+        point.setY(newY);
+    }
+
+    file.close();  // Close the file after reading
+    repaint();     // Repaint the widget to show loaded points
+}
