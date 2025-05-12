@@ -11,8 +11,7 @@ class Draw : public QWidget
     Q_OBJECT
 
 private:
-    bool view_points, view_dt, view_contour_lines, view_aspect, view_slope;
-    static bool clicked;
+    bool view_points, view_dt, view_contour_lines, view_aspect, view_slope, clicked;
 
     std::vector<QPoint3DF> points;
     std::vector<Edge> dt;
@@ -36,7 +35,7 @@ public:
     inline void setViewSlope(const bool &view_slope_){view_slope=view_slope_;}
     inline void setViewAspect(const bool &view_aspect_){view_aspect=view_aspect_;}
     inline void setClicked(const bool &clicked_){clicked=clicked_;}
-    inline static bool getClicked(){return clicked;}
+    inline bool getClicked(){return clicked;}
 
     inline void clearResults(){dt.clear(); triangles.clear(),contour_lines.clear();}
     inline void clearAll(){points.clear(); dt.clear(); triangles.clear(),contour_lines.clear();}

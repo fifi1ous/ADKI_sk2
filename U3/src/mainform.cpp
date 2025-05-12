@@ -123,7 +123,7 @@ void MainForm::on_actionAnalyze_slope_triggered()
 
 
     std::vector<Triangle> tr;
-    a.analyzeSlope(dt,tr);
+    a.analyzeSlope(dt,tr,click);
 
     //Set results
     ui -> Canvas -> setTR(tr);

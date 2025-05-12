@@ -12,12 +12,11 @@ Draw::Draw(QWidget *parent)
     view_contour_lines = true;
     view_aspect = true;
     view_slope = true;
+    clicked = true;
 
     //Initalize random number generator
     srand(time(NULL));
 }
-
-bool Draw::clicked = true;
 
 
 void Draw::mousePressEvent(QMouseEvent *e)
