@@ -36,58 +36,73 @@ void MainForm::on_actionCreate_DT_triggered()
     //Get data
     std::vector<QPoint3DF> points = ui -> Canvas -> getPoints();
 
-    //Perform DT
-    Algorithms a;
-    std::vector<Edge> dt = a.DT(points);
+    // Check if there are data to process
+    if(!points.empty())
+    {
+        //Perform DT
+        Algorithms a;
+        std::vector<Edge> dt = a.DT(points);
 
-    //Set results
-    ui -> Canvas -> setDT(dt);
+        //Set results
+        ui -> Canvas -> setDT(dt);
 
-    //Repaint
-    repaint();
+        //Repaint
+        repaint();
 
-    // change clicked
-    ui ->Canvas -> setClicked(false);
+        // change clicked
+        ui ->Canvas -> setClicked(false);
+    }
 }
 
 
 void MainForm::on_actionCreate_Contour_lines_triggered()
 {
+
+
     //Generate contour lines
-    std::vector<Edge> dt = ui -> Canvas -> getDT();
 
-    //Perform DT
-    Algorithms a;
+    //Get data
+    std::vector<QPoint3DF> points = ui -> Canvas -> getPoints();
 
-    bool click = ui -> Canvas ->getClicked();
-    if (dt.empty() || click)
+    // Check if there are data to process
+    if(!points.empty())
     {
-        //Get data
-        std::vector<QPoint3DF> points = ui -> Canvas -> getPoints();
+        // Get DT
+        std::vector<Edge> dt = ui -> Canvas -> getDT();
 
         //Perform DT
-        dt = a.DT(points);
+        Algorithms a;
+
+        bool click = ui -> Canvas ->getClicked();
+        if (dt.empty() || click)
+        {
+            //Get data
+            std::vector<QPoint3DF> points = ui -> Canvas -> getPoints();
+
+            //Perform DT
+            dt = a.DT(points);
+
+            //Set results
+            ui -> Canvas -> setDT(dt);
+        }
+
+        // Get parameters of contoru lines
+        double z_min = settings.getZMin();
+        double z_max = settings.getZMax();
+        double dz = settings.getDz();
+
+        //Generate contour lines
+        std::vector<Edge> cl = a.createContourLines(dt,z_min, z_max, dz);
 
         //Set results
-        ui -> Canvas -> setDT(dt);
+        ui -> Canvas -> setCL(cl);
+
+        // Change clicked
+        ui ->Canvas -> setClicked(false);
+
+        //Repaint
+        repaint();
     }
-
-    // Get parameters of contoru lines
-    double z_min = settings.getZMin();
-    double z_max = settings.getZMax();
-    double dz = settings.getDz();
-
-    //Generate contour lines
-    std::vector<Edge> cl = a.createContourLines(dt,z_min, z_max, dz);
-
-    //Set results
-    ui -> Canvas -> setCL(cl);
-
-    // Change clicked
-    ui ->Canvas -> setClicked(false);
-
-    //Repaint
-    repaint();
 }
 
 
@@ -102,37 +117,41 @@ void MainForm::on_actionAnalyze_slope_triggered()
 {
     // calculate slope
 
-    // Get Delaunay triangulation
-    std::vector<Edge> dt = ui -> Canvas -> getDT();
+    //Get data
+    std::vector<QPoint3DF> points = ui -> Canvas -> getPoints();
 
-    //Perform DT
-    Algorithms a;
-
-    bool click = ui -> Canvas ->getClicked();
-    if (dt.empty() || click)
+    // Check if there are data to process
+    if(!points.empty())
     {
-        //Get data
-        std::vector<QPoint3DF> points = ui -> Canvas -> getPoints();
+        // Get Delaunay triangulation
+        std::vector<Edge> dt = ui -> Canvas -> getDT();
 
         //Perform DT
-        dt = a.DT(points);
+        Algorithms a;
+
+        bool click = ui -> Canvas ->getClicked();
+        if (dt.empty() || click)
+        {
+
+            //Perform DT
+            dt = a.DT(points);
+
+            //Set results
+            ui -> Canvas -> setDT(dt);
+        }
+
+        std::vector<Triangle> tr;
+        a.analyzeSlope(dt,tr,click);
 
         //Set results
-        ui -> Canvas -> setDT(dt);
+        ui -> Canvas -> setTR(tr);
+
+        //Repaint
+        repaint();
+
+        // Change clicked
+        ui ->Canvas -> setClicked(false);
     }
-
-
-    std::vector<Triangle> tr;
-    a.analyzeSlope(dt,tr,click);
-
-    //Set results
-    ui -> Canvas -> setTR(tr);
-
-    //Repaint
-    repaint();
-
-    // Change clicked
-    ui ->Canvas -> setClicked(false);
 }
 
 
@@ -199,5 +218,46 @@ void MainForm::on_actionClear_All_triggered()
     ui -> Canvas ->clearAll();
 
     repaint();
+}
+
+
+void MainForm::on_actionAnalyze_exposition_triggered()
+{
+    // calculate slope
+
+    // Get data
+    std::vector<QPoint3DF> points = ui -> Canvas -> getPoints();
+
+    // Check if there are data to process
+    if(!points.empty())
+    {
+        // Get Delaunay triangulation
+        std::vector<Edge> dt = ui -> Canvas -> getDT();
+
+        //Perform DT
+        Algorithms a;
+
+        bool click = ui -> Canvas ->getClicked();
+        if (dt.empty() || click)
+        {
+            //Perform DT
+            dt = a.DT(points);
+
+            //Set results
+            ui -> Canvas -> setDT(dt);
+        }
+
+        std::vector<Triangle> tr;
+        a.analyzeAspect(dt,tr,click);
+
+        //Set results
+        ui -> Canvas -> setTR(tr);
+
+        //Repaint
+        repaint();
+
+        // Change clicked
+        ui ->Canvas -> setClicked(false);
+    }
 }
 

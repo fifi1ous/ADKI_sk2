@@ -1,6 +1,7 @@
 #include "draw.h"
 #include <QtGui>
 #include <time.h>
+#include <QDebug>
 
 Draw::Draw(QWidget *parent)
     : QWidget{parent}
@@ -50,6 +51,33 @@ void Draw::paintEvent(QPaintEvent *event)
     //Create object for drawing
     painter.begin(this);
 
+    // Draw aspect
+    if (view_aspect)
+    {
+        for (Triangle t: triangles)
+        {
+
+            QPoint3DF p1 = t.getP1();
+            QPoint3DF p2 = t.getP2();
+            QPoint3DF p3 = t.getP3();
+
+            QPointF p1_(p1.x(),p1.y());
+            QPointF p2_(p2.x(),p2.y());
+            QPointF p3_(p3.x(),p3.y());
+
+            QPolygonF vertices {p1_,p2_,p3_};
+
+            double aspect = t.getAspect();
+            qDebug()<<aspect;
+            /*
+            int color = 255 - 255/M_PI * slope;
+
+            painter.setBrush(QColor(color,color,color));
+            painter.setPen(Qt::transparent);
+            painter.drawPolygon(vertices);
+            */
+        }
+    }
     // Draw slope
     if (view_slope)
     {
@@ -110,22 +138,6 @@ void Draw::paintEvent(QPaintEvent *event)
         }
     }
 
-
-    /*
-
-    //Draw polygon
-    painter.drawPolygon(ch);
-
-
-    //Set graphics for maer
-    painter.setPen(Qt::GlobalColor::magenta);
-    painter.setBrush(Qt::GlobalColor::transparent);
-
-    //Draw polygon
-    painter.drawPolygon(er);
-
-    */
-    //End draw
     painter.end();
 }
 

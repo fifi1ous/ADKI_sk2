@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "settings2.h"
+#include "triangle.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -44,6 +45,8 @@ private slots:
     void on_actionExposition_changed();
 
     void on_actionClear_All_triggered();
+
+    void on_actionAnalyze_exposition_triggered();
 
 private:
     Ui::MainForm *ui;
