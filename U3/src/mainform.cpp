@@ -305,3 +305,10 @@ void MainForm::on_actionOpen_triggered()
         ui->Canvas->loadPointsFromTextfile(fileName);
     }
 }
+
+void MainForm::on_actionExit_triggered()
+{
+    // Quit the application
+    QApplication::quit();
+}
+

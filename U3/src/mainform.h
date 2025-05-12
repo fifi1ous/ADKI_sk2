@@ -52,6 +52,8 @@ private slots:
 
     void on_actionOpen_triggered();
 
+    void on_actionExit_triggered();
+
 private:
     Ui::MainForm *ui;
 };
