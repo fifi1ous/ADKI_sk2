@@ -1,5 +1,6 @@
 #include "algorithms.h"
 #include <cmath>
+#include <QRandomGenerator>
 
 Algorithms::Algorithms() {}
 
@@ -388,6 +389,105 @@ void Algorithms:: edgesToTriangle(const std::vector<Edge> &dt, std::vector<Trian
     }
 }
 
+// Generate hill shape with given center and radius
+std::vector<QPoint3DF> Algorithms::generateHill(int n, int width, int height, int cx, int cy, int rx, int ry, int maxZ)
+{
+    std::vector<QPoint3DF> points;
+
+    for (int i = 0; i < n; ++i)
+    {
+        double x = QRandomGenerator::global()->bounded(width);
+        double y = QRandomGenerator::global()->bounded(height);
+        double dx = (x - cx) / rx;
+        double dy = (y - cy) / ry;
+        double d = dx * dx + dy * dy;
+        double z = maxZ * (1.0 - d);
+        if (z < 0) z = 0;
+        QPoint3DF point(x, y, z);
+        points.push_back(point);
+    }
+    return points;
+}
+
+// Generate valley shape with given center and radius
+std::vector<QPoint3DF> Algorithms::generateValley(int n, int width, int height, int cx, int cy, int rx, int ry, int depth)
+{
+    std::vector<QPoint3DF> points;
+
+    for (int i = 0; i < n; ++i)
+    {
+        double x = QRandomGenerator::global()->bounded(width);
+        double y = QRandomGenerator::global()->bounded(height);
+        double dx = (x - cx) / rx;
+        double dy = (y - cy) / ry;
+        double d = dx * dx + dy * dy;
+        double z = depth * d;
+        if (z > 1000) z = 1000;
+        QPoint3DF point(x, y, z);
+        points.push_back(point);
+    }
+    return points;
+}
+
+// Generate ridge shape with given axis line and height
+std::vector<QPoint3DF> Algorithms::generateRidge(int n, int width, int height, int x1, int y1, int x2, int y2, int maxZ)
+{
+    std::vector<QPoint3DF> points;
+
+    for (int i = 0; i < n; ++i)
+    {
+        double x = QRandomGenerator::global()->bounded(width);
+        double y = QRandomGenerator::global()->bounded(height);
+
+        // distance from point (x,y) to line (x1,y1)-(x2,y2)
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+        double length = std::sqrt(dx*dx + dy*dy);
+        double dist = std::abs(dy*x - dx*y + x2*y1 - y2*x1) / length;
+
+        double z = maxZ - dist;
+        if (z < 0) z = 0;
+        QPoint3DF point(x, y, z);
+        points.push_back(point);
+    }
+    return points;
+}
+
+// Generate bench shape with given step position and depth
+std::vector<QPoint3DF> Algorithms::generateBench(int n, int width, int height, int stepStartX, int stepEndX, int depthZ)
+{
+    std::vector<QPoint3DF> points;
+
+    for (int i = 0; i < n; ++i)
+    {
+        double x = QRandomGenerator::global()->bounded(width);
+        double y = QRandomGenerator::global()->bounded(height);
+        double z = 1000;
+        if (x >= stepStartX && x <= stepEndX)
+            z -= depthZ;
+        QPoint3DF point(x, y, z);
+        points.push_back(point);
+    }
+    return points;
+}
+
+// Generate saddle shape with given center and scaling
+std::vector<QPoint3DF> Algorithms::generateSaddle(int n, int width, int height, int cx, int cy, int scaleX, int scaleY)
+{
+    std::vector<QPoint3DF> points;
+
+    for (int i = 0; i < n; ++i)
+    {
+        double x = QRandomGenerator::global()->bounded(width);
+        double y = QRandomGenerator::global()->bounded(height);
+        double dx = (x - cx) / static_cast<double>(scaleX);
+        double dy = (y - cy) / static_cast<double>(scaleY);
+        double z = 500 + 10 * (dx * dx - dy * dy);
+        QPoint3DF point(x, y, z);
+        points.push_back(point);
+    }
+    return points;
+}
 
 
 

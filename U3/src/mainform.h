@@ -54,6 +54,16 @@ private slots:
 
     void on_actionExit_triggered();
 
+    void on_actionHill_triggered();
+
+    void on_actionValley_triggered();
+
+    void on_actionRidge_triggered();
+
+    void on_actionBench_triggered();
+
+    void on_actionSaddle_triggered();
+
 private:
     Ui::MainForm *ui;
 };

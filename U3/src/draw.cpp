@@ -149,62 +149,51 @@ void Draw::paintEvent(QPaintEvent *event)
     // Draw contour lines with labels and halo effect
     if (view_contour_lines)
     {
-        double dzValue = 10.0; // default value
+        double dzValue = 10.0;
         if (settings != nullptr) {
-            dzValue = settings->getDz(); // get dz from settings if available
+            dzValue = settings->getDz();
         }
 
-        int main_interval = static_cast<int>(dzValue * 5); // highlight every 5th contour
-        const int minLabelLengthPx = 40; // only label segments longer than 40
+        int main_interval = static_cast<int>(dzValue * 5);
+        const int minLabelLengthPx = 40;
 
-        // Set font size for labels
         QFont font = painter.font();
         font.setPointSize(8);
         painter.setFont(font);
 
-        // Group contour edges by elevation level
         std::map<int, std::vector<const Edge*>> contoursByZ;
         for (const Edge &e : contour_lines)
         {
-            // Calculate average Z of the segment
             double z_avg = (e.getStart().getZ() + e.getEnd().getZ()) / 2.0;
             int z_level = static_cast<int>(std::round(z_avg));
-
-            // Add edge to group
             contoursByZ[z_level].push_back(&e);
 
-            // Choose pen width
             QPen pen;
             if (z_level % main_interval == 0) {
-                pen = QPen(Qt::darkGray, 2); // main contour
+                pen = QPen(Qt::darkGray, 2);
             } else {
-                pen = QPen(Qt::darkGray, 1); // normal contour
+                pen = QPen(Qt::darkGray, 1);
             }
 
             painter.setPen(pen);
             painter.drawLine(e.getStart(), e.getEnd());
         }
 
-        // Add label to main contours
         for (auto it = contoursByZ.begin(); it != contoursByZ.end(); ++it)
         {
             int z_level = it->first;
             const std::vector<const Edge*> &edges = it->second;
 
-            // Skip non-main contours
-            if (z_level % main_interval != 0) {
-                continue;
-            }
+            if (z_level % main_interval != 0) continue;
 
-            // Find the best edge (long and close to the middle of the contour line)
             double totalLength = 0.0;
             std::vector<double> lengths;
 
             for (const Edge* e : edges)
             {
-                // calculate length
-                double length = std::hypot(e->getEnd().x() - e->getStart().x(),
-                                           e->getEnd().y() - e->getStart().y());
+                double dx = e->getEnd().x() - e->getStart().x();
+                double dy = e->getEnd().y() - e->getStart().y();
+                double length = std::sqrt(dx * dx + dy * dy);
                 lengths.push_back(length);
                 totalLength += length;
             }
@@ -228,7 +217,6 @@ void Draw::paintEvent(QPaintEvent *event)
                 accumulated += lengths[i];
             }
 
-            // Use any middle edge if no long enough edge was found
             if (bestEdge == nullptr && !edges.empty()) {
                 bestEdge = edges[edges.size() / 2];
             }
@@ -237,50 +225,105 @@ void Draw::paintEvent(QPaintEvent *event)
                 continue;
             }
 
-            // Compute position and angle for the label
             const QPoint3DF &p1 = bestEdge->getStart();
             const QPoint3DF &p2 = bestEdge->getEnd();
             QPointF labelPos((p1.x() + p2.x()) / 2.0, (p1.y() + p2.y()) / 2.0);
             double angle_rad = atan2(p2.y() - p1.y(), p2.x() - p1.x());
             double angle_deg = angle_rad * 180.0 / M_PI;
 
-            // Rotate text
-            if (angle_deg < -90 || angle_deg > 90) {
-                angle_deg += 180;
+            // Compute perpendicular vector
+            QPointF normal(-(p2.y() - p1.y()), p2.x() - p1.x());
+            double normalLength = std::sqrt(normal.x() * normal.x() + normal.y() * normal.y());
+            if (normalLength != 0) {
+                normal.setX(normal.x() / normalLength);
+                normal.setY(normal.y() / normalLength);
             }
 
-            // Convert elevation to string
-            QString z_text = QString::number(z_level);
+            // Sample points on both sides of the contour segment
+            QPointF sampleUp = labelPos + normal * 20.0;
+            QPointF sampleDown = labelPos - normal * 20.0;
 
-            // Save painter state and rotate
+            double zUp = 0.0;
+            double zDown = 0.0;
+            int upCount = 0;
+            int downCount = 0;
+
+            for (auto contourPair : contoursByZ)
+            {
+                int level = contourPair.first;
+                for (const Edge* e : contourPair.second)
+                {
+                    QPointF a(e->getStart().x(), e->getStart().y());
+                    QPointF b(e->getEnd().x(), e->getEnd().y());
+
+                    // Distance from sampleUp to segment ab
+                    double dx = b.x() - a.x();
+                    double dy = b.y() - a.y();
+                    double t = 0.0;
+                    if (dx != 0 || dy != 0) {
+                        t = ((sampleUp.x() - a.x()) * dx + (sampleUp.y() - a.y()) * dy) / (dx * dx + dy * dy);
+                        t = std::max(0.0, std::min(1.0, t));
+                    }
+                    double projX = a.x() + t * dx;
+                    double projY = a.y() + t * dy;
+                    double distUp = std::sqrt(std::pow(sampleUp.x() - projX, 2) + std::pow(sampleUp.y() - projY, 2));
+                    if (distUp < 10.0) {
+                        zUp += level;
+                        upCount++;
+                    }
+
+                    // Distance from sampleDown to segment ab
+                    t = 0.0;
+                    if (dx != 0 || dy != 0) {
+                        t = ((sampleDown.x() - a.x()) * dx + (sampleDown.y() - a.y()) * dy) / (dx * dx + dy * dy);
+                        t = std::max(0.0, std::min(1.0, t));
+                    }
+                    projX = a.x() + t * dx;
+                    projY = a.y() + t * dy;
+                    double distDown = std::sqrt(std::pow(sampleDown.x() - projX, 2) + std::pow(sampleDown.y() - projY, 2));
+                    if (distDown < 10.0) {
+                        zDown += level;
+                        downCount++;
+                    }
+                }
+            }
+
+            double avgZUp = z_level;
+            double avgZDown = z_level;
+            if (upCount > 0) {
+                avgZUp = zUp / upCount;
+            }
+            if (downCount > 0) {
+                avgZDown = zDown / downCount;
+            }
+
+            // Flip text to point uphill
+            if (avgZUp > avgZDown) {
+                angle_deg += 180.0;
+            }
+
+            // Draw label
+            QString z_text = QString::number(z_level);
             painter.save();
             painter.translate(labelPos);
             painter.rotate(angle_deg);
 
-            // Compute text position
             QFontMetrics fm(painter.font());
             int w = fm.horizontalAdvance(z_text);
             int h = fm.height();
             QPointF textCenter(-w / 2.0, h / 4.0);
 
-            // Draw halo
             painter.setPen(Qt::white);
-            for (int dx = -1; dx <= 1; ++dx)
-            {
-                for (int dy = -1; dy <= 1; ++dy)
-                {
-                    if (dx != 0 || dy != 0)
-                    {
+            for (int dx = -1; dx <= 1; ++dx) {
+                for (int dy = -1; dy <= 1; ++dy) {
+                    if (dx != 0 || dy != 0) {
                         painter.drawText(textCenter + QPointF(dx, dy), z_text);
                     }
                 }
             }
 
-            // Draw main label
             painter.setPen(Qt::black);
             painter.drawText(textCenter, z_text);
-
-            // Restore painter state
             painter.restore();
         }
     }

@@ -27,6 +27,15 @@ public:
     void analyzeAspect(const std::vector<Edge> &dt, std::vector<Triangle> &triangles, const bool &click);
 
     void edgesToTriangle(const std::vector<Edge> &dt, std::vector<Triangle> &triangles);
+
+    // Terrain shape generators
+    static std::vector<QPoint3DF> generateHill(int n, int width, int height, int cx, int cy, int rx, int ry, int maxZ);
+    static std::vector<QPoint3DF> generateValley(int n, int width, int height, int cx, int cy, int rx, int ry, int depth);
+    static std::vector<QPoint3DF> generateRidge(int n, int width, int height, int x1, int y1, int x2, int y2, int maxZ);
+    static std::vector<QPoint3DF> generateBench(int n, int width, int height, int stepStartX, int stepEndX, int depthZ);
+    static std::vector<QPoint3DF> generateSaddle(int n, int width, int height, int cx, int cy, int scaleX, int scaleY);
+
+
 };
 
 #endif // ALGORITHMS_H

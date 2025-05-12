@@ -26,7 +26,7 @@
      <x>0</x>
      <y>0</y>
      <width>1232</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -71,11 +71,22 @@
     </property>
     <addaction name="actionParameters"/>
    </widget>
+   <widget class="QMenu" name="menuGenerate">
+    <property name="title">
+     <string>Generate</string>
+    </property>
+    <addaction name="actionHill"/>
+    <addaction name="actionValley"/>
+    <addaction name="actionRidge"/>
+    <addaction name="actionBench"/>
+    <addaction name="actionSaddle"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuAnalysis"/>
    <addaction name="menuView"/>
    <addaction name="menuClear"/>
    <addaction name="menuSettings"/>
+   <addaction name="menuGenerate"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -237,6 +248,31 @@
    </property>
    <property name="text">
     <string>Parameters</string>
+   </property>
+  </action>
+  <action name="actionHill">
+   <property name="text">
+    <string>Hill</string>
+   </property>
+  </action>
+  <action name="actionValley">
+   <property name="text">
+    <string>Valley</string>
+   </property>
+  </action>
+  <action name="actionRidge">
+   <property name="text">
+    <string>Ridge</string>
+   </property>
+  </action>
+  <action name="actionBench">
+   <property name="text">
+    <string>Bench</string>
+   </property>
+  </action>
+  <action name="actionSaddle">
+   <property name="text">
+    <string>Saddle</string>
    </property>
   </action>
  </widget>

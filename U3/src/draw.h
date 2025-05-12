@@ -48,6 +48,8 @@ public:
 
     void loadPointsFromTextfile(const QString &fileName);
 
+    inline void setPoints(const std::vector<QPoint3DF>& newPoints) {points = newPoints;}
+
 
 signals:
 };
