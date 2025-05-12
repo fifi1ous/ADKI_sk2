@@ -16,6 +16,8 @@ MainForm::MainForm(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->Canvas->setSettings(&settings);
+
     // inicialize variables
     view_points = true;
     view_dt = true;

@@ -70,7 +70,7 @@ void Draw::paintEvent(QPaintEvent *event)
     QPainter painter(this);
 
     //Create object for drawing
-    painter.begin(this);
+    //painter.begin(this);
 
     // Draw aspect
     if (view_aspect)
@@ -145,17 +145,146 @@ void Draw::paintEvent(QPaintEvent *event)
         }
     }
 
-    //Draw contour lines
+    // This part of the code was created with the help of ChatGPT
+    // Draw contour lines with labels and halo effect
     if (view_contour_lines)
     {
-        painter.setPen(Qt::GlobalColor::darkGray);
-        for (Edge e: contour_lines)
+        double dzValue = 10.0; // default value
+        if (settings != nullptr) {
+            dzValue = settings->getDz(); // get dz from settings if available
+        }
+
+        int main_interval = static_cast<int>(dzValue * 5); // highlight every 5th contour
+        const int minLabelLengthPx = 40; // only label segments longer than 40
+
+        // Set font size for labels
+        QFont font = painter.font();
+        font.setPointSize(8);
+        painter.setFont(font);
+
+        // Group contour edges by elevation level
+        std::map<int, std::vector<const Edge*>> contoursByZ;
+        for (const Edge &e : contour_lines)
         {
+            // Calculate average Z of the segment
+            double z_avg = (e.getStart().getZ() + e.getEnd().getZ()) / 2.0;
+            int z_level = static_cast<int>(std::round(z_avg));
+
+            // Add edge to group
+            contoursByZ[z_level].push_back(&e);
+
+            // Choose pen width
+            QPen pen;
+            if (z_level % main_interval == 0) {
+                pen = QPen(Qt::darkGray, 2); // main contour
+            } else {
+                pen = QPen(Qt::darkGray, 1); // normal contour
+            }
+
+            painter.setPen(pen);
             painter.drawLine(e.getStart(), e.getEnd());
         }
-    }
 
-    painter.end();
+        // Add label to main contours
+        for (auto it = contoursByZ.begin(); it != contoursByZ.end(); ++it)
+        {
+            int z_level = it->first;
+            const std::vector<const Edge*> &edges = it->second;
+
+            // Skip non-main contours
+            if (z_level % main_interval != 0) {
+                continue;
+            }
+
+            // Find the best edge (long and close to the middle of the contour line)
+            double totalLength = 0.0;
+            std::vector<double> lengths;
+
+            for (const Edge* e : edges)
+            {
+                // calculate length
+                double length = std::hypot(e->getEnd().x() - e->getStart().x(),
+                                           e->getEnd().y() - e->getStart().y());
+                lengths.push_back(length);
+                totalLength += length;
+            }
+
+            double halfLength = totalLength / 2.0;
+            double accumulated = 0.0;
+            const Edge* bestEdge = nullptr;
+            double bestDistance = std::numeric_limits<double>::max();
+
+            for (size_t i = 0; i < edges.size(); ++i)
+            {
+                double midpoint = accumulated + lengths[i] / 2.0;
+                double distanceFromCenter = std::abs(midpoint - halfLength);
+
+                if (lengths[i] >= minLabelLengthPx && distanceFromCenter < bestDistance)
+                {
+                    bestDistance = distanceFromCenter;
+                    bestEdge = edges[i];
+                }
+
+                accumulated += lengths[i];
+            }
+
+            // Use any middle edge if no long enough edge was found
+            if (bestEdge == nullptr && !edges.empty()) {
+                bestEdge = edges[edges.size() / 2];
+            }
+
+            if (bestEdge == nullptr) {
+                continue;
+            }
+
+            // Compute position and angle for the label
+            const QPoint3DF &p1 = bestEdge->getStart();
+            const QPoint3DF &p2 = bestEdge->getEnd();
+            QPointF labelPos((p1.x() + p2.x()) / 2.0, (p1.y() + p2.y()) / 2.0);
+            double angle_rad = atan2(p2.y() - p1.y(), p2.x() - p1.x());
+            double angle_deg = angle_rad * 180.0 / M_PI;
+
+            // Rotate text
+            if (angle_deg < -90 || angle_deg > 90) {
+                angle_deg += 180;
+            }
+
+            // Convert elevation to string
+            QString z_text = QString::number(z_level);
+
+            // Save painter state and rotate
+            painter.save();
+            painter.translate(labelPos);
+            painter.rotate(angle_deg);
+
+            // Compute text position
+            QFontMetrics fm(painter.font());
+            int w = fm.horizontalAdvance(z_text);
+            int h = fm.height();
+            QPointF textCenter(-w / 2.0, h / 4.0);
+
+            // Draw halo
+            painter.setPen(Qt::white);
+            for (int dx = -1; dx <= 1; ++dx)
+            {
+                for (int dy = -1; dy <= 1; ++dy)
+                {
+                    if (dx != 0 || dy != 0)
+                    {
+                        painter.drawText(textCenter + QPointF(dx, dy), z_text);
+                    }
+                }
+            }
+
+            // Draw main label
+            painter.setPen(Qt::black);
+            painter.drawText(textCenter, z_text);
+
+            // Restore painter state
+            painter.restore();
+        }
+    }
+    // This part of the code was created with the help of ChatGPT
 }
 
 int Draw::selectColor(const double &aspect)

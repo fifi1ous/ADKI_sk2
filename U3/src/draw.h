@@ -5,6 +5,7 @@
 #include "qpoint3df.h"
 #include "edge.h"
 #include "triangle.h"
+#include "settings2.h"
 
 class Draw : public QWidget
 {
@@ -19,8 +20,12 @@ private:
     std::vector<Triangle> triangles;
     int selectColor(const double &aspect);
 
+    Settings2 *settings = nullptr;
+
 
 public:
+    void setSettings(Settings2 *s) { settings = s; }
+
     explicit Draw(QWidget *parent = nullptr);
     void mousePressEvent(QMouseEvent *e);
     void paintEvent(QPaintEvent *event);
