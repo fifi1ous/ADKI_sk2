@@ -318,18 +318,25 @@ void MainForm::on_actionExit_triggered()
 
 void MainForm::on_actionHill_triggered()
 {
+    // Clear everything
+    ui->Canvas->clearAll();
+    tr1.clear();
+    repaint();
+
+    // Generate random parameters for hill
     int canvasWidth = ui->Canvas->width();
     int canvasHeight = ui->Canvas->height();
-
     int centerX = QRandomGenerator::global()->bounded(100, canvasWidth - 100);
     int centerY = QRandomGenerator::global()->bounded(100, canvasHeight - 100);
     int radiusX = QRandomGenerator::global()->bounded(100, canvasWidth / 2);
     int radiusY = QRandomGenerator::global()->bounded(100, canvasHeight / 2);
     int peakZ = QRandomGenerator::global()->bounded(800, 1200);
 
+    // Generate hill points
     Algorithms a;
     std::vector<QPoint3DF> points = a.generateHill(300, canvasWidth, canvasHeight, centerX, centerY, radiusX, radiusY, peakZ);
 
+    // Add points and refresh
     auto existingPoints = ui->Canvas->getPoints();
     existingPoints.insert(existingPoints.end(), points.begin(), points.end());
     ui->Canvas->setPoints(existingPoints);
@@ -338,18 +345,25 @@ void MainForm::on_actionHill_triggered()
 
 void MainForm::on_actionValley_triggered()
 {
+    // Clear everything
+    ui->Canvas->clearAll();
+    tr1.clear();
+    repaint();
+
+    // Generate random parameters for valley
     int canvasWidth = ui->Canvas->width();
     int canvasHeight = ui->Canvas->height();
-
     int centerX = QRandomGenerator::global()->bounded(100, canvasWidth - 100);
     int centerY = QRandomGenerator::global()->bounded(100, canvasHeight - 100);
     int radiusX = QRandomGenerator::global()->bounded(100, canvasWidth / 2);
     int radiusY = QRandomGenerator::global()->bounded(100, canvasHeight / 2);
     int depthZ = QRandomGenerator::global()->bounded(200, 600);
 
+    // Generate valley points
     Algorithms a;
     std::vector<QPoint3DF> points = a.generateValley(300, canvasWidth, canvasHeight, centerX, centerY, radiusX, radiusY, depthZ);
 
+    // Add points and refresh
     auto existingPoints = ui->Canvas->getPoints();
     existingPoints.insert(existingPoints.end(), points.begin(), points.end());
     ui->Canvas->setPoints(existingPoints);
@@ -358,18 +372,25 @@ void MainForm::on_actionValley_triggered()
 
 void MainForm::on_actionRidge_triggered()
 {
+    // Clear everything
+    ui->Canvas->clearAll();
+    tr1.clear();
+    repaint();
+
+    // Generate random parameters for ridge
     int canvasWidth = ui->Canvas->width();
     int canvasHeight = ui->Canvas->height();
-
     int startX = QRandomGenerator::global()->bounded(100, canvasWidth - 100);
     int startY = QRandomGenerator::global()->bounded(100, canvasHeight - 100);
     int endX = QRandomGenerator::global()->bounded(100, canvasWidth - 100);
     int endY = QRandomGenerator::global()->bounded(100, canvasHeight - 100);
     int ridgeZ = QRandomGenerator::global()->bounded(800, 1200);
 
+    // Generate ridge points
     Algorithms a;
     std::vector<QPoint3DF> points = a.generateRidge(300, canvasWidth, canvasHeight, startX, startY, endX, endY, ridgeZ);
 
+    // Add points and refresh
     auto existingPoints = ui->Canvas->getPoints();
     existingPoints.insert(existingPoints.end(), points.begin(), points.end());
     ui->Canvas->setPoints(existingPoints);
@@ -378,16 +399,23 @@ void MainForm::on_actionRidge_triggered()
 
 void MainForm::on_actionBench_triggered()
 {
+    // Clear everything
+    ui->Canvas->clearAll();
+    tr1.clear();
+    repaint();
+
+    // Generate random parameters for bench
     int canvasWidth = ui->Canvas->width();
     int canvasHeight = ui->Canvas->height();
-
     int stepStartX = QRandomGenerator::global()->bounded(100, canvasWidth / 2);
     int stepEndX = stepStartX + QRandomGenerator::global()->bounded(50, canvasWidth / 3);
     int benchZ = QRandomGenerator::global()->bounded(200, 400);
 
+    // Generate bench points
     Algorithms a;
     std::vector<QPoint3DF> points = a.generateBench(300, canvasWidth, canvasHeight, stepStartX, stepEndX, benchZ);
 
+    // Add points and refresh
     auto existingPoints = ui->Canvas->getPoints();
     existingPoints.insert(existingPoints.end(), points.begin(), points.end());
     ui->Canvas->setPoints(existingPoints);
@@ -396,17 +424,24 @@ void MainForm::on_actionBench_triggered()
 
 void MainForm::on_actionSaddle_triggered()
 {
+    // Clear everything
+    ui->Canvas->clearAll();
+    tr1.clear();
+    repaint();
+
+    // Generate random parameters for saddle
     int canvasWidth = ui->Canvas->width();
     int canvasHeight = ui->Canvas->height();
-
     int centerX = QRandomGenerator::global()->bounded(100, canvasWidth - 100);
     int centerY = QRandomGenerator::global()->bounded(100, canvasHeight - 100);
     int scaleX = QRandomGenerator::global()->bounded(100, canvasWidth / 3);
     int scaleY = QRandomGenerator::global()->bounded(100, canvasHeight / 3);
 
+    // Generate saddle points
     Algorithms a;
     std::vector<QPoint3DF> points = a.generateSaddle(300, canvasWidth, canvasHeight, centerX, centerY, scaleX, scaleY);
 
+    // Add points and refresh
     auto existingPoints = ui->Canvas->getPoints();
     existingPoints.insert(existingPoints.end(), points.begin(), points.end());
     ui->Canvas->setPoints(existingPoints);
@@ -415,6 +450,7 @@ void MainForm::on_actionSaddle_triggered()
 
 void MainForm::on_action3D_Viewer_triggered()
 {
+    // Open 3D viewer with current points
     Terrain3DForm *form3D = new Terrain3DForm(this);
     form3D->setPoints(ui->Canvas->getPoints());
     form3D->exec();
@@ -422,6 +458,7 @@ void MainForm::on_action3D_Viewer_triggered()
 
 void MainForm::on_actionAbout_triggered()
 {
+    // Open the project GitHub page
     QDesktopServices::openUrl(QUrl("https://github.com/fifi1ous/ADKI_sk2/tree/main/U3"));
 }
 
