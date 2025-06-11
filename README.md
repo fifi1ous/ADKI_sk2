@@ -12,7 +12,7 @@ This repository contains projects for the course **[155ADKI Algorithms of Digita
 
 ### [U1 - Geometric Point Search](https://github.com/fifi1ous/ADKI_sk2/tree/main/U1)
 #### [Assignment](https://web.natur.cuni.cz/~bayertom/images/courses/Adk/adkcv1.pdf)
-This folder contains the implementation of algorithms to solve the **Point Location Problem**. using the following methods:
+This folder contains the implementation of algorithms to solve the **Point Location Problem**. Using the following methods:
 - **Ray Crossing Algorithm**: Determines point location by counting how many times a ray from the point intersects the polygon's edges. Odd intersections mean the point is inside, even intersections mean outside.
 - **Winding Number Algorithm**: Determines point location by calculating the total angle formed by the polygon edges around the point. A non-zero angle means inside, zero means outside.
 - **Handling Special Cases**: Handles special cases when a point is on an edge or at a vertex.
@@ -23,7 +23,7 @@ This folder contains the implementation of algorithms to solve the **Point Locat
 
 ### [U2 - Building Simplification](https://github.com/fifi1ous/ADKI_sk2/tree/main/U2)
 #### [Assignment](https://web.natur.cuni.cz/~bayertom/images/courses/Adk/adkcv2.pdf)
-This folder contains the implementation of algorithms to solve the **Building Simplification**. using the following methods:
+This folder contains the implementation of algorithms to solve the **Building Simplification**. Using the following methods:
 - **Minimum Area Enclosing Rectangle**: Rotate the convex hull of the building and compute the bounding box. The bounding box with minimal area is rotated back and resized to have the same area as the original polygon, then serves as the simplified building.
 - **Principal Component Analysis (PCA)**: Uses PCA analysis to determine the main directions in the building and create a rectangle oriented by PCA with the same area as the original polygon, which then serves as the simplified building. For PCA is used the **[Eigen library](https://gitlab.com/libeigen/eigen)**.
 - **Longest Edge**: Finds the longest edge of the polygon, which then serves as the main direction for building generalization.
@@ -34,4 +34,17 @@ This folder contains the implementation of algorithms to solve the **Building Si
   - **Graham Scan**
 - **Handling Singular Cases**: Manages special cases in convex hull generation to ensure robustness.
 - **Loading shpefiles**: Uses **[Shapelib](https://shapelib.maptools.org/)** to process shapefiles.
+- **Graphical User Interface (GUI)**: Built with **[Qt Framework](https://qt.io/)** for interactive visualization.
+
+### [U3 - Digital Terrain Model and Its Analysis](https://github.com/fifi1ous/ADKI_sk2/tree/main/U3)
+#### [Assignment](https://web.natur.cuni.cz/~bayertom/images/courses/Adk/adkcv3.pdf)
+This folder contains the implementation of algorithms to work with the **Digital Terrain Model (DTM)** based on a **Delaunay triangulation (DT)**. Using the following methods:
+
+- **Incremental 2D Delaunay Triangulation** for generating a surface mesh from the input points.
+- **Contour Line Generation** using linear interpolation at specified intervals, including visualization of major contours and automatic labeling.
+- **Automatic contour labeling** respecting cartographic conventions.
+- **Slope Analysis** of triangle using grayscale symbology.
+- **Aspect Analysis** of triangle using circular color ramp.
+- **Synthetic Terrain Shape Generator** to generate hill, valley, ridge, bench and saddle shapes.
+- **3D Terrain Visualization** with orthographic projection of 3D points.
 - **Graphical User Interface (GUI)**: Built with **[Qt Framework](https://qt.io/)** for interactive visualization.
