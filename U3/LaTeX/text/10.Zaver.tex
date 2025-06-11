@@ -2,6 +2,17 @@
 V rámci této úlohy byla vytvořena aplikace, která umožňuje analýzu terénu. Aplikace dokáže analyzovat data ručně zadaná do aplikace, automaticky generovaná aplikací, nebo načítáním dat z formátu \texttt{.txt} nebo \texttt{.xyz}.Výsledky jsou reprezentovány ve 2D pomocí TIN, vrstevnic, sklonu a orientace terénu. Body terénu mohou být zobrazeny ve 3D prohlížeči.
 Vzhledem k časovému vytížení v rámci jiných předmětů, zejména projektu z kartografie, jsme nestihli zpracovat všechny bonusové úlohy, které bychom si jinak rádi splnili.
 
+\subsection{Omezení Delaunay triangulace}
+
+Přestože je Delaunay triangulace velmi užitečná pro tvorbu digitálního modelu terénu, v určitých případech není její použití ideální. Mezi situace, kdy nemusí poskytovat dobré výsledky, patří:
+\begin{itemize}
+\item \textbf{Zlomové linie a strmé hrany:} Delaunay triangulace nedokáže sama o sobě respektovat morfologické zlomy, jako jsou prudké srázy. Bez použití povinných hran dochází k chybné interpretaci.
+\item \textbf{Rovné plochy:} V oblastech s velmi malým nebo žádným sklonem nemusí vznikat žádné vrstevnice, nebo naopak mohou vznikat chybné vrstevnice.
+\item \textbf{Špatné rozložení:} Pokud jsou vstupní data špatně rozložená a vznikají dlouhé a úzké trojúhelníky, může to vést k nepřesné interpolaci a neplynulým vrstevnicím.
+\item \textbf{Pravidelná mřížka:} V případě pravidelně rozmístěných bodů může vzniknout nejednoznačná triangulace, což může způsobit chyby ve tvaru vrstevnic.
+\end{itemize}
+Pro tyto případy by bylo vhodné rozšířit aplikaci o podporu povinných hran, které umožňují zachování tvaru morfologicky významných útvarů. Dále by bylo možné přidat další metody interpolace, které v určitých případech poskytují lepší výsledky než Delaunay triangulace.
+
 \subsection{Další Možné Neřešené Problémy a Náměty na Vylepšení}
 
 \begin{itemize} 

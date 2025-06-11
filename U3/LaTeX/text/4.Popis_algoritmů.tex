@@ -153,3 +153,47 @@ Pro zobrazení orientace trojúhelníku byla využita tato barevná stupnice: \\
 \end{figure}
 
 \input{text/Pseudocode/Aspect}
+\subsection{Generování umělých útvarů}
+
+Pro účely testování algoritmů byly v aplikaci implementovány funkce pro generování umělých terénních útvarů. Všechny útvary jsou generovány jako množiny náhodně rozložených bodů s výškou vypočtenou podle geometrické funkce. Cílem je generovat modelové situace, na kterých je možné sledovat chování algoritmů pro triangulaci, tvorbu vrstevnic, sklon a expozici.
+
+\subsubsection{Kupa}
+Kupa je generována jako eliptický paraboloid, kde výška je největší ve středu a klesá směrem ke krajům:
+\[
+z = \text{maxZ} \cdot \left(1 - \left(\frac{x - cx}{rx}\right)^2 - \left(\frac{y - cy}{ry}\right)^2\right)
+\]
+Pokud je výška $z < 0$, nastaví se na nulu. Výsledkem je hladký kopec soustředěný okolo bodu $(cx, cy)$ s poloměry $rx$, $ry$.
+
+\subsubsection{Údolí}
+Údolí je inverzní verzí kopce. Výška roste směrem od středu:
+\[
+z = \text{depth} \cdot \left(\left(\frac{x - cx}{rx}\right)^2 + \left(\frac{y - cy}{ry}\right)^2\right)
+\]
+
+\subsubsection{Hřbet}
+Tvar hřbetu je určen přímkou mezi dvěma body $(x_1, y_1)$ a $(x_2, y_2)$. Výška bodu klesá lineárně s jeho kolmou vzdáleností od této osy:
+\[
+z = \text{maxZ} - d
+\]
+kde $d$ je kolmá vzdálenost bodu $(x, y)$ od přímky spojující dva body $(x_1, y_1)$ a $(x_2, y_2)$. Tato vzdálenost se počítá jako:
+\[
+d = \frac{|(y_2 - y_1)x - (x_2 - x_1)y + x_2 y_1 - y_2 x_1|}{\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}}
+\]
+
+\subsubsection{Spočinek}
+Spočinek je modelován jako skok ve výšce v určitém rozsahu souřadnice $x$. Všechny body mají výšku 1000, ale pokud $x$ leží v intervalu $(\text{stepStartX}, \text{stepEndX})$, výška se sníží o hodnotu $depthZ$:
+\[
+z = \begin{cases}
+1000 - \text{depthZ} & \text{pokud } x \in (\text{stepStartX}, \text{stepEndX}) \\
+1000 & \text{jinak}
+\end{cases}
+\]
+Tím vzniká ostrý zlom v terénu.
+
+\subsubsection{Sedlo}
+Sedlo je generováno jako hyperbolický paraboloid:
+\[
+z = 500 + 10 \cdot \left(\left(\frac{x - cx}{scaleX}\right)^2 - \left(\frac{y - cy}{scaleY}\right)^2\right)
+\]
+Výsledkem jsou dva protilehlé svahy. Jeden klesající a druhý stoupající se středem v bodě $(cx, cy)$.
+
